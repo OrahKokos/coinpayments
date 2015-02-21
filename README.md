@@ -82,7 +82,7 @@ client.rates(function(err,result){
 });
 ```
 Example Response from server:
-```json
+```
 { 
   BTC: { 
     is_fiat: 0,
@@ -153,7 +153,7 @@ client.balances(function(err,result){
 });
 ```
 Example Response from server:
-```json
+```
 {
   BTC: { 
     balance: 10000000,
@@ -200,7 +200,7 @@ client.createTransaction({'currency1' : 'DOGE', 'currency2' : 'POT', 'amount' : 
 });
 ```
 Example Response from server:
-```json
+```
 { 
   amount: '1.21825881',
   txn_id: 'd17a8ee84b1de669bdd0f15b38f20a7e9781d569d20c096e49983ad9ad40ce4c',
@@ -241,7 +241,7 @@ client.createWithdrawal({'currency' : 'POT', 'amount' : 10, 'address': 'INSERT_W
 });
 ```
 Example Response from server:
-```json
+```
 {
   id: '98a5ff631da2089985594789dc9fb85648596599816ac8ce1ce00fd082798967',
   status: 0 
@@ -270,7 +270,7 @@ client.getTx('txn_id',function(err,result){
 });
 ```
 Example Response from server:
-```json
+```
 { 
   time_created: 1424436678,
   time_expires: 1424442078,
@@ -317,7 +317,7 @@ client.getWithdrawalInfo('id',function(err,result){
 });
 ```
 Example Response from server:
-```json
+```
 { 
   time_created: 1424436465,
   status: 2,
@@ -358,7 +358,7 @@ client.getTxMulti(['txn_id_1', 'txn_id_2', 'txn_id_3'],function(err,result){
 });
 ```
 Example Response from server:
-```json
+```
 { 
   f4446219a94a562851e7d27a49c48be4d447f470b9a28fa96c35a35a1f810316: 
    { error: 'ok',
@@ -511,7 +511,7 @@ Example responses
 
 - Pending:
 
-```json
+```
 { 
   ipn_version: '1.0',
   ipn_id: '0aa2fe7965a5318e3f52bb4419c35fa3',
@@ -532,7 +532,7 @@ Example responses
 }
 
 ```
-```json
+```
 { 
   ipn_version: '1.0',
   ipn_id: '40c7b011f7cfc7d39e03a35a72dd6d5f',
@@ -553,7 +553,7 @@ Example responses
 }
 
 ```
-```json
+```
 { 
   ipn_version: '1.0',
   ipn_id: '507d558865aa0a160c3fb638d4b63df8',
@@ -577,7 +577,7 @@ Example responses
 
 - Complete:
 
-```json
+```
 { 
   ipn_version: '1.0',
   ipn_id: 'dd6fd76efab79f95e9bafc0dec85e158',
