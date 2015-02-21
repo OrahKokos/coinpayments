@@ -1,0 +1,17 @@
+{
+  "name": "coinpayments",
+  "version": "1.0.0",
+  "description": "CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies.",
+  "main": "coinpayments.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bitcoin",
+    "altcoin",
+    "cryptocurrencies",
+    "e-commerce"
+  ],
+  "author": "Marko Paroški (makro.paroski.ns@gmail.com)",
+  "license": "MIT"
+}
