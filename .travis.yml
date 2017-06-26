@@ -19,3 +19,4 @@ cache:
 before_script:
   - npm install babel-cli mocha -g
   - npm install babel-core babel-preset-es2015 body-parser chai express
+  - npm run build
