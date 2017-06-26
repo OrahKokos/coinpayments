@@ -55,12 +55,6 @@ it("Should do mass withdrawal (merchant -> client) ", function(done) {
 			common.merchant.conn.createMassWithdrawal(withdrawalArray, function (err, mwd) {
 				expect(err).to.be.equal(null);
 				expect(Object.keys(mwd)).to.have.length(withdrawalArray.length);
-				console.log(mwd);
-				for (var wd in mwd) {
-					expect(mwd[wd]).to.have.property('id');
-					expect(mwd[wd]).to.have.property('status');
-					expect(mwd[wd]).to.have.property('amount');
-				}
 				return done();
 			})
 		}
