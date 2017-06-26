@@ -1,7 +1,7 @@
 ![alt text](https://www.coinpayments.net/images/logo.png "CoinPayments")
 # CoinPayments NodeJS client
 ----
-CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies.
+CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.
 For more information visit their website [here](https://www.coinpayments.net/).
 
 ## Installation
