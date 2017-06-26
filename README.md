@@ -1,6 +1,8 @@
 ![alt text](https://www.coinpayments.net/images/logo.png "CoinPayments")
 # CoinPayments NodeJS client
-----
+
+[![Build Status](https://travis-ci.org/OrahKokos/coinpayments.svg?branch=master)](https://travis-ci.org/OrahKokos/coinpayments)
+
 CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.
 For more information visit their website [here](https://www.coinpayments.net/).
 
@@ -10,6 +12,7 @@ No deps, clean nodejs.
 
 ```npm install coinpayments```
 
+<a name="table" />
 
 Table of contents
 =================
@@ -46,7 +49,7 @@ Table of contents
 
 <a name="setup" />
 
-##Setup
+## Setup
 
 - Create an account on [www.coinpayments.net](https://www.coinpayments.net/index.php?ref=831b8d495071e5b0e1015486f5001150)
 - Go to **My Account -> Coin Acceptance Settings**
@@ -71,7 +74,7 @@ Table of contents
 
 <a name="init" />
 
-###Init
+## Init
 
 ```javascript
 var Coinpayments = require('coinpayments');
@@ -87,7 +90,7 @@ var client = new Coinpayments(options);
 
 <a name="getbasicinfo" />
 
-### Get Basic Account Information
+## Get Basic Account Information
 
 Get your basic account information.
 ```javascript
@@ -117,7 +120,7 @@ Example response from server
 
 <a name="getprofile" />
 
-### Get Profile Info
+## Get Profile Info
 
 Get $PayByName Profile Information
 
@@ -166,7 +169,7 @@ Example response from server
 
 <a name="gettaglist" />
 
-### Get Tag list
+## Get Tag list
 
 Get $PayByName Tag List
 
@@ -211,7 +214,7 @@ Example response from server
 
 <a name="claimtag" />
 
-### Claim tag
+## Claim tag
 
 Claim $PayByName Tag
 
@@ -243,7 +246,7 @@ Example response from server
 
 <a name="updatetagprofile" />
 
-### Update Tag Profile
+## Update Tag Profile
 
 Update $PayByName Profile
 
@@ -278,7 +281,7 @@ Example response from server
 
 <a name="getdeposit" />
 
-### Get Deposit Address
+## Get Deposit Address
 
 Get a deposit address. This action does not include a fee and will not trigger IPN
 ```javascript
@@ -307,7 +310,7 @@ Example response from server
 
 <a name="getcallback" />
 
-### Get Callback Address
+## Get Callback Address
 
 Get a callback address. This action does a fee and will trigger IPN.
 ```javascript
@@ -336,7 +339,7 @@ Example response from server
 
 <a name="rates" />
 
-### Rates
+## Rates
 ----
 Get Exchange Rates / Supported Coins
 ```javascript
@@ -434,7 +437,7 @@ Example Response from server:
 
 <a name="balances" />
 
-### Balances
+## Balances
 ---
 Coin Balances
 ```javascript
@@ -477,7 +480,7 @@ Example Response from server:
 
 <a name="createtransaction" />
 
-### Create Transaction
+## Create Transaction
 ---
 Create Transaction
 ```javascript
@@ -533,7 +536,7 @@ Example Response from server:
 
 <a name="gettx" />
 
-### Get Transaction Info
+## Get Transaction Info
 ---
 Query the server for ``txn_id`` and returns the status of the payment. 
 ```javascript
@@ -581,7 +584,7 @@ Example Response from server:
 
 <a name="gettxmulti" />
 
-### Get Transaction Multi
+## Get Transaction Multi
 
 Get multiple transaction status.
 ```javascript
@@ -625,7 +628,7 @@ Example response from server
 
 <a name="gettxlist" />
 
-### Get Transaction LIST
+## Get Transaction LIST
 
 Get a list of transaction ids.
 
@@ -663,7 +666,7 @@ Each element in the array represents a ``txn_id``
 
 <a name="convertcoins" />
 
-### Convert Coins
+## Convert Coins
 
 Convert coins. Coinpayments utilizes [Shapeshift.io](https://shapeshift.io) services.
 
@@ -702,7 +705,7 @@ Example response from server
 
 <a name="createtransfer" />
 
-### Create Transfer
+## Create Transfer
 
 Transfers are performed as internal coin transfers/accounting entries when possible. For coins not supporting that ability a withdrawal is created instead.
 
@@ -743,7 +746,7 @@ Example response from server
 
 <a name="createwithdrawal" />
 
-### Create Withdrawal
+## Create Withdrawal
 ---
 Makes a withdrawal of funds from server to a determined wallet address.
 ```javascript
@@ -779,7 +782,7 @@ Example Response from server:
 
 <a name="createmasswithdrawal" />
 
-### Create Mass Withdrawal
+## Create Mass Withdrawal
 
 Create a a mass withdrawal
 
@@ -832,7 +835,7 @@ Example response from server
 
 <a name="getwithdrawalinfo" />
 
-###Get Withdrawal Info
+##Get Withdrawal Info
 
 Query the server for Withdraw ID status.
 ```javascript
@@ -874,7 +877,7 @@ Example Response from server:
 
 <a name="getwithdrawalhistory" />
 
-### Get Withdrawal History
+## Get Withdrawal History
 
 Get withdrawal histroy
 
@@ -939,7 +942,7 @@ IPN can be utilized in two ways using this lib.
 
 <a name="autoIPN" />
 
-### Automated IPN ( for local development )
+## Automated IPN ( for local development )
 ---
 <span style="color: red"> Do not use this in ``PRODUCTION``</span>.
 This method is used if you set the inital ``options.autoIpn`` to ``true``. This is unitizing ``getTxMulti`` to automatically query the server for payment statuses.
@@ -970,7 +973,7 @@ client.on('autoipn', function(data){
 
 <a name="httpIPN" />
 
-### IPN HTTP(S) POST
+## IPN HTTP(S) POST
 ---
 This is a coinpayments.net service to send HTTP(S) POST requests to the predefined or selected location. In order to enable this option go to **My Account -> Account Settings**, add **IPN secret** ( strong password, preferably hash ) and set **IPN URL** to where you will handle IPNs. 
 
