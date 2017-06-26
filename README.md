@@ -10,41 +10,44 @@ No deps, clean nodejs.
 
 ```npm install coinpayments```
 
-<a name="table" />
-## Content
-----
-- [Setup](#setup)
-- [API reference](#reference)
-  - [Init](#init)
-  - [Get Basic Account Information](#getbasicinfo)
-  - [Get Profile](#getprofile)
-  - [Get Tag list](#gettaglist)
-  - [Claim Tag](#claimtag)
-  - [Update Tag Profile](#updatetagprofile)
-  - [Get Deposit Address](#getdeposit)
-  - [Get Callback Address](#getcallback)
-  - [Rates](#rates)
-  - [Balances](#balances)
-  - [Create Transaction](#createtransaction)
-  - [Get Transaction Info](#gettx)
-  - [Get Transaction Multi](#gettxmulti)
-  - [Get Transactions List](#gettxlist)
-  - [Coinver Coins](#convercoins)
-  - [Create Transfer](#createtransfer)
-  - [Create Withdrawal](#createwithdrawal)
-  - [Mass Withdrawal](#createmasswithdrawal)
-  - [Get Withdrawal Info](#getwithdrawalinfo)
-  - [Get Withdrawal History](#getwithdrawalhistory)
-- [IPN](#ipn)
-  - [Automated IPN](#autoipn)
-  - [IPN HTTP(S) POST](#httpipn)
-- [Development](#dev)
-- [Testing](#testing)
-- [License](#license)
-- [Support/Donate](#support)
+
+Table of contents
+=================
+
+* [Setup](#setup)
+* [API reference](#reference)
+  * [Init](#init)
+  * [Get Basic Account Information](#getbasicinfo)
+  * [Get Profile](#getprofile)
+  * [Get Tag list](#gettaglist)
+  * [Claim Tag](#claimtag)
+  * [Update Tag Profile](#updatetagprofile)
+  * [Get Deposit Address](#getdeposit)
+  * [Get Callback Address](#getcallback)
+  * [Rates](#rates)
+  * [Balances](#balances)
+  * [Create Transaction](#createtransaction)
+  * [Get Transaction Info](#gettx)
+  * [Get Transaction Multi](#gettxmulti)
+  * [Get Transactions List](#gettxlist)
+  * [Coinver Coins](#convercoins)
+  * [Create Transfer](#createtransfer)
+  * [Create Withdrawal](#createwithdrawal)
+  * [Mass Withdrawal](#createmasswithdrawal)
+  * [Get Withdrawal Info](#getwithdrawalinfo)
+  * [Get Withdrawal History](#getwithdrawalhistory)
+* [IPN](#ipn)
+  * [Automated IPN](#autoipn)
+  * [IPN HTTP(S) POST](#httpipn)
+* [Development](#dev)
+* [Testing](#testing)
+* [License](#license)
+* [Support/Donate](#support)
 
 <a name="setup" />
-## Setup
+
+##Setup
+
 - Create an account on [www.coinpayments.net](https://www.coinpayments.net/index.php?ref=831b8d495071e5b0e1015486f5001150)
 - Go to **My Account -> Coin Acceptance Settings**
 - Check the coins you wish to accept.
@@ -62,12 +65,14 @@ No deps, clean nodejs.
 
 [back to top](#table)
 
-
 <a name="reference" />
+
 ## API Reference 
----
+
 <a name="init" />
-### Init
+
+###Init
+
 ```javascript
 var Coinpayments = require('coinpayments');
 var client = new Coinpayments(options); 
@@ -81,7 +86,9 @@ var client = new Coinpayments(options);
 [back to top](#table)
 
 <a name="getbasicinfo" />
+
 ### Get Basic Account Information
+
 Get your basic account information.
 ```javascript
 client.getBasicInfo(callback)
@@ -109,6 +116,7 @@ Example response from server
 [back to top](#table)
 
 <a name="getprofile" />
+
 ### Get Profile Info
 
 Get $PayByName Profile Information
@@ -157,6 +165,7 @@ Example response from server
 [back to top](#table)
 
 <a name="gettaglist" />
+
 ### Get Tag list
 
 Get $PayByName Tag List
@@ -201,6 +210,7 @@ Example response from server
 [back to top](#table)
 
 <a name="claimtag" />
+
 ### Claim tag
 
 Claim $PayByName Tag
@@ -232,6 +242,7 @@ Example response from server
 [back to top](#table)
 
 <a name="updatetagprofile" />
+
 ### Update Tag Profile
 
 Update $PayByName Profile
@@ -266,6 +277,7 @@ Example response from server
 [back to top](#table)
 
 <a name="getdeposit" />
+
 ### Get Deposit Address
 
 Get a deposit address. This action does not include a fee and will not trigger IPN
@@ -294,6 +306,7 @@ Example response from server
 [back to top](#table)
 
 <a name="getcallback" />
+
 ### Get Callback Address
 
 Get a callback address. This action does a fee and will trigger IPN.
@@ -322,6 +335,7 @@ Example response from server
 [back to top](#table)
 
 <a name="rates" />
+
 ### Rates
 ----
 Get Exchange Rates / Supported Coins
@@ -419,6 +433,7 @@ Example Response from server:
 [back to top](#table)
 
 <a name="balances" />
+
 ### Balances
 ---
 Coin Balances
@@ -461,6 +476,7 @@ Example Response from server:
 [back to top](#table)
 
 <a name="createtransaction" />
+
 ### Create Transaction
 ---
 Create Transaction
@@ -516,6 +532,7 @@ Example Response from server:
 [back to top](#table)
 
 <a name="gettx" />
+
 ### Get Transaction Info
 ---
 Query the server for ``txn_id`` and returns the status of the payment. 
@@ -563,6 +580,7 @@ Example Response from server:
 [back to top](#table)
 
 <a name="gettxmulti" />
+
 ### Get Transaction Multi
 
 Get multiple transaction status.
@@ -606,6 +624,7 @@ Example response from server
 [back to top](#table)
 
 <a name="gettxlist" />
+
 ### Get Transaction LIST
 
 Get a list of transaction ids.
@@ -643,6 +662,7 @@ Each element in the array represents a ``txn_id``
 [back to top](#table)
 
 <a name="convertcoins" />
+
 ### Convert Coins
 
 Convert coins. Coinpayments utilizes [Shapeshift.io](https://shapeshift.io) services.
@@ -681,6 +701,7 @@ Example response from server
 [back to top](#table)
 
 <a name="createtransfer" />
+
 ### Create Transfer
 
 Transfers are performed as internal coin transfers/accounting entries when possible. For coins not supporting that ability a withdrawal is created instead.
@@ -721,19 +742,19 @@ Example response from server
 [back to top](#table)
 
 <a name="createwithdrawal" />
+
 ### Create Withdrawal
 ---
 Makes a withdrawal of funds from server to a determined wallet address.
 ```javascript
 client.createWithdrawal(options,callback)
 ```
-Argument (``options``) ***required***
+- ``options`` - ***required***
 - ``options.amount`` - ***required*** The amount to withdraw
 - ``options.currency`` - ***required*** The currency to withdraw  
 - ``options.address`` - ***required*** Wallet address to send the funds to. **Must be wallet address from the same network as **``options.currency``
 - ``options.auto_confirm`` - ***optional*** If set to ``0`` the withdrawal will require an email confirmation in order for withdraw funds to go forth. (default ``1``)
-
-Argument (``callback``) - callback function, accepts 2 values (``error``,``result``)
+- ``callback`` - callback function, accepts 2 values (``error``,``result``)
 
 Example request
 ```javascript
@@ -757,6 +778,7 @@ Example Response from server:
 [back to top](#table)
 
 <a name="createmasswithdrawal" />
+
 ### Create Mass Withdrawal
 
 Create a a mass withdrawal
@@ -809,8 +831,9 @@ Example response from server
 [back to top](#table)
 
 <a name="getwithdrawalinfo" />
-### Get Withdrawal Info
----
+
+###Get Withdrawal Info
+
 Query the server for Withdraw ID status.
 ```javascript
 client.getWithdrawalInfo(id, callback)
@@ -850,6 +873,7 @@ Example Response from server:
 [back to top](#table)
 
 <a name="getwithdrawalhistory" />
+
 ### Get Withdrawal History
 
 Get withdrawal histroy
@@ -903,6 +927,7 @@ Example response from server
 [back to top](#table)
 
 <a name="ipn" />
+
 ## IPN ( Instant Payment Notification )
 ----
 The IPN system will notify your server when you receive a payment and when a payment status changes. This is a easy and useful way to integrate our payments into your software to automate order completion.
@@ -911,7 +936,9 @@ IPN can be utilized in two ways using this lib.
 
 
 [back to top](#table)
+
 <a name="autoIPN" />
+
 ### Automated IPN ( for local development )
 ---
 <span style="color: red"> Do not use this in ``PRODUCTION``</span>.
@@ -940,7 +967,9 @@ client.on('autoipn', function(data){
 - After all transactions are complete, autoipn stops until new transactions are in queue
 
 [back to top](#table)
+
 <a name="httpIPN" />
+
 ### IPN HTTP(S) POST
 ---
 This is a coinpayments.net service to send HTTP(S) POST requests to the predefined or selected location. In order to enable this option go to **My Account -> Account Settings**, add **IPN secret** ( strong password, preferably hash ) and set **IPN URL** to where you will handle IPNs. 
@@ -1134,7 +1163,8 @@ Example responses
 [back to top](#table)
 
 <a name="dev" />
-##Development
+
+## Development
 
 Babel ES6 -> ES5
 
@@ -1147,7 +1177,8 @@ Babel ES6 -> ES5
 [back to top](#table)
 
 <a name="testing" />
-##Testing
+
+## Testing
 
 <span style="color: darkyellow">Warning: Please execute tests with Litecoin Testnet. Or be careful with your crypto. </span>
 
@@ -1165,10 +1196,9 @@ Babel ES6 -> ES5
 
 [back to top](#table)
 
-[back to top](#table)
-
 <a name="license" />
-##License
+
+## License
 
 The MIT License (MIT)
 
@@ -1183,7 +1213,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [back to top](#table)
 
 <a name="support" />
-##Support/Donate
+
+## Support/Donate
 
 Support the development of opensource projects.
 
