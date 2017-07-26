@@ -7,7 +7,7 @@
     "url": "https://github.com/OrahKokos/coinpayments/issues",
     "email": "marko.paroski.ns@gmail.com"
   },
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "engines": {
     "node": "*"
   },
