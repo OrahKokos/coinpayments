@@ -9,18 +9,47 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 let events = CoinPayments.events;
 
-let middleware = [
-	CoinPayments.ipn({
-	  'merchantId': process.env.COINPAYMENTS_MERCHANT_ID,
-	  'merchantSecret': process.env.COINPAYMENTS_MERCHANT_SECRET
-	}), 
+// Express Middleware
+app.use('/', [
+	// Middleware version
+	 CoinPayments.ipn({
+		'merchantId': process.env.COINPAYMENTS_MERCHANT_ID,
+		'merchantSecret': process.env.COINPAYMENTS_MERCHANT_SECRET
+	}).middleware,
+
 	function (req, res, next) {
 		// Handle via middleware
-		console.log(req.body);
-	}]
+	 	console.log(req.body);
+	 }
+]);
 
-app.use('/', middleware);
+// Handle IPN with Promise
+app.post("/mycustomurl", (req, res) => {
+	let ipn = CoinPayments.ipn({
+		'merchantId': process.env.COINPAYMENTS_MERCHANT_ID,
+		'merchantSecret': process.env.COINPAYMENTS_MERCHANT_SECRET
+	});
+	
+	// Retrieve HMAC from the request url
+	ipn.verify(req.get("HMAC"), req.body).then( result => {
+		if(result.success)
+		{
+			console.log("I got paid!");
+		}
+		
+		if(result.pending)
+		{
+			console.log("My Payment is pending...");
+		}
 
+		if(result.failed)
+		{
+			console.log("My payment has failed");
+		}
+	}).catch( error => {
+		console.log("Woops! Invalid request?!");
+	});
+})
 
 
 // Handle via instance
