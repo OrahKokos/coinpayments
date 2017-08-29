@@ -42,6 +42,7 @@ Table of contents
 * [IPN](#ipn)
   * [Automated IPN](#autoipn)
   * [IPN HTTP(S) POST](#httpipn)
+  * [IPN Promise](#promiseipn)
 * [Development](#dev)
 * [Testing](#testing)
 * [License](#license)
@@ -994,7 +995,7 @@ let middleware = [
   CoinPayments.ipn({
     'merchantId': process.env.COINPAYMENTS_MERCHANT_ID,
     'merchantSecret': process.env.COINPAYMENTS_MERCHANT_SECRET
-  }), 
+  }).middleware, 
   function (req, res, next) {
     // Handle via middleware
     console.log(req.body);
@@ -1043,6 +1044,46 @@ app.listen(process.env.PORT || 1337, () => {
   console.log("APP listening on port", process.env.PORT || 1337)
 });
 ```
+<a name="promiseipn" />
+
+## IPN with custom handler + Promise
+---
+The ipn.verify returns a promise which fails in case the request was invalid for some reason. The reason is provided in  ``error.message`` . 
+
+- ``success`` is true if the payment completed
+- ``pending`` is true if the payment is pending and the funds are not delivered to the account yet.
+- ``failed`` is true if the payment has failed (timeout, etc..)
+
+```javascript
+// Handle IPN with Promise
+app.post("/mycustomurl", (req, res) => {
+	let ipn = CoinPayments.ipn({
+		'merchantId': process.env.COINPAYMENTS_MERCHANT_ID,
+		'merchantSecret': process.env.COINPAYMENTS_MERCHANT_SECRET
+	});
+	
+	// Retrieve HMAC from the request url
+	ipn.verify(req.get("HMAC"), req.body).then( result => {
+		if(result.success)
+		{
+			console.log("I got paid!");
+		}
+		
+		if(result.pending)
+		{
+			console.log("My Payment is pending...");
+		}
+
+		if(result.failed)
+		{
+			console.log("My payment has failed");
+		}
+	}).catch( error => {
+		console.log("Woops! Invalid request?! Reason:", error.message);
+	});
+});
+```
+
 **General IPN rules**
 - Reports transactions that were just made (status=0) after that it reports any changes to the payment amount/ received confirmations and lastly completed transactions
 - Errors are passed via ``next(err)`` in express. ``err === 'COINPAYMENTS_INVALID_REQUEST'``
