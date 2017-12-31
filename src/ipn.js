@@ -4,15 +4,16 @@ const
 
 module.exports = (function () {
 
-    function IPN ({merchantId, merchantSecret}) {
+    function IPN ({merchantId, merchantSecret, rawBodyIndex='body'}) {
         if(!merchantId || !merchantSecret) {
             throw "Merchant ID and Merchant Secret are needed";
         }
         let hmac;
 
         let getPrivateHeadersIPN = function (parameters) {
-            let signature, paramString;
-            if(typeof parameters === "object")
+            let signature;
+
+            if(typeof parameters === "object") //if no rawBody provided, fallback to original usage.
                 parameters = qs.stringify(parameters, null, null, { encodeURIComponent: null }).replace(/\s/g, '+');
 
             signature = crypto.createHmac('sha512', merchantSecret).update(parameters).digest('hex');
@@ -24,7 +25,7 @@ module.exports = (function () {
             if(!req.get('HMAC') || !req.body || !req.body.ipn_mode || req.body.ipn_mode !== 'hmac' || merchantId !== req.body.merchant) {
                 return next("COINPAYMENTS_INVALID_REQUEST");
             }
-            hmac = getPrivateHeadersIPN(req.body);
+            hmac = getPrivateHeadersIPN(req[rawBodyIndex]);
             if(hmac !== req.get('HMAC')) {
                 return next("COINPAYMENTS_INVALID_REQUEST");
             }
