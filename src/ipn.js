@@ -14,7 +14,7 @@ module.exports = (function () {
             let signature;
 
             if(typeof parameters === "object") //if no rawBody provided, fallback to original usage.
-                parameters = qs.stringify(parameters, null, null, { encodeURIComponent: null }).replace(/\s/g, '+');
+                parameters = qs.stringify(parameters).replace(/%20/g, '+');
 
             signature = crypto.createHmac('sha512', merchantSecret).update(parameters).digest('hex');
 
