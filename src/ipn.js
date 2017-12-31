@@ -21,11 +21,11 @@ module.exports = (function () {
         };
 
         return (req,res,next) => {
-            if(!req.get('HMAC') || !req.body || !req.body.ipn_mode || req.body.ipn_mode != 'hmac' || merchantId != req.body.merchant) {
+            if(!req.get('HMAC') || !req.body || !req.body.ipn_mode || req.body.ipn_mode !== 'hmac' || merchantId !== req.body.merchant) {
                 return next("COINPAYMENTS_INVALID_REQUEST");
             }
             hmac = getPrivateHeadersIPN(req.body);
-            if(hmac != req.get('HMAC')) {
+            if(hmac !== req.get('HMAC')) {
                 return next("COINPAYMENTS_INVALID_REQUEST");
             }
             res.end();
@@ -37,7 +37,7 @@ module.exports = (function () {
                 this.emit('ipn_pending', req.body);
                 return next();
             }
-            if(req.body.status == 100) {
+            if(req.body.status === 100) {
                 this.emit('ipn_complete', req.body);
                 return next();
             }
