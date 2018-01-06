@@ -183,7 +183,11 @@ module.exports = (function () {
         data += chunk;
       });
       res.on('end', () => {
-        data = JSON.parse(data);
+        try {
+          data = JSON.parse(data);  
+        } catch(e) {
+          return callback(e);
+        }
         if(data.error != 'ok') return callback(data.error);
         if (this.config.autoIpn && parameters.cmd == 'create_transaction') {
           this._registerTransaction(data.result);
