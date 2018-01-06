@@ -1,4 +1,4 @@
-var expect = require('chai').expect
+var expect = require('chai').expect;
 
 var Coinpayments = require('../lib');
 var common = require('./common.js');
@@ -12,15 +12,15 @@ function runTest(name, path) {
 
 describe('Coinpayments tests', function() {
 
-	before(function (){
-		expect(process.env.COINPAYMENTS_API_KEY_1).to.not.equal(undefined);
-		expect(process.env.COINPAYMENTS_API_SECRET_1).to.not.equal(undefined);
+  before(function (){
+    expect(process.env.COINPAYMENTS_API_KEY_1).to.not.equal(undefined);
+    expect(process.env.COINPAYMENTS_API_SECRET_1).to.not.equal(undefined);
 
-		expect(process.env.COINPAYMENTS_API_KEY_2).to.not.equal(undefined);
-		expect(process.env.COINPAYMENTS_API_SECRET_2).to.not.equal(undefined);
+    expect(process.env.COINPAYMENTS_API_KEY_2).to.not.equal(undefined);
+    expect(process.env.COINPAYMENTS_API_SECRET_2).to.not.equal(undefined);
 
-		expect(process.env.COINPAYMENTS_CURRENCY).to.not.equal(undefined);
-		expect(process.env.COINPAYMENTS_FIXED_AMOUNT).to.not.equal(undefined);
+    expect(process.env.COINPAYMENTS_CURRENCY).to.not.equal(undefined);
+    expect(process.env.COINPAYMENTS_FIXED_AMOUNT).to.not.equal(undefined);
     expect(process.env.COINPAYMENTS_CURRENCY_CONVERT).to.not.equal(undefined);
     var hasSomething = false;
     if (process.env.COINPAYMENTS_MERCHANT_PBNTAG) {
@@ -29,8 +29,8 @@ describe('Coinpayments tests', function() {
     if (process.env.COINPAYMENTS_MERCHANT_ID) {
       hasSomething = true;
     }
-    expect(hasSomething).to.equal(true)
-	});
+    expect(hasSomething).to.equal(true);
+  });
 
   runTest('Init Coinpayments client', 'init.js');
   runTest('Test rates API', 'rates.js');
