@@ -1,7 +1,7 @@
 {
   "name": "coinpayments",
-  "version": "1.1.2",
-  "description": "CoiPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.",
+  "version": "1.1.3",
+  "description": "CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.",
   "homepage": "https://www.coinpayments.net",
   "bugs": {
     "url": "https://github.com/OrahKokos/coinpayments/issues",
@@ -12,7 +12,7 @@
     "node": "*"
   },
   "scripts": {
-    "start": "node ./example/ipn.js",
+    "start": "node ./examples/index.js",
     "test": "mocha --reporter spec tests/index.js",
     "build": "babel src --presets babel-preset-es2015 --out-dir lib",
     "watch": "babel src -w --presets babel-preset-es2015 --out-dir lib"
