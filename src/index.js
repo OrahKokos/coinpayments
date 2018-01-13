@@ -8,7 +8,9 @@ const
   eventEmitter = new events.EventEmitter();
 
 const
-  ipn = require('./ipn.js');
+  ipn               = require('./ipn.js'),
+  AutoIpn           = require('./auto-ipn'),
+  CoinPaymentsError = require('./error');
 
 module.exports = (function () {
 
@@ -19,13 +21,12 @@ module.exports = (function () {
 
   function CoinPayments({key=false, secret=false, autoIpn=false, ipnTime=30}){
     if (!key || !secret) {
-      throw new Error('Missing public key and/or secret');
+      throw CoinPaymentsError('CoinPayments Error: Missing public key and/or secret');
     }
+    this.AutoIpn = AutoIpn.call(this);
+
     this.credentials   = { key, secret };
-    this.config        = { autoIpn, ipnTime, isPolling: false };
-    this._transactions = [];
-    this._withdrawals = [];
-    this._conversions = [];
+    this.config        = { autoIpn, ipnTime };
   }
 
   CoinPayments.prototype = Object.create(eventEmitter);
@@ -33,7 +34,6 @@ module.exports = (function () {
 
   CoinPayments.events = eventEmitter;
   CoinPayments.ipn = ipn.bind(eventEmitter);
-
 
   CoinPayments.prototype.getSettings = function({cmd=false}) {
     switch(cmd) {
@@ -82,40 +82,8 @@ module.exports = (function () {
     }
   };
 
-  CoinPayments.prototype._registerTransaction = function ({txn_id}) {
-    this._transactions.push(txn_id);
-    if (!this.config.isPolling) return this._startPolling();
-  };
-
-  CoinPayments.prototype._startPolling = function () {
-    if (this.config.isPolling) return;
-
-    const setIntervalAndExecute = (fn) => {
-      this.config.isPolling = true;
-      fn();
-      return setInterval(fn, this.config.ipnTime * 1000);
-    };
-
-    const poll = () => {
-      if (!this._transactions.length) return this._stopPolling();
-      return this.getTxMulti(this._transactions, (err, result) => {
-        if (err) return console.warn('Polling Error...');
-        this.emit('autoipn', result);
-        for (const tx in result) {
-          if (result[tx].status < 0 || result[tx].status == 100 || result[tx].status == 1) {
-            this._transactions.splice(this._transactions.indexOf(tx), 1);
-          }
-        }
-        if (!this._transactions.length) return this._stopPolling();
-      });
-    };
-
-    this.loop = setIntervalAndExecute(poll);
-  };
-
-  CoinPayments.prototype._stopPolling = function () {
-    this.config.isPolling = false;
-    return clearInterval(this.loop);
+  CoinPayments.prototype._registerError = function (error) {
+    return this.emit('error', error);
   };
 
   CoinPayments.prototype._assert = function(obj, allowArray) {
@@ -160,10 +128,10 @@ module.exports = (function () {
   CoinPayments.prototype.request = function(parameters, callback) {
 
     const reqs = this.getSettings(parameters);
-    if(!reqs) return callback(new Error('No such method ' + parameters.cmd));
+    if(!reqs) return callback(new CoinPaymentsError('No such method ' + parameters.cmd));
 
     const assert = this._assert(parameters, reqs);
-    if(assert) return callback(new Error(assert));
+    if(assert) return callback(new CoinPaymentsError(assert));
     parameters.version = API_VERSION;
 
     const options = {
@@ -185,13 +153,22 @@ module.exports = (function () {
       res.on('end', () => {
         try {
           data = JSON.parse(data);  
-        } catch(e) {
-          return callback(e);
+        } catch(ex) {
+          return callback(new CoinPaymentsError('Could not parse response', ex));
         }
-        if(data.error != 'ok') return callback(data.error);
+        if(data.error != 'ok') 
+          return callback(new CoinPaymentsError('Response error', data));
+
+        let autoResponse;
         if (this.config.autoIpn && parameters.cmd == 'create_transaction') {
-          this._registerTransaction(data.result);
+          if (parameters.cmd === 'create_transaction') 
+            autoResponse = this.AutoIpn.register('transaction', data.result);
+          if (parameters.cmd === 'create_withdrawal') 
+            autoResponse = this.AutoIpn.register('withdrawal', data.result);
+          if (parameters.cmd === 'convert') 
+            autoResponse = this.AutoIpn.register('conversion', data.result);
         }
+        if (autoResponse instanceof CoinPaymentsError) this.emit('error', autoResponse);
         return callback(null, data.result);
       });
     });
