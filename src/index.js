@@ -10,6 +10,7 @@ const
 const
   ipn               = require('./ipn.js'),
   AutoIpn           = require('./auto-ipn'),
+  CoinPaymentsConfig = require('./config.js'),
   CoinPaymentsError = require('./error');
 
 module.exports = (function () {
@@ -35,82 +36,44 @@ module.exports = (function () {
   CoinPayments.events = eventEmitter;
   CoinPayments.ipn = ipn.bind(eventEmitter);
 
-  CoinPayments.prototype.getSettings = function({cmd=false}) {
-    switch(cmd) {
-    case 'get_basic_info':
-      return [];
-    case 'get_tx_ids':
-      return [];
-    case 'get_deposit_address':
-      return ['currency'];
-    case 'get_callback_address':
-      return ['currency'];
-    case 'create_transfer':
-      return ['amount', 'currency', 'merchant|pbntag'];
-    case 'convert':
-      return ['amount', 'from', 'to'];
-    case 'get_withdrawal_history':
-      return [];
-    case 'get_conversion_info':
-      return ['id'];
-    case 'get_pbn_info':
-      return ['pbntag'];
-    case 'get_pbn_list':
-      return [];
-    case 'update_pbn_tag':
-      return ['tagid'];
-    case 'claim_pbn_tag':
-      return ['tagid', 'name'];
-    case 'get_withdrawal_info':
-      return ['id'];
-    case 'get_tx_info':
-      return ['txid'];
-    case 'get_tx_info_multi':
-      return ['txid'];
-    case 'create_withdrawal':
-      return ['amount', 'currency', 'address'];
-    case 'create_mass_withdrawal':
-      return [];
-    case 'create_transaction':
-      return ['amount', 'currency1', 'currency2'];
-    case 'rates':
-      return [];
-    case 'balances':
-      return [];
-    default:
-      return false;
-    }
-  };
-
   CoinPayments.prototype._registerError = function (error) {
     return this.emit('error', error);
   };
 
-  CoinPayments.prototype._assert = function(obj, allowArray) {
-    let flag = true;
-    let msg = 'Missing options: ';
-    for(let i = 0; i<allowArray.length; i++) {
-      let prop = allowArray[i].split('|');
-      prop = (prop.length == 1) ? prop[0] : prop;
-      if (typeof prop == 'string') {
-        if(!obj.hasOwnProperty(allowArray[i])) {
-          flag = false;
-          msg += allowArray[i] + ', ';
-        }
+  CoinPayments.prototype.getRules = function({cmd=false}) {
+    if (!cmd || !CoinPaymentsConfig[cmd]) return new CoinPaymentsError('Invalid command', cmd);
+    return CoinPaymentsConfig[cmd];
+  };
+
+  CoinPayments.prototype.validate = function (data, rules, errMsg = 'Validation error: ') {
+
+    function hasOne (data, rule, errMsg) {
+      return (data[rule]) ? true : false;
+      errMsg += `${rule}`;
+    }
+
+    function oneOf (data, rules, errMsg) {
+      for (let i = 0; i < rules.length; i++) {
+        if (data[rules[i]]) return true;
+      }
+      errMsg += `${rules.join(' or ')}`;
+      return false;
+    }
+
+    let hasError = false;
+
+    for (let i = 0; i < rules.length; i++) {
+      if (Array.isArray(rules[i])) {
+        hasError = !oneOf(data, rules[i], errMsg);
       } else {
-        flag = false;
-        let temp = msg;
-        for(let j = 0; j<prop.length; j++) {
-          if (obj.hasOwnProperty(prop[j])) {
-            flag = true;
-          } else {
-            temp += prop[j] + ', ';
-          }
-        }
-        msg = (!flag) ? msg : temp;
+        hasError = !hasOne(data, rules[i], errMsg);
+      }
+      if (hasError) {
+        errMsg += ' is missing';
+        return new CoinPaymentsError(errMsg);
       }
     }
-    return (flag) ? null : msg;
+    return true;
   };
 
   CoinPayments.prototype._getPrivateHeaders = function (parameters) {
@@ -125,23 +88,26 @@ module.exports = (function () {
     };
   };
 
-  CoinPayments.prototype.request = function(parameters, callback) {
+  CoinPayments.prototype.request = function(payloadData, callback) {
 
-    const reqs = this.getSettings(parameters);
-    if(!reqs) return callback(new CoinPaymentsError('No such method ' + parameters.cmd));
+    const rules = this.getRules(payloadData);
+    if(rules instanceof CoinPaymentsError)
+      return callback(rules);
 
-    const assert = this._assert(parameters, reqs);
-    if(assert) return callback(new CoinPaymentsError(assert));
-    parameters.version = API_VERSION;
+    const assert = this.validate(payloadData, reqs);
+    if(assert instanceof CoinPaymentsError)
+      return callback(assert);
+
+    payloadData.version = API_VERSION;
 
     const options = {
       method: 'POST',
       host: API_HOST,
       path: API_PATH,
-      headers: this._getPrivateHeaders(parameters)
+      headers: this._getPrivateHeaders(payloadData)
     };
 
-    const query = qs.stringify(parameters);
+    const query = qs.stringify(payloadData);
     const req = https.request(options, (res) => {
       let data = '';
 
@@ -220,14 +186,18 @@ module.exports = (function () {
     const options = {
       cmd: 'create_mass_withdrawal'
     };
-    withdrawalArray.filter(function (w) {
+    withdrawalArray = withdrawalArray.filter(function (w) {
       return w.currency && w.amount && w.address;
-    }).forEach(function (w, index) {
+    });
+    if (!withdrawalArray.length) 
+      return callback(new CoinPaymentsError('Invalid withdrawal array'));
+    
+    withdrawalArray.reduce(function (options, w, index) {
       options[`wd[wd${index + 1}][amount]`] = w.amount;
       options[`wd[wd${index + 1}][address]`] = w.address;
       options[`wd[wd${index + 1}][currency]`] = w.currency;
-    });
-    if (!Object.keys(options).length) return callback(null, []);
+    }, options);
+    
     return this.request(options, callback);
   };
 
