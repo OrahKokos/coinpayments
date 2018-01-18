@@ -38,7 +38,7 @@ module.exports = (function () {
                 this.emit('ipn_pending', req.body);
                 return next();
             }
-            if(req.body.status === 100) {
+            if(req.body.status == 100) {
                 this.emit('ipn_complete', req.body);
                 return next();
             }
@@ -48,3 +48,4 @@ module.exports = (function () {
     return IPN;
 
 })();
+
