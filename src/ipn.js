@@ -8,24 +8,21 @@ module.exports = (function () {
     if(!merchantId || !merchantSecret) {
       throw `Merchant ID and Merchant Secret are needed`;
     }
-    let hmac;
 
     let getPrivateHeadersIPN = function (parameters) {
-      let signature;
-
       if(typeof parameters === `object`) //if no rawBody provided, fallback to original usage.
         parameters = qs.stringify(parameters).replace(/%20/g, `+`);
 
-      signature = crypto.createHmac(`sha512`, merchantSecret).update(parameters).digest(`hex`);
-
-      return signature;
+      return crypto.createHmac(`sha512`, merchantSecret).update(parameters).digest(`hex`);
     };
 
     return (req,res,next) => {
       if(!req.get(`HMAC`) || !req.body || !req.body.ipn_mode || req.body.ipn_mode !== `hmac` || merchantId !== req.body.merchant) {
         return next(`COINPAYMENTS_INVALID_REQUEST`);
       }
-      hmac = getPrivateHeadersIPN(req[rawBodyIndex]);
+      
+      const hmac = getPrivateHeadersIPN(req[rawBodyIndex]);
+
       if(hmac !== req.get(`HMAC`)) {
         return next(`COINPAYMENTS_INVALID_REQUEST`);
       }
