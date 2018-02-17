@@ -182,7 +182,12 @@ module.exports = (function () {
         data += chunk;
       });
       res.on(`end`, () => {
-        data = JSON.parse(data);
+        try {
+          data = JSON.parse(data);  
+        } catch (e) {
+          return callback(e);
+        }
+        
         if(data.error != `ok`) return callback(data.error);
         if (this.config.autoIpn && parameters.cmd == `create_transaction`) {
           this._registerTransaction(data.result);
@@ -267,11 +272,11 @@ module.exports = (function () {
   };
 
   CoinPayments.prototype.getDepositAddress = function(currency, callback) {
-    let options = { currency, cmd: `get_deposit_address` };
+    const options = { currency, cmd: `get_deposit_address` };
     return this.request(options, callback);
   };
   CoinPayments.prototype.getCallbackAddress = function (currency, callback) {
-    let options = { currency, cmd: `get_callback_address` };
+    const options = { currency, cmd: `get_callback_address` };
     return this.request(options, callback);
   };
   CoinPayments.prototype.createTransfer = function (options, callback) {
@@ -295,17 +300,17 @@ module.exports = (function () {
   };
 
   CoinPayments.prototype.getConversionInfo = function(id, callback) {
-    let options = {id, cmd: `get_conversion_info`};
+    const options = {id, cmd: `get_conversion_info`};
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.getProfile = function(pbntag, callback) {
-    let options = {pbntag, cmd: `get_pbn_info`};
+    const options = {pbntag, cmd: `get_pbn_info`};
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.tagList = function(callback) {
-    let options = { cmd: `get_pbn_list` };
+    const options = { cmd: `get_pbn_list` };
     return this.request(options, callback);
   };
 
