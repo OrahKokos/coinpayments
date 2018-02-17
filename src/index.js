@@ -201,7 +201,9 @@ module.exports = (function () {
   };
 
   CoinPayments.prototype.createTransaction = function(options, callback) {
-    options.cmd = `create_transaction`;
+    Object.assign(options, {
+      cmd: `create_transaction`
+    });
     return this.request(options, callback);
   };
 
@@ -210,7 +212,9 @@ module.exports = (function () {
       callback = options;
       options = {};
     }
-    options.cmd = `rates`;
+    Object.assign(options, {
+      cmd: `rates`
+    });
     return this.request(options, callback);
   };
 
@@ -219,42 +223,52 @@ module.exports = (function () {
       callback = options;
       options = {};
     }
-    options.cmd = `balances`;
+    Object.assign(options, {
+      cmd: `balances`
+    });
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.createWithdrawal = function(options, callback) {
-    options.cmd = `create_withdrawal`;
-    options.auto_confirm = 1;
+    options = Object.assing({
+      auto_confirm: 1
+    }, options, {
+      cmd: `create_withdrawal`
+    });
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.createMassWithdrawal = function(withdrawalArray, callback) {
-    const options = {};
-    withdrawalArray.filter(function (w) {
+    const options = {
+      cmd: `create_mass_withdrawal`
+    };
+    withdrawalArray = withdrawalArray.filter(function (w) {
       return w.currency && w.amount && w.address;
-    }).forEach(function (w, index) {
+    });
+    if (!withdrawalArray.length)
+      return callback(`Invalid withdrawal array`);
+
+    withdrawalArray.reduce(function (options, w, index) {
       options[`wd[wd${index + 1}][amount]`] = w.amount;
       options[`wd[wd${index + 1}][address]`] = w.address;
       options[`wd[wd${index + 1}][currency]`] = w.currency;
-    });
-    if (!Object.keys(options).length) return callback(null, []);
-    options.cmd = `create_mass_withdrawal`;
+    }, options);
+
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.getTx = function(txid, callback) {
-    const options = {txid, cmd: `get_tx_info`};
+    const options = { txid, cmd: `get_tx_info` };
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.getWithdrawalInfo = function(id, callback) {
-    const options = {id, cmd: `get_withdrawal_info`};
+    const options = { id, cmd: `get_withdrawal_info` };
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.getTxMulti = function(tx_id_array, callback) {
-    const options = {txid: tx_id_array.join(`|`), cmd: `get_tx_info_multi`};
+    const options = { txid: tx_id_array.join(`|`), cmd: `get_tx_info_multi` };
     return this.request(options, callback);
   };
   CoinPayments.prototype.getTxList = function(options, callback) {
@@ -262,7 +276,9 @@ module.exports = (function () {
       callback = options;
       options = {};
     }
-    options.cmd = `get_tx_ids`;
+    Object.assign(options, {
+      cmd: `get_tx_ids`
+    });
     return this.request(options, callback);
   };
 
@@ -280,13 +296,18 @@ module.exports = (function () {
     return this.request(options, callback);
   };
   CoinPayments.prototype.createTransfer = function (options, callback) {
-    options.cmd = `create_transfer`;
-    options.auto_confirm = 1;
+    options = Object.assing({
+      auto_confirm: 1
+    }, options, {
+      cmd: `create_transfer`
+    });
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.convertCoins = function (options, callback) {
-    options.cmd = `convert`;
+    Object.assign(options, {
+      cmd: `convert`
+    });
     return this.request(options, callback);
   };
 
@@ -295,17 +316,19 @@ module.exports = (function () {
       callback = options;
       options = {};
     }
-    options.cmd = `get_withdrawal_history`;
+    Object.assign(options, {
+      cmd: `get_withdrawal_history`
+    });
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.getConversionInfo = function(id, callback) {
-    const options = {id, cmd: `get_conversion_info`};
+    const options = { id, cmd: `get_conversion_info` };
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.getProfile = function(pbntag, callback) {
-    const options = {pbntag, cmd: `get_pbn_info`};
+    const options = { pbntag, cmd: `get_pbn_info` };
     return this.request(options, callback);
   };
 
@@ -315,12 +338,16 @@ module.exports = (function () {
   };
 
   CoinPayments.prototype.updateTagProfile = function(options, callback) {
-    options.cmd = `update_pbn_tag` ;
+    Object.assign(options, {
+      cmd: `update_pbn_tag`
+    });
     return this.request(options, callback);
   };
 
   CoinPayments.prototype.claimTag = function(options, callback) {
-    options.cmd = `claim_pbn_tag` ;
+    Object.assign(options, {
+      cmd: `claim_pbn_tag`
+    });
     return this.request(options, callback);
   };
 
