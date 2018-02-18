@@ -1,5 +1,5 @@
-var common = require('../common.js');
-var expect = require('chai').expect
+const common = require('../common.js');
+const expect = require('chai').expect
 
 let tags = [];
 
@@ -44,9 +44,9 @@ it("Should claim tag", function (done) {
 	return done()
 });
 
-it("Should get deposit address for "  + process.env.COINPAYMENTS_CURRENCY, function (done) {
+it(`Should get deposit address for ${process.env.COINPAYMENTS_CURRENCY}`, function (done) {
 	this.timeout(10 * 1000);
-	common.client.conn.getDepositAddress("POT", function (err, result) {
+	common.client.conn.getDepositAddress(process.env.COINPAYMENTS_CURRENCY, function (err, result) {
 		expect(err).to.be.equal(null);
 		expect(result).to.have.property('address');
 		return done();
@@ -55,7 +55,8 @@ it("Should get deposit address for "  + process.env.COINPAYMENTS_CURRENCY, funct
 
 it("Should get profile", function (done) {
 	this.timeout(10 * 1000);
-	common.client.conn.getProfile('orahkokos', function (err, result) {
+  if (!process.env.COINPAYMENTS_MERCHANT_PBNTAG) return done();
+	common.client.conn.getProfile(process.env.COINPAYMENTS_MERCHANT_PBNTAG, function (err, result) {
 		expect(err).to.be.equal(null);
 		expect(result).to.have.property('pbntag');
 		expect(result).to.have.property('merchant');

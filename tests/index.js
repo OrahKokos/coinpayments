@@ -1,8 +1,14 @@
-var expect = require('chai').expect
+const
+  env = require('dotenv'),
+  expect = require('chai').expect
 
-var Coinpayments = require('../lib');
-var common = require('./common.js');
+const
+  Coinpayments = require('../lib');
 
+const
+  common = require('./common.js');
+
+env.config();
 
 function runTest(name, path) {
   describe(name, function () {
@@ -21,15 +27,11 @@ describe('Coinpayments tests', function() {
 
 		expect(process.env.COINPAYMENTS_CURRENCY).to.not.equal(undefined);
 		expect(process.env.COINPAYMENTS_FIXED_AMOUNT).to.not.equal(undefined);
-    expect(process.env.COINPAYMENTS_CURRENCY_CONVERT).to.not.equal(undefined);
-    var hasSomething = false;
-    if (process.env.COINPAYMENTS_MERCHANT_PBNTAG) {
-      hasSomething = true;
-    }
-    if (process.env.COINPAYMENTS_MERCHANT_ID) {
-      hasSomething = true;
-    }
-    expect(hasSomething).to.equal(true)
+
+    expect(
+      process.env.COINPAYMENTS_MERCHANT_PBNTAG || 
+      process.env.COINPAYMENTS_MERCHANT_ID
+    ).to.not.equal(undefined);
 	});
 
   runTest('Init Coinpayments client', 'init.js');
@@ -38,7 +40,11 @@ describe('Coinpayments tests', function() {
   runTest('Test profile API', 'profile.js');
   runTest('Test transaction API', 'transaction.js');
   runTest('Test tx API', 'tx.js');
-  runTest('Test conversion API', 'conversion.js');
+
+  if(process.env.COINPAYMENTS_CURRENCY !== 'LTCT') {
+    runTest('Test conversion API', 'conversion.js');  
+  }
+
   runTest('Test withdrawal API', 'withdrawal.js');
 
 });
