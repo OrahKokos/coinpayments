@@ -1,5 +1,5 @@
-var common = require('../common.js');
-var expect = require('chai').expect
+const common = require('../common.js');
+const expect = require('chai').expect
 
 it("Should get tx info", function (done) {
 	this.timeout(10 * 1000);

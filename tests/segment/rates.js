@@ -1,12 +1,11 @@
-var common = require('../common.js');
-var expect = require('chai').expect
-
+const common = require('../common.js');
+const expect = require('chai').expect
 
 it("Should return rates data", function (done) {
 	this.timeout(10 * 1000);
 	common.client.conn.rates(function(err, response) {
 		expect(err).to.be.equal(null);
-		for (var currency in response) {
+		for (const currency in response) {
 			expect(response[currency]).to.have.property('is_fiat');
 			expect(response[currency]).to.have.property('rate_btc');
 			expect(response[currency]).to.have.property('last_update');

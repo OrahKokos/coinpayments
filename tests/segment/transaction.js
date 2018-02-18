@@ -1,10 +1,10 @@
-var common = require('../common.js');
-var expect = require('chai').expect
+const common = require('../common.js');
+const expect = require('chai').expect
 
 let tags = [];
 
 it("Should create transaction", function (done) {
-	this.timeout(10 * 1000);
+	this.timeout(60 * 1000);
 	common.merchant.conn.createTransaction({
 		amount: process.env.COINPAYMENTS_FIXED_AMOUNT,
 		currency1: process.env.COINPAYMENTS_CURRENCY,
@@ -24,7 +24,7 @@ it("Should create transaction", function (done) {
 })
 
 it("Should get callback address for " + process.env.COINPAYMENTS_CURRENCY, function (done) {
-	this.timeout(10 * 1000);
+	this.timeout(60 * 1000);
 	common.client.conn.getCallbackAddress(process.env.COINPAYMENTS_CURRENCY, function (err, result) {
 		expect(err).to.be.equal(null);
 		expect(result).to.have.property('address');
@@ -33,17 +33,16 @@ it("Should get callback address for " + process.env.COINPAYMENTS_CURRENCY, funct
 })
 
 it("Should create transfer", function (done) {
-	this.timeout(10 * 1000);
-	let options = {
+	this.timeout(60 * 1000);
+	const options = {
 		amount: process.env.COINPAYMENTS_FIXED_AMOUNT,
 		currency: process.env.COINPAYMENTS_CURRENCY
 	};
-	if (process.env.COINPAYMENTS_MERCHANT_PBNTAG) {
-		options.pbntag = process.env.COINPAYMENTS_MERCHANT_PBNTAG
-	}
-	if (process.env.COINPAYMENTS_MERCHANT_PBNTAG) {
-		options.merchant = process.env.COINPAYMENTS_MERCHANT_ID
-	}
+  if (process.env.COINPAYMENTS_MERCHANT_ID) {
+    options.merchant = process.env.COINPAYMENTS_MERCHANT_ID
+  } else if (process.env.COINPAYMENTS_MERCHANT_PBNTAG) {
+    options.pbntag = process.env.COINPAYMENTS_MERCHANT_PBNTAG
+  } 
 	common.merchant.conn.createTransfer(options, function (err, response) {
 	  expect(err).to.be.equal(null);
 		expect(response).to.have.property('id');

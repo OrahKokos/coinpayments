@@ -1,4 +1,5 @@
 .idea/
+.env
 lib/
 node_modules/
-
+test.js

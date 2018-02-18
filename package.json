@@ -133,5 +133,8 @@
     "chai": "^4.0.2",
     "express": "^4.15.3",
     "mocha": "^3.4.2"
+  },
+  "dependencies": {
+    "dotenv": "^5.0.0"
   }
 }

@@ -17,7 +17,7 @@ module.exports = (function () {
     API_HOST    = `www.coinpayments.net`,
     API_PATH    = `/api.php`;
 
-  function CoinPayments({key=false, secret=false, autoIpn=false, ipnTime=30}){
+  function CoinPayments({ key=false, secret=false, autoIpn=false, ipnTime=30 }){
     if (!key || !secret) {
       throw new Error(`Missing public key and/or secret`);
     }
@@ -230,7 +230,7 @@ module.exports = (function () {
   };
 
   CoinPayments.prototype.createWithdrawal = function(options, callback) {
-    options = Object.assing({
+    options = Object.assign({
       auto_confirm: 1
     }, options, {
       cmd: `create_withdrawal`
@@ -296,7 +296,7 @@ module.exports = (function () {
     return this.request(options, callback);
   };
   CoinPayments.prototype.createTransfer = function (options, callback) {
-    options = Object.assing({
+    options = Object.assign({
       auto_confirm: 1
     }, options, {
       cmd: `create_transfer`

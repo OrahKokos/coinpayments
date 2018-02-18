@@ -1,6 +1,5 @@
-var common = require('../common.js');
-var expect = require('chai').expect
-
+const common = require('../common.js');
+const expect = require('chai').expect
 
 function getMinimalCurrencyAmount() {
 	let min;
