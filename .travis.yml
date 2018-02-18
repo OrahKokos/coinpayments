@@ -6,5 +6,5 @@ cache:
     - "node_modules"
 install:
   - npm install babel-cli mocha -g
-  - npm install babel-core babel-preset-es2015 body-parser chai express
+  - npm install babel-core babel-preset-env body-parser chai express
   - npm run build
