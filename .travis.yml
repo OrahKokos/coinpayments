@@ -1,9 +1,6 @@
 language: node_js
 node_js:
 - 9.5.0
-cache:
-  directories:
-    - "node_modules"
 install:
   - npm install babel-cli mocha -g
   - npm install babel-core babel-preset-env body-parser chai express
