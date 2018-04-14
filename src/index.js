@@ -252,6 +252,7 @@ module.exports = (function () {
       options[`wd[wd${index + 1}][amount]`] = w.amount;
       options[`wd[wd${index + 1}][address]`] = w.address;
       options[`wd[wd${index + 1}][currency]`] = w.currency;
+      return options;
     }, options);
 
     return this.request(options, callback);
