@@ -15,7 +15,7 @@
     "start": "node ./examples/index.js",
     "lint": "node_modules/eslint/bin/eslint.js src/; exit 0",
     "pretty": "node_modules/prettier/bin-prettier.js src/** --write",
-    "test": "nyc --reporter=lcov mocha --reporter nyan tests/index.js"
+    "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js"
   },
   "repository": {
     "type": "git",
