@@ -15,12 +15,14 @@
     "start": "node ./examples/index.js",
     "lint": "node_modules/eslint/bin/eslint.js src/; exit 0",
     "pretty": "node_modules/prettier/bin-prettier.js src/** --write",
-    "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js"
+    "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js",
+    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/OrahKokos/coinpayments.git"
   },
+  "report-coverage": "codecov",
   "keywords": [
     "bitcoin",
     "btc",
@@ -126,6 +128,7 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.1.2",
+    "codecov": "^3.0.4",
     "eslint": "^5.4.0",
     "mocha": "^3.4.2",
     "nock": "^9.4.2",

@@ -1,7 +1,11 @@
 language: node_js
 node_js:
 - 10.9.0
+install:
+  - npm install -g codecov
 cache:
   yarn: true
   directories:
     - node_modules
+after_script:
+  - yarn report-coverage
