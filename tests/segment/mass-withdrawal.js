@@ -16,7 +16,7 @@ afterEach(function() {
   expect(mock.isDone()).equals(true);
 });
 
-it(`Should be valid payload callback/promise/async`, function(done) {
+it(`Should be valid payload`, function(done) {
   const expectedPayload = [
     {
       currency: `BTC`,
@@ -26,12 +26,20 @@ it(`Should be valid payload callback/promise/async`, function(done) {
     {
       currency: `LTC`,
       amount: `1`,
-      address: `SomeAddress2`
+      address: `SomeAddress2`,
+      dest_tag: `DestTag`
     },
     {
       currency: `NEM`,
       amount: `1`,
-      address: `SomeAddress3`
+      address: `SomeAddress3`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
     }
   ];
   const mockPayload = Object.assign({}, defaultPayload);
