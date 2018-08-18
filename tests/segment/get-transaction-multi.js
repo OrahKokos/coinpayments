@@ -16,7 +16,7 @@ afterEach(function() {
   expect(mock.isDone()).equals(true);
 });
 
-it(`Should be valid payload callback/promise/async`, function(done) {
+it(`Should be valid payload`, function(done) {
   const expectedPayload = [1, 2, 3];
   const mockPayload = Object.assign({}, defaultPayload);
 
@@ -28,7 +28,7 @@ it(`Should be valid payload callback/promise/async`, function(done) {
   });
 });
 
-it(`Should be invalid payload callback/promise/async`, function(done) {
+it(`Should be invalid payload`, function(done) {
   const expectedPayload = [];
 
   client.getTxMulti(expectedPayload, function(err) {
@@ -37,7 +37,7 @@ it(`Should be invalid payload callback/promise/async`, function(done) {
   });
 });
 
-it(`Should be wrong payload callback/promise/async`, function(done) {
+it(`Should be wrong payload`, function(done) {
   const expectedPayload = undefined;
 
   client.getTxMulti(expectedPayload, function(err) {

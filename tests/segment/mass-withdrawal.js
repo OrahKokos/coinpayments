@@ -52,7 +52,7 @@ it(`Should be valid payload`, function(done) {
   });
 });
 
-it(`Should be invalid payload callback/promise/async`, function(done) {
+it(`Should be invalid payload`, function(done) {
   const expectedPayload = [
     {
       address: `SomeAddress1`
@@ -72,7 +72,7 @@ it(`Should be invalid payload callback/promise/async`, function(done) {
     return done();
   });
 });
-it(`Should be wrong payload callback/promise/async`, function(done) {
+it(`Should be wrong payload`, function(done) {
   const expectedPayload = 123;
 
   client.createMassWithdrawal(expectedPayload, function(err) {

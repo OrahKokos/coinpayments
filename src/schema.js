@@ -16,7 +16,7 @@ module.exports = {
   get_tx_info: [`txid`],
   get_tx_info_multi: [`txid`],
   create_withdrawal: [`amount`, `currency`, `address|pbntag`],
-  create_mass_withdrawal: [], // ??
+  create_mass_withdrawal: [],
   create_transaction: [`amount`, `currency1`, `currency2`],
   rates: [],
   balances: []
