@@ -2,13 +2,14 @@ const
   { expect } = require('chai');
 
 const
-  helper = require('../helpers');
+  helper = require('../helpers'),
+  CoinpaymentsError = require('../../src/error');
 
 let
   client, mock;
 
 const defaultPayload = {
-  'cmd': 'rates'
+  'cmd': 'get_tx_ids'
 };
 
 before(function () {
@@ -21,9 +22,9 @@ afterEach(function () {
 
 it("Should be valid payload callback", function (done) {
   const mockPayload = Object.assign({}, defaultPayload);
-
+  
   mock = helper.prepareMock(mockPayload);
-  client.rates(function (err, response) {
+  client.getTxList(function (err, response) {
     expect(err).equal(null);
     expect(response).equal(true);
     return done();
@@ -34,8 +35,8 @@ it("Should be valid payload promise", function (done) {
   const mockPayload = Object.assign({}, defaultPayload);
 
   mock = helper.prepareMock(mockPayload);
-  client.rates().then(function (response) {
+  client.getTxList().then(function (response) {
     expect(response).equal(true);
     return done();
-  }).catch(done);
+  });
 });

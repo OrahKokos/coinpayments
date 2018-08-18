@@ -11,7 +11,7 @@ module.exports = {
     ],
     "linebreak-style": [
       "error",
-      "unix"
+      "windows"
     ],
     "quotes": [
       "error",
@@ -21,5 +21,11 @@ module.exports = {
       "error",
       "always"
     ]
+  },
+  "parserOptions":{
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
   }
 };

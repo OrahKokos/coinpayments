@@ -1,196 +1,113 @@
-'use strict';
+const https = require(`https`),
+  crypto = require(`crypto`),
+  qs = require(`querystring`),
+  { EventEmitter } = require(`events`);
 
-const
-  https        = require(`https`),
-  crypto       = require(`crypto`),
-  events       = require(`events`),
-  qs           = require(`querystring`),
-  eventEmitter = new events.EventEmitter();
+const CoinpaymentsConfig = require(`./config`),
+  CoinpaymentsError = require(`./error`),
+  CoinpaymentsUtil = require(`./util`);
 
-const
-  ipn = require(`./ipn.js`);
+const { API_VERSION, API_PROTOCOL, API_HOST, API_PATH } = CoinpaymentsConfig;
 
-module.exports = (function () {
+class Coinpayments extends EventEmitter {
+  constructor({ key = ``, secret = `` }) {
+    if (!key) throw new CoinpaymentsError(`Missing public key`);
+    if (!secret) throw new CoinpaymentsError(`Missing private key`);
+    super();
+    this.credentials = { key, secret };
 
-  const
-    API_VERSION = 1,
-    API_HOST    = `www.coinpayments.net`,
-    API_PATH    = `/api.php`;
-
-  function CoinPayments({ key=false, secret=false, autoIpn=false, ipnTime=30 }){
-    if (!key || !secret) {
-      throw new Error(`Missing public key and/or secret`);
-    }
-    this.credentials   = { key, secret };
-    this.config        = { autoIpn, ipnTime, isPolling: false };
-    this._transactions = [];
-    this._withdrawals = [];
-    this._conversions = [];
+    this.getBasicInfo = this.getBasicInfo.bind(this);
+    this.rates = this.rates.bind(this);
+    this.balances = this.balances.bind(this);
+    this.getDepositAddress = this.getDepositAddress.bind(this);
+    this.createTransaction = this.createTransaction.bind(this);
+    this.getCallbackAddress = this.getCallbackAddress.bind(this);
+    this.getTx = this.getTx.bind(this);
+    this.getTxList = this.getTxList.bind(this);
+    this.getTxMulti = this.getTxMulti.bind(this);
+    this.createTransfer = this.createTransfer.bind(this);
+    this.convertCoins = this.convertCoins.bind(this);
+    this.convertLimits = this.convertLimits.bind(this);
+    this.getWithdrawalHistory = this.getWithdrawalHistory.bind(this);
+    this.getWithdrawalInfo = this.getWithdrawalInfo.bind(this);
+    this.getConversionInfo = this.getConversionInfo.bind(this);
+    this.getProfile = this.getProfile.bind(this);
+    this.tagList = this.tagList.bind(this);
+    this.updateTagProfile = this.updateTagProfile.bind(this);
+    this.claimTag = this.claimTag.bind(this);
   }
+  _getPrivateHeaders(parameters) {
+    const { secret, key } = this.credentials;
 
-  CoinPayments.prototype = Object.create(eventEmitter);
-  CoinPayments.prototype.constructor = CoinPayments;
+    parameters.key = key;
 
-  CoinPayments.events = eventEmitter;
-  CoinPayments.ipn = ipn.bind(eventEmitter);
-
-
-  CoinPayments.prototype.getSettings = function({cmd=false}) {
-    switch(cmd) {
-    case `get_basic_info`:
-      return [];
-    case `get_tx_ids`:
-      return [];
-    case `get_deposit_address`:
-      return [`currency`];
-    case `get_callback_address`:
-      return [`currency`];
-    case `create_transfer`:
-      return [`amount`, `currency`, `merchant|pbntag`];
-    case `convert`:
-      return [`amount`, `from`, `to`];
-    case `get_withdrawal_history`:
-      return [];
-    case `get_conversion_info`:
-      return [`id`];
-    case `get_pbn_info`:
-      return [`pbntag`];
-    case `get_pbn_list`:
-      return [];
-    case `update_pbn_tag`:
-      return [`tagid`];
-    case `claim_pbn_tag`:
-      return [`tagid`, `name`];
-    case `get_withdrawal_info`:
-      return [`id`];
-    case `get_tx_info`:
-      return [`txid`];
-    case `get_tx_info_multi`:
-      return [`txid`];
-    case `create_withdrawal`:
-      return [`amount`, `currency`, `address`];
-    case `create_mass_withdrawal`:
-      return [];
-    case `create_transaction`:
-      return [`amount`, `currency1`, `currency2`];
-    case `rates`:
-      return [];
-    case `balances`:
-      return [];
-    default:
-      return false;
-    }
-  };
-
-  CoinPayments.prototype._registerTransaction = function ({txn_id}) {
-    this._transactions.push(txn_id);
-    if (!this.config.isPolling) return this._startPolling();
-  };
-
-  CoinPayments.prototype._startPolling = function () {
-    if (this.config.isPolling) return;
-    const setIntervalAndExecute = (fn) => {
-      this.config.isPolling = true;
-      fn();
-      return setInterval(fn, this.config.ipnTime * 1000);
-    };
-
-    const poll = () => {
-      if (!this._transactions.length) return this._stopPolling();
-      return this.getTxMulti(this._transactions, (err, result) => {
-        if (err) return console.warn(`Polling Error...`);
-        this.emit(`autoipn`, result);
-        for (const tx in result) {
-          if (result[tx].status < 0 || result[tx].status == 100 || result[tx].status == 1) {
-            this._transactions.splice(this._transactions.indexOf(tx), 1);
-          }
-        }
-        if (!this._transactions.length) return this._stopPolling();
-      });
-    };
-
-    this.loop = setIntervalAndExecute(poll);
-  };
-
-  CoinPayments.prototype._stopPolling = function () {
-    this.config.isPolling = false;
-    return clearInterval(this.loop);
-  };
-
-  CoinPayments.prototype._assert = function(obj, allowArray) {
-    let flag = true;
-    let msg = `Missing options: `;
-    for(let i = 0; i<allowArray.length; i++) {
-      let prop = allowArray[i].split(`|`);
-      prop = (prop.length == 1) ? prop[0] : prop;
-      if (typeof prop == `string`) {
-        if(!obj.hasOwnProperty(allowArray[i])) {
-          flag = false;
-          msg += allowArray[i] + `, `;
-        }
-      } else {
-        flag = false;
-        let temp = msg;
-        for(let j = 0; j<prop.length; j++) {
-          if (obj.hasOwnProperty(prop[j])) {
-            flag = true;
-          } else {
-            temp += prop[j] + `, `;
-          }
-        }
-        msg = (!flag) ? msg : temp;
-      }
-    }
-    return (flag) ? null : msg;
-  };
-
-  CoinPayments.prototype._getPrivateHeaders = function (parameters) {
-    parameters.key = this.credentials.key;
-    
     const paramString = qs.stringify(parameters);
-    const signature = crypto.createHmac(`sha512`, this.credentials.secret).update(paramString).digest(`hex`);
+    const signature = crypto
+      .createHmac(`sha512`, secret)
+      .update(paramString)
+      .digest(`hex`);
 
     return {
-      'Content-Type': `application/x-www-form-urlencoded`,
-      'HMAC': signature
+      "Content-Type": `application/x-www-form-urlencoded`,
+      HMAC: signature
     };
-  };
-
-  CoinPayments.prototype.request = function(parameters, callback) {
-
-    const reqs = this.getSettings(parameters);
-    if(!reqs) return callback(new Error(`No such method ` + parameters.cmd));
-
-    const assert = this._assert(parameters, reqs);
-    if(assert) return callback(new Error(assert));
+  }
+  _getIpnHMAC(merchantSecret = false, payload) {
+    if (!merchantSecret) throw new CoinpaymentsError(`Invalid merchant secret`);
+    const paramString = qs.stringify(payload).replace(/%20/g, `+`);
+    return crypto
+      .createHmac(`sha512`, merchantSecret)
+      .update(paramString)
+      .digest(`hex`);
+  }
+  verify(hmac = ``, merchantSecret = false, payload) {
+    if (!merchantSecret) throw new CoinpaymentsError(`Invalid merchant secret`);
+    const calcHash = this._getIpnHMAC(merchantSecret, payload);
+    if (hmac !== calcHash) return false;
+    return true;
+  }
+  request(parameters, callback) {
+    const assertResult = CoinpaymentsUtil.assertPayload(parameters);
+    if (assertResult.isError) {
+      if (callback) return callback(assertResult.error);
+      return Promise.reject(assertResult.error);
+    }
     parameters.version = API_VERSION;
 
     const options = {
-      method: `POST`,
+      protocol: API_PROTOCOL,
+      method: `post`,
       host: API_HOST,
       path: API_PATH,
       headers: this._getPrivateHeaders(parameters)
     };
 
     const query = qs.stringify(parameters);
-    const req = https.request(options, (res) => {
+
+    if (callback) {
+      return this.callbackRequest(options, query, callback);
+    } else {
+      return this.promiseRequest(options, query);
+    }
+  }
+  callbackRequest(options, query, callback) {
+    const req = https.request(options, res => {
       let data = ``;
 
       res.setEncoding(`utf8`);
 
-      res.on(`data`, (chunk) => {
+      res.on(`data`, chunk => {
         data += chunk;
       });
+
       res.on(`end`, () => {
         try {
-          data = JSON.parse(data);  
+          data = JSON.parse(data);
         } catch (e) {
-          return callback(e);
+          return callback(new CoinpaymentsError(`Invalid response`, data));
         }
-        
-        if(data.error != `ok`) return callback(data.error);
-        if (this.config.autoIpn && parameters.cmd == `create_transaction`) {
-          this._registerTransaction(data.result);
+        if (data.error !== `ok`) {
+          return callback(new CoinpaymentsError(data.error));
         }
         return callback(null, data.result);
       });
@@ -198,57 +115,95 @@ module.exports = (function () {
     req.on(`error`, callback);
     req.write(query);
     req.end();
-  };
+  }
+  promiseRequest(options, query) {
+    return new Promise((resolve, reject) => {
+      const req = https.request(options, res => {
+        let data = ``;
 
-  CoinPayments.prototype.createTransaction = function(options, callback) {
-    Object.assign(options, {
+        res.setEncoding(`utf8`);
+
+        res.on(`data`, chunk => {
+          data += chunk;
+        });
+
+        res.on(`end`, () => {
+          try {
+            data = JSON.parse(data);
+          } catch (e) {
+            return reject(new CoinpaymentsError(`Invalid response`, data));
+          }
+
+          if (data.error !== `ok`) {
+            return reject(new CoinpaymentsError(data.error, data));
+          }
+          return resolve(data.result);
+        });
+      });
+      req.on(`error`, reject);
+      req.write(query);
+      req.end();
+    });
+  }
+  createTransaction(options, callback) {
+    options = Object.assign({}, options, {
       cmd: `create_transaction`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.rates = function(options, callback) {
+  }
+  rates(options = {}, callback) {
     if (typeof options == `function`) {
       callback = options;
       options = {};
     }
-    Object.assign(options, {
+    options = Object.assign({}, options, {
       cmd: `rates`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.balances = function(options, callback) {
+  }
+  balances(options = {}, callback) {
     if (typeof options == `function`) {
       callback = options;
       options = {};
     }
-    Object.assign(options, {
+    options = Object.assign({}, options, {
       cmd: `balances`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.createWithdrawal = function(options, callback) {
-    options = Object.assign({
-      auto_confirm: 1
-    }, options, {
-      cmd: `create_withdrawal`
-    });
+  }
+  createWithdrawal(options, callback) {
+    options = Object.assign(
+      {
+        auto_confirm: 1
+      },
+      options,
+      {
+        cmd: `create_withdrawal`
+      }
+    );
     return this.request(options, callback);
-  };
+  }
+  createMassWithdrawal(withdrawalArray, callback) {
+    if (!(withdrawalArray instanceof Array)) {
+      return callback(
+        new CoinpaymentsError(`Invalid withdrawal array`.withdrawalArray)
+      );
+    }
 
-  CoinPayments.prototype.createMassWithdrawal = function(withdrawalArray, callback) {
+    withdrawalArray = withdrawalArray.filter(function(w) {
+      return w.currency && w.amount && w.address;
+    });
+
+    if (!withdrawalArray.length)
+      return callback(
+        new CoinpaymentsError(`Invalid withdrawal array`.withdrawalArray)
+      );
+
     const options = {
       cmd: `create_mass_withdrawal`
     };
-    withdrawalArray = withdrawalArray.filter(function (w) {
-      return w.currency && w.amount && w.address;
-    });
-    if (!withdrawalArray.length)
-      return callback(`Invalid withdrawal array`);
 
-    withdrawalArray.reduce(function (options, w, index) {
+    withdrawalArray.reduce(function(options, w, index) {
       options[`wd[wd${index + 1}][amount]`] = w.amount;
       options[`wd[wd${index + 1}][address]`] = w.address;
       options[`wd[wd${index + 1}][currency]`] = w.currency;
@@ -256,104 +211,117 @@ module.exports = (function () {
     }, options);
 
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getTx = function(txid, callback) {
-    const options = { txid, cmd: `get_tx_info` };
+  }
+  getTx(options, callback) {
+    options = Object.assign({}, options, {
+      cmd: `get_tx_info`
+    });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getWithdrawalInfo = function(id, callback) {
-    const options = { id, cmd: `get_withdrawal_info` };
+  }
+  getWithdrawalInfo(options, callback) {
+    options = Object.assign({}, options, {
+      cmd: `get_withdrawal_info`
+    });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getTxMulti = function(tx_id_array, callback) {
-    const options = { txid: tx_id_array.join(`|`), cmd: `get_tx_info_multi` };
+  }
+  getTxMulti(tx_id_array = [], callback) {
+    const options = {};
+    if (!(tx_id_array instanceof Array) || !tx_id_array.length) {
+      return callback(new CoinpaymentsError(`Invalid argument`, tx_id_array));
+    }
+    Object.assign(
+      options,
+      {
+        txid: tx_id_array.join(`|`)
+      },
+      {
+        cmd: `get_tx_info_multi`
+      }
+    );
     return this.request(options, callback);
-  };
-  CoinPayments.prototype.getTxList = function(options, callback) {
+  }
+  getTxList(options = {}, callback) {
     if (typeof options == `function`) {
       callback = options;
       options = {};
     }
-    Object.assign(options, {
+    options = Object.assign({}, options, {
       cmd: `get_tx_ids`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getBasicInfo = function(callback) {
+  }
+  getBasicInfo(callback) {
     const options = { cmd: `get_basic_info` };
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getDepositAddress = function(currency, callback) {
-    const options = { currency, cmd: `get_deposit_address` };
+  }
+  getDepositAddress(options, callback) {
+    options = Object.assign({}, options, { cmd: `get_deposit_address` });
     return this.request(options, callback);
-  };
-  CoinPayments.prototype.getCallbackAddress = function (currency, callback) {
-    const options = { currency, cmd: `get_callback_address` };
-    return this.request(options, callback);
-  };
-  CoinPayments.prototype.createTransfer = function (options, callback) {
-    options = Object.assign({
-      auto_confirm: 1
-    }, options, {
-      cmd: `create_transfer`
+  }
+  getCallbackAddress(options, callback) {
+    options = Object.assign({}, options, {
+      cmd: `get_callback_address`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.convertCoins = function (options, callback) {
-    Object.assign(options, {
+  }
+  createTransfer(options, callback) {
+    options = Object.assign(
+      {
+        auto_confirm: 1
+      },
+      options,
+      {
+        cmd: `create_transfer`
+      }
+    );
+    return this.request(options, callback);
+  }
+  convertCoins(options, callback) {
+    options = Object.assign({}, options, {
       cmd: `convert`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getWithdrawalHistory = function (options, callback) {
+  }
+  convertLimits(options, callback) {
+    options = Object.assign({}, options, {
+      cmd: `convert_limits`
+    });
+    return this.request(options, callback);
+  }
+  getWithdrawalHistory(options = {}, callback) {
     if (typeof options == `function`) {
       callback = options;
       options = {};
     }
-    Object.assign(options, {
+    options = Object.assign({}, options, {
       cmd: `get_withdrawal_history`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getConversionInfo = function(id, callback) {
-    const options = { id, cmd: `get_conversion_info` };
+  }
+  getConversionInfo(options, callback) {
+    options = Object.assign({}, options, { cmd: `get_conversion_info` });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.getProfile = function(pbntag, callback) {
-    const options = { pbntag, cmd: `get_pbn_info` };
+  }
+  getProfile(options, callback) {
+    options = Object.assign({}, options, { cmd: `get_pbn_info` });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.tagList = function(callback) {
+  }
+  tagList(callback) {
     const options = { cmd: `get_pbn_list` };
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.updateTagProfile = function(options, callback) {
-    Object.assign(options, {
+  }
+  updateTagProfile(options, callback) {
+    options = Object.assign({}, options, {
       cmd: `update_pbn_tag`
     });
     return this.request(options, callback);
-  };
-
-  CoinPayments.prototype.claimTag = function(options, callback) {
-    Object.assign(options, {
+  }
+  claimTag(options, callback) {
+    options = Object.assign({}, options, {
       cmd: `claim_pbn_tag`
     });
     return this.request(options, callback);
-  };
+  }
+}
 
-  return CoinPayments;
-
-})();
-
-
+module.exports = Coinpayments;

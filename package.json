@@ -7,16 +7,15 @@
     "url": "https://github.com/OrahKokos/coinpayments/issues",
     "email": "marko.paroski.ns@gmail.com"
   },
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "engines": {
     "node": "*"
   },
   "scripts": {
     "start": "node ./examples/index.js",
     "lint": "node_modules/eslint/bin/eslint.js src/; exit 0",
-    "test": "mocha --reporter spec tests/index.js",
-    "build": "babel src --presets babel-preset-env --out-dir lib",
-    "watch": "babel src -w --presets babel-preset-env --out-dir lib"
+    "pretty": "node_modules/prettier/bin-prettier.js src/** --write",
+    "test": "nyc --reporter=lcov mocha --reporter nyan tests/index.js"
   },
   "repository": {
     "type": "git",
@@ -126,14 +125,13 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
-    "babel-preset-env": "^1.6.1",
-    "body-parser": "^1.17.2",
-    "chai": "^4.0.2",
-    "dotenv": "^5.0.0",
-    "express": "^4.15.3",
-    "mocha": "^3.4.2"
+    "chai": "^4.1.2",
+    "eslint": "^5.4.0",
+    "mocha": "^3.4.2",
+    "nock": "^9.4.2",
+    "nyc": "^12.0.2",
+    "prettier": "^1.13.5",
+    "sinon": "^6.0.0"
   },
   "dependencies": {}
 }
