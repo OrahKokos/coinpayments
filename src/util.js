@@ -46,7 +46,7 @@ module.exports = {
     return { isError, error };
   },
   validateMassWithDrawal(payload) {
-    const regex = /wd\[wd[0-9]\]\[(amount|address|currency)\]/;
+    const regex = /wd\[wd[0-9]\]\[(amount|address|currency|dest_tag)\]/;
     for (const key in payload) {
       if (!regex.test(key)) return false;
     }

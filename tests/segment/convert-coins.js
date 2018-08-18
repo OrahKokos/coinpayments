@@ -1,95 +1,92 @@
-const
-  { expect } = require('chai');
+const { expect } = require(`chai`);
 
-const
-  helper = require('../helpers'),
-  CoinpaymentsError = require('../../src/error');
+const helper = require(`../helpers`),
+  CoinpaymentsError = require(`../../src/error`);
 
-let
-  client, mock;
+let client, mock;
 
 const defaultPayload = {
-  'cmd': 'convert'
+  cmd: `convert`
 };
 
-before(function () {
+before(function() {
   client = helper.getClient();
 });
 
-afterEach(function () {
+afterEach(function() {
   if (mock) expect(mock.isDone()).equals(true);
   mock = false;
 });
 
-it("Should be valid payload callback", function (done) {
+it(`Should be valid payload callback`, function(done) {
   const payload = {
-    'amount': '1',
-    'from': 'BTC',
-    'to': 'LTC'
+    amount: `1`,
+    from: `BTC`,
+    to: `LTC`
   };
   const mockPayload = Object.assign({}, defaultPayload, payload);
-  
+
   mock = helper.prepareMock(mockPayload);
-  client.convertCoins(payload, function (err, response) {
+  client.convertCoins(payload, function(err, response) {
     expect(err).equal(null);
     expect(response).equal(true);
     return done();
   });
 });
 
-it("Should be valid payload promise", function (done) {
-  const payload ={
-    'amount': '1',
-    'from': 'BTC',
-    'to': 'LTC'
+it(`Should be valid payload promise`, function(done) {
+  const payload = {
+    amount: `1`,
+    from: `BTC`,
+    to: `LTC`
   };
   const mockPayload = Object.assign({}, defaultPayload, payload);
 
   mock = helper.prepareMock(mockPayload);
-  client.convertCoins(payload).then(function (response) {
+  client.convertCoins(payload).then(function(response) {
     expect(response).equal(true);
     return done();
   });
 });
 
-it("Should return error on bad payload (amount)", function (done) {
+it(`Should return error on bad payload (amount)`, function(done) {
   const payload = {
-    'from': 'BTC',
-    'to': 'LTC'
+    from: `BTC`,
+    to: `LTC`
   };
-  client.createTransaction(payload).catch(function (err) {
+  client.createTransaction(payload).catch(function(err) {
     expect(err).to.be.an.instanceof(CoinpaymentsError);
-    expect(err).to.have.property('name');
-    expect(err).to.have.property('message');
-    expect(err).to.have.property('extra');
+    expect(err).to.have.property(`name`);
+    expect(err).to.have.property(`message`);
+    expect(err).to.have.property(`extra`);
     return done();
   });
 });
 
-it("Should return error on bad payload (from)", function (done) {
+it(`Should return error on bad payload (from)`, function(done) {
   const payload = {
-    'amount': '1',
-    'to': 'LTC'
+    amount: `1`,
+    to: `LTC`
   };
-  client.createTransaction(payload).catch(function (err) {
+  client.createTransaction(payload).catch(function(err) {
     expect(err).to.be.an.instanceof(CoinpaymentsError);
-    expect(err).to.have.property('name');
-    expect(err).to.have.property('message');
-    expect(err).to.have.property('extra');
+    expect(err).to.have.property(`name`);
+    expect(err).to.have.property(`message`);
+    expect(err).to.have.property(`extra`);
     return done();
   });
 });
 
-it("Should return error on bad payload (to)", function (done) {
+it(`Should return error on bad payload (to)`, function(done) {
   const payload = {
-    'amount': '1',
-    'from': 'BTC'
+    amount: `1`,
+    from: `BTC`
   };
-  client.createTransaction(payload).catch(function (err) {
+  client.createTransaction(payload).catch(function(err) {
     expect(err).to.be.an.instanceof(CoinpaymentsError);
-    expect(err).to.have.property('name');
-    expect(err).to.have.property('message');
-    expect(err).to.have.property('extra');
+    expect(err).to.have.property(`name`);
+    expect(err).to.have.property(`message`);
+    expect(err).to.have.property(`extra`);
     return done();
   });
 });

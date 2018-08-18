@@ -207,6 +207,11 @@ class Coinpayments extends EventEmitter {
       options[`wd[wd${index + 1}][amount]`] = w.amount;
       options[`wd[wd${index + 1}][address]`] = w.address;
       options[`wd[wd${index + 1}][currency]`] = w.currency;
+
+      if (w.dest_tag) {
+        options[`wd[wd${index + 1}][dest_tag]`] = w.dest_tag;
+      }
+      
       return options;
     }, options);
 

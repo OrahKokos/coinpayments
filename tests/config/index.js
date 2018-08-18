@@ -1,10 +1,10 @@
 module.exports = {
   credentials: {
-    key: 'x',
-    secret: 'y'
+    key: `x`,
+    secret: `y`
   },
   merchant: {
-    id: 'merchantId',
-    secret: 'merchantSecret'
+    id: `merchantId`,
+    secret: `merchantSecret`
   }
-}
+};

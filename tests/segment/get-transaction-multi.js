@@ -1,49 +1,46 @@
-const
-  { expect } = require('chai');
+const { expect } = require(`chai`);
 
-const
-  helper = require('../helpers');
+const helper = require(`../helpers`);
 
-let
-  client, mock;
+let client, mock;
 
 const defaultPayload = {
-  'cmd': 'get_tx_info_multi'
+  cmd: `get_tx_info_multi`
 };
 
-before(function () {
+before(function() {
   client = helper.getClient();
 });
 
-afterEach(function () {
+afterEach(function() {
   expect(mock.isDone()).equals(true);
 });
 
-it("Should be valid payload callback/promise/async", function (done) {    
-  const expectedPayload = [1,2,3];
+it(`Should be valid payload callback/promise/async`, function(done) {
+  const expectedPayload = [1, 2, 3];
   const mockPayload = Object.assign({}, defaultPayload);
 
   mock = helper.prepareMock(mockPayload);
-  client.getTxMulti(expectedPayload, function (err, response) {
+  client.getTxMulti(expectedPayload, function(err, response) {
     expect(err).equal(null);
     expect(response).equal(true);
     return done();
   });
 });
 
-it("Should be invalid payload callback/promise/async", function (done) {
+it(`Should be invalid payload callback/promise/async`, function(done) {
   const expectedPayload = [];
 
-  client.getTxMulti(expectedPayload, function (err) {
+  client.getTxMulti(expectedPayload, function(err) {
     expect(!!err).equal(true);
     return done();
   });
 });
 
-it("Should be wrong payload callback/promise/async", function (done) {
+it(`Should be wrong payload callback/promise/async`, function(done) {
   const expectedPayload = undefined;
 
-  client.getTxMulti(expectedPayload, function (err) {
+  client.getTxMulti(expectedPayload, function(err) {
     expect(!!err).equal(true);
     return done();
   });

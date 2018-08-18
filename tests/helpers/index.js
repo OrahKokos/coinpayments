@@ -1,67 +1,58 @@
-const
-  url = require('url'),
-  qs = require('querystring');
+const url = require(`url`),
+  qs = require(`querystring`);
 
-const
-  nock = require('nock');
+const nock = require(`nock`);
 
-const
-  Coinpayments = require('../../src'),
-  CoinpaymentsConfig = require('../../src/config');
+const Coinpayments = require(`../../src`),
+  CoinpaymentsConfig = require(`../../src/config`);
 
-const
-  { credentials } = require('../config');;
+const { credentials } = require(`../config`);
 
-const {
-  API_VERSION,
-  API_PROTOCOL,
-  API_HOST,
-  API_PATH
-} = CoinpaymentsConfig;
-
+const { API_VERSION, API_PROTOCOL, API_HOST, API_PATH } = CoinpaymentsConfig;
 
 const mockUrl = url.format({
   protocol: API_PROTOCOL,
-  hostname: API_HOST,
+  hostname: API_HOST
 });
 
 const mock = nock(mockUrl, {
   reqheaders: {
     'Content-Type': `application/x-www-form-urlencoded`,
-    'HMAC': /^.{128}$/
+    HMAC: /^.{128}$/
   }
 });
 
 const responseGood = {
   code: 200,
-  payload: {'error': 'ok', result: true}
+  payload: { error: `ok`, result: true }
 };
 
 module.exports = {
-  getClient: function (credentialsArg = {}) {
+  getClient: function(credentialsArg = {}) {
     credentialsArg = Object.assign({}, credentials, credentialsArg);
     return new Coinpayments(credentialsArg);
   },
-  prepareMock: function (mockPayload, repeat = 1, forceResponse = false) {
-    const fullPayload = Object.assign({}, mockPayload, { 
+  prepareMock: function(mockPayload, repeat = 1, forceResponse = false) {
+    const fullPayload = Object.assign({}, mockPayload, {
       version: `${API_VERSION}`,
       key: `${credentials.key}`
     });
 
-    const response = (forceResponse) ? forceResponse : responseGood;
+    const response = forceResponse ? forceResponse : responseGood;
 
-    mock.post(API_PATH, function (body) {
-      for (const key in fullPayload) {
-        /* istanbul ignore if */
-        if (fullPayload[key] !== body[key]) {
-          return false;
-        } 
-      }
-      return true;
-    })
-    .times(repeat)
-    .reply(response.code, JSON.stringify(response.payload));
+    mock
+      .post(API_PATH, function(body) {
+        for (const key in fullPayload) {
+          /* istanbul ignore if */
+          if (fullPayload[key] !== body[key]) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .times(repeat)
+      .reply(response.code, JSON.stringify(response.payload));
 
     return mock;
   }
-}
+};
