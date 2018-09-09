@@ -124,12 +124,12 @@ await client.getBasicInfo();
 Example response from server
 ```json
 { 
-  uername: "OrahKokos",
-  username: "OrahKokos",
-  merchant_id: "831b8d495071e5b0e1015486f5001150",
-  email: "marko.paroski.ns@gmail.com",
-  public_name: "OrahKokos",
-  time_joined: 1417611250 
+  "uername": "OrahKokos",
+  "username": "OrahKokos",
+  "merchant_id": "831b8d495071e5b0e1015486f5001150",
+  "email": "marko.paroski.ns@gmail.com",
+  "public_name": "OrahKokos",
+  "time_joined": 1417611250 
 }
 ```
 - ``uername`` - Some sort of username
@@ -163,20 +163,20 @@ await client.getProfile(options);
 Example response from server
 ```json
 { 
-  pbntag: "$orahkokos",
-  merchant: "831b8d495071e5b0e1015486f5001150",
-  profile_name: ",
-  profile_url: ",
-  profile_email: ",
-  profile_image: ",
-  member_since: 1417611250,
-  feedback: 
-   { pos: 160,
-     neg: 0,
-     neut: 0,
-     total: 160,
-     percent: "100%",
-     percent_str: "<span style='color: #5cb85c;'><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i></span> <span style='color: #5cb85c;'>(100%)</span>" } }
+  "pbntag": "$orahkokos",
+  "merchant": "831b8d495071e5b0e1015486f5001150",
+  "profile_name": "",
+  "profile_url": "",
+  "profile_email": "",
+  "profile_image": "",
+  "member_since": 1417611250,
+  "feedback": 
+   { "pos": 160,
+     "neg": 0,
+     "neut": 0,
+     "total": 160,
+     "percent": "100%",
+     "percent_str": "<span style='color: #5cb85c;'><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i></span> <span style='color: #5cb85c;'>(100%)</span>" } }
 ```
 - ``pbntag`` - This is the $PayByName tag in the same case as the owner entered it. It is recommended to display the tag this way versus how it was entered by a viewing user.
 - ``merchant`` - This is the owner's merchant ID. It can be used to send transfers or payments to the owner.
@@ -444,17 +444,17 @@ await client.balances(options);
 Example Response from server:
 ```json
 {
-  BTC: { 
-    balance: 10000000,
-    balancef: '0.10000000',
-    status: 'available',
-    coin_status: 'online' 
+  "BTC": { 
+    "balance": 10000000,
+    "balancef": "0.10000000",
+    "status": "available",
+    "coin_status": "online" 
   },
   POT: {
-    balance: 499594333,
-    balancef: '4.99594333',
-    status: 'available',
-    coin_status: 'online' 
+    "balance": 499594333,
+    "balancef": "4.99594333",
+    "status": "available",
+    "coin_status": "online" 
   }
 }
 ```
@@ -500,13 +500,13 @@ If ``options.currency1`` is not equal to ``options.currency2`` the expected paym
 Example Response from server:
 ```json
 { 
-  amount: "1.21825881",
-  txn_id: "d17a8ee84b1de669bdd0f15b38f20a7e9781d569d20c096e49983ad9ad40ce4c",
-  address: "PVS1Xo3xCU2MyXHadU2EbhFZCbnyjZHBjx",
-  confirms_needed: "5",
-  timeout: 5400,
-  status_url: "https://www.coinpayments.net/index.php?cmd=status&id=d17a8ee84b1de669bdd0f15b38f,
-  qrcode_url: "https://www.coinpayments.net/qrgen.php?id=CPBF4COHLYGEZZYIGFDKFY9NDP&key=90e5561c1e8cd4452069f7726d3e0370"
+  "amount": "1.21825881",
+  "txn_id": "d17a8ee84b1de669bdd0f15b38f20a7e9781d569d20c096e49983ad9ad40ce4c",
+  "address": "PVS1Xo3xCU2MyXHadU2EbhFZCbnyjZHBjx",
+  "confirms_needed": "5",
+  "timeout": 5400,
+  "status_url": "https://www.coinpayments.net/index.php?cmd=status&id=d17a8ee84b1de669bdd0f15b38f,
+  "qrcode_url": "https://www.coinpayments.net/qrgen.php?id=CPBF4COHLYGEZZYIGFDKFY9NDP&key=90e5561c1e8cd4452069f7726d3e0370"
 }
 ```
 
@@ -541,18 +541,18 @@ await client.getTx(options);
 Example Response from server:
 ```json
 { 
-  time_created: 1424436678,
-  time_expires: 1424442078,
-  status: 0,
-  status_text: "Waiting for buyer funds...",
-  type: "coins",
-  coin: "POT",
-  amount: 121700023,
-  amountf: "1.21700023",
-  received: 0,
-  receivedf: "0.00000000",
-  recv_confirms: 0,
-  payment_address: "PWP4gKLRLVQv9dsvcN4sZn5pZaKQGothXm" 
+  "time_created": 1424436678,
+  "time_expires": 1424442078,
+  "status": 0,
+  "status_text": "Waiting for buyer funds...",
+  "type": "coins",
+  "coin": "POT",
+  "amount": 121700023,
+  "amountf": "1.21700023",
+  "received": 0,
+  "receivedf": "0.00000000",
+  "recv_confirms": 0,
+  "payment_address": "PWP4gKLRLVQv9dsvcN4sZn5pZaKQGothXm" 
 }
 ```
 - ``time_created`` - The time the transaction request was created.
@@ -589,14 +589,14 @@ await client.getTxMulti(txn_id_array);
 Example response from server
 ```json
 "CPBF23CBUSHKKOMV1OPMRBNEFV": { 
-  error: "ok",
-  amount: "1.21825881",
-  txn_id: "d17a8ee84b1de669bdd0f15b38f20a7e9781d569d20c096e49983ad9ad40ce4c",
-  address: "PVS1Xo3xCU2MyXHadU2EbhFZCbnyjZHBjx",
-  confirms_needed: "5",
-  timeout: 5400,
-  status_url: "https://www.coinpayments.net/index.php?cmd=status&id=d17a8ee84b1de669bdd0f15b38f,
-  qrcode_url: "https://www.coinpayments.net/qrgen.php?id=CPBF4COHLYGEZZYIGFDKFY9NDP&key=90e5561c1e8cd4452069f7726d3e0370"
+  "error": "ok",
+  "amount": "1.21825881",
+  "txn_id": "d17a8ee84b1de669bdd0f15b38f20a7e9781d569d20c096e49983ad9ad40ce4c",
+  "address": "PVS1Xo3xCU2MyXHadU2EbhFZCbnyjZHBjx",
+  "confirms_needed": "5",
+  "timeout": 5400,
+  "status_url": "https://www.coinpayments.net/index.php?cmd=status&id=d17a8ee84b1de669bdd0f15b38f,
+  "qrcode_url": "https://www.coinpayments.net/qrgen.php?id=CPBF4COHLYGEZZYIGFDKFY9NDP&key=90e5561c1e8cd4452069f7726d3e0370"
 },
 ...
 ```
@@ -664,8 +664,8 @@ await client.convertLimits(options);
 Example response from server
 ```json
 { 
-  min: "0.00301250", 
-  max: "0.80637488" 
+  "min": "0.00301250", 
+  "max": "0.80637488" 
 }
 ```
 - ``min`` - Min conversion 
@@ -701,7 +701,7 @@ await client.convertCoins(options);
 - ``options.dest_tag`` - **optional** The destination tag to use for the withdrawal (for Ripple.) If 'address' is not included this has no effect.
 
 Example response from server
-```javascript
+```json
 {
   "id":"string"
 }
@@ -772,9 +772,9 @@ await client.createWithdrawal(options);
 Example Response from server:
 ```json
 {
-  id: "98a5ff631da2089985594789dc9fb85648596599816ac8ce1ce00fd082798967",
-  amount: "1.00000000",
-  status: 0 
+  "id": "98a5ff631da2089985594789dc9fb85648596599816ac8ce1ce00fd082798967",
+  "amount": "1.00000000",
+  "status": 0 
 }
 ```
 
@@ -810,13 +810,13 @@ await client.createMassWithdrawal(withdrawalArray);
 Example response from server
 ```json
 { 
-  wd1: { 
-    error: "ok",
-    id: "CWBF3UECUQFCCNFIRUS73G5VON",
-    status: 1,
-    amount: "1.00000000" 
+  "wd1": { 
+    "error": "ok",
+    "id": "CWBF3UECUQFCCNFIRUS73G5VON",
+    "status": 1,
+    "amount": "1.00000000" 
   },
-  wd2: { error: "That amount is larger than your balance!" }
+  "wd2": { "error": "That amount is larger than your balance!" }
 ```
 - ``wd[n]`` - Represents mapped withdrawalArray
 - ``wd[n].error`` - Error
@@ -843,16 +843,16 @@ await client.getWithdrawalInfo(options);
 - ``options.id`` - **required** (String) - Withdrawal id.
 
 Example Response from server:
-```
+```json
 { 
-  time_created: 1424436465,
-  status: 2,
-  status_text: 'Complete',
-  coin: 'POT',
-  amount: 10000000000,
-  amountf: '100.00000000',
-  send_address: 'PVtAyX2HgVmYk8BCw9NGvtaDNdkX2phrVA',
-  send_txid: 'b601e7839c4c237f0fac36e93f98d648cfec402b8f8dbce617c675dac247599e' 
+  "time_created": 1424436465,
+  "status": 2,
+  "status_text": "Complete",
+  "coin": "POT",
+  "amount": 10000000000,
+  "amountf": "100.00000000",
+  "send_address": "PVtAyX2HgVmYk8BCw9NGvtaDNdkX2phrVA",
+  "send_txid": "b601e7839c4c237f0fac36e93f98d648cfec402b8f8dbce617c675dac247599e" 
 }
 ```
 
@@ -892,26 +892,26 @@ Example response from server
 ```json
 [
   { 
-    id: "CWBF3UECUQFCCNFIRUS73G5VON",
-    time_created: 1498437967,
-    status: 2,
-    status_text: "Complete",
-    coin: "POT",
-    amount: 100000000,
-    amountf: "1.00000000",
-    send_address: "PTVFPeSvccpdnT5PTyXrfU5XR6UShcRJYt",
-    send_txid: "1e5be68fdac7acafb68082099ba4d1ca2c881866ce8ee575202419ad1ff55bd8" 
+    "id": "CWBF3UECUQFCCNFIRUS73G5VON",
+    "time_created": 1498437967,
+    "status": 2,
+    "status_text": "Complete",
+    "coin": "POT",
+    "amount": 100000000,
+    "amountf": "1.00000000",
+    "send_address": "PTVFPeSvccpdnT5PTyXrfU5XR6UShcRJYt",
+    "send_txid": "1e5be68fdac7acafb68082099ba4d1ca2c881866ce8ee575202419ad1ff55bd8" 
   },
   { 
-    id: "CWBF0ZRSKG8R4ASD7JFXFIS5YH",
-    time_created: 1498429199,
-    status: 2,
-    status_text: "Complete",
-    coin: "POT",
-    amount: 10000000,
-    amountf: "0.10000000",
-    send_address: "PMmPaNBzQEmJSZ6XYSDeXYxAC8MVJx3nGM",
-    send_txid: "8d990f0a833c8c61177ed0b0a7e5ff2e3fa03cc28a9cf5d1dfb171c45b0712c3" 
+    "id": "CWBF0ZRSKG8R4ASD7JFXFIS5YH",
+    "time_created": 1498429199,
+    "status": 2,
+    "status_text": "Complete",
+    "coin": "POT",
+    "amount": 10000000,
+    "amountf": "0.10000000",
+    "send_address": "PMmPaNBzQEmJSZ6XYSDeXYxAC8MVJx3nGM",
+    "send_txid": "8d990f0a833c8c61177ed0b0a7e5ff2e3fa03cc28a9cf5d1dfb171c45b0712c3" 
   },
   ...
 ]
