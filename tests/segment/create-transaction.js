@@ -1,7 +1,7 @@
 const { expect } = require(`chai`);
 
 const helper = require(`../helpers`),
-  CoinpaymentsError = require(`../../src/error`);
+  CoinpaymentsError = require(`../../lib/error`);
 
 let client, mock;
 
@@ -22,7 +22,8 @@ it(`Should be valid payload callback`, function(done) {
   const payload = {
     currency1: `BTC`,
     currency2: `BTC`,
-    amount: `1`
+    amount: `1`,
+    buyer_email: `buyer@email.com`
   };
   const mockPayload = Object.assign({}, defaultPayload, payload);
 
@@ -38,7 +39,8 @@ it(`Should be valid payload promise`, function(done) {
   const payload = {
     currency1: `BTC`,
     currency2: `BTC`,
-    amount: `1`
+    amount: `1`,
+    buyer_email: `buyer@email.com`
   };
   const mockPayload = Object.assign({}, defaultPayload, payload);
 
@@ -90,3 +92,19 @@ it(`Should return error on bad payload (amount)`, function(done) {
     return done();
   });
 });
+
+it(`Should return error on bad payload (buyer_email)`, function(done) {
+  const payload = {
+    currency1: `BTC`,
+    currency2: `BTC`,
+    amount: `1`
+  };
+  client.createTransaction(payload).catch(function(err) {
+    expect(err).to.be.an.instanceof(CoinpaymentsError);
+    expect(err).to.have.property(`name`);
+    expect(err).to.have.property(`message`);
+    expect(err).to.have.property(`extra`);
+    return done();
+  });
+});
+

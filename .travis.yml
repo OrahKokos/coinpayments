@@ -7,5 +7,8 @@ cache:
   yarn: true
   directories:
     - node_modules
+script:
+   - yarn lint
+   - yarn test
 after_script:
   - yarn report-coverage

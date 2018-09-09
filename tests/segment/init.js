@@ -1,6 +1,6 @@
 const { expect } = require(`chai`);
 
-const CoinpaymentsError = require(`../../src/error`);
+const CoinpaymentsError = require(`../../lib/error`);
 
 const { credentials } = require(`../config`);
 

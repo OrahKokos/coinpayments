@@ -3,8 +3,8 @@ const url = require(`url`),
 
 const nock = require(`nock`);
 
-const Coinpayments = require(`../../src`),
-  CoinpaymentsConfig = require(`../../src/config`);
+const Coinpayments = require(`../../lib`),
+  CoinpaymentsConfig = require(`../../lib/config`);
 
 const { credentials } = require(`../config`);
 

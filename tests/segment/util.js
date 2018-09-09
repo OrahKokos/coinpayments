@@ -1,9 +1,9 @@
 const { expect } = require(`chai`),
   sinon = require(`sinon`);
 
-const CoinpaymentsUtil = require(`../../src/util`);
+const CoinpaymentsUtil = require(`../../lib/util`);
 
-const CoinpaymentsError = require(`../../src/error`);
+const CoinpaymentsError = require(`../../lib/error`);
 
 let schemaStub;
 

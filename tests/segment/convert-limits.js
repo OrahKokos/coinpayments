@@ -1,7 +1,7 @@
 const { expect } = require(`chai`);
 
 const helper = require(`../helpers`),
-  CoinpaymentsError = require(`../../src/error`);
+  CoinpaymentsError = require(`../../lib/error`);
 
 let client, mock;
 
