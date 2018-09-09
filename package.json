@@ -12,7 +12,7 @@
     "node": "*"
   },
   "scripts": {
-    "lint": "node_modules/eslint/bin/eslint.js lib/; exit 0",
+    "lint": "node_modules/eslint/bin/eslint.js lib/",
     "pretty": "node_modules/prettier/bin-prettier.js lib/** --write",
     "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
@@ -122,7 +122,7 @@
   "person": {
     "name": "Marko Paroški",
     "email": "marko.paroski.ns@gmail.com",
-    "url": ""
+    "url": "https://github.com/OrahKokos"
   },
   "license": "MIT",
   "devDependencies": {
