@@ -12,6 +12,8 @@ const
 
 module.exports = (function () {
 
+  console.warn(`Coinpayments version 2.0.0 is here. Please migrate: https://github.com/OrahKokos/coinpayments/issues/24`);
+
   const
     API_VERSION = 1,
     API_HOST    = `www.coinpayments.net`,
