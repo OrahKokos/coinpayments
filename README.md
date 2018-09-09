@@ -6,6 +6,14 @@
 CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.
 For more information visit their website [here](https://www.coinpayments.net/).
 
+## New version available
+
+```npm install coinpayments@next```
+
+Migration: https://github.com/OrahKokos/coinpayments/blob/next/MIGRATION.md
+
+New Docs: https://github.com/OrahKokos/coinpayments/tree/next
+
 ## Installation
 
 No deps, clean nodejs.
@@ -17,35 +25,38 @@ No deps, clean nodejs.
 Table of contents
 =================
 
-* [Setup](#setup)
-* [API reference](#reference)
-  * [Init](#init)
-  * [Get Basic Account Information](#getbasicinfo)
-  * [Get Profile](#getprofile)
-  * [Get Tag list](#gettaglist)
-  * [Claim Tag](#claimtag)
-  * [Update Tag Profile](#updatetagprofile)
-  * [Get Deposit Address](#getdeposit)
-  * [Get Callback Address](#getcallback)
-  * [Rates](#rates)
-  * [Balances](#balances)
-  * [Create Transaction](#createtransaction)
-  * [Get Transaction Info](#gettx)
-  * [Get Transaction Multi](#gettxmulti)
-  * [Get Transactions List](#gettxlist)
-  * [Coinver Coins](#convercoins)
-  * [Create Transfer](#createtransfer)
-  * [Create Withdrawal](#createwithdrawal)
-  * [Mass Withdrawal](#createmasswithdrawal)
-  * [Get Withdrawal Info](#getwithdrawalinfo)
-  * [Get Withdrawal History](#getwithdrawalhistory)
-* [IPN](#ipn)
-  * [Automated IPN](#automated-ipn--for-local-development-)
-  * [IPN HTTP(S) POST](#ipn-https-post)
-* [Development](#dev)
-* [Testing](#testing)
-* [License](#license)
-* [Support/Donate](#support)
+- [CoinPayments NodeJS client](#coinpayments-nodejs-client)
+  - [New version available](#new-version-available)
+  - [Installation](#installation)
+- [Table of contents](#table-of-contents)
+  - [Setup](#setup)
+  - [API Reference](#api-reference)
+  - [Init](#init)
+  - [Get Basic Account Information](#get-basic-account-information)
+  - [Get Profile Info](#get-profile-info)
+  - [Get Tag list](#get-tag-list)
+  - [Claim tag](#claim-tag)
+  - [Update Tag Profile](#update-tag-profile)
+  - [Get Deposit Address](#get-deposit-address)
+  - [Get Callback Address](#get-callback-address)
+  - [Rates](#rates)
+  - [Balances](#balances)
+  - [Create Transaction](#create-transaction)
+  - [Get Transaction Info](#get-transaction-info)
+  - [Get Transaction Multi](#get-transaction-multi)
+  - [Get Transaction LIST](#get-transaction-list)
+  - [Convert Coins](#convert-coins)
+  - [Create Transfer](#create-transfer)
+  - [Create Withdrawal](#create-withdrawal)
+  - [Create Mass Withdrawal](#create-mass-withdrawal)
+  - [Get Withdrawal History](#get-withdrawal-history)
+  - [IPN ( Instant Payment Notification )](#ipn--instant-payment-notification)
+  - [Automated IPN ( for local development )](#automated-ipn--for-local-development)
+  - [IPN HTTP(S) POST](#ipn-https-post)
+  - [Development](#development)
+  - [Testing](#testing)
+  - [License](#license)
+  - [Support/Donate](#supportdonate)
 
 <a name="setup" />
 

@@ -1,6 +1,6 @@
 {
   "name": "coinpayments",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.",
   "homepage": "https://www.coinpayments.net",
   "bugs": {
