@@ -7,8 +7,10 @@ https://img.shields.io/node/v/coinpayments.svg
 "
          alt="node>=6.0.0">
   </a>
-  <a href="https://travis-ci.org/OrahKokos/coinpayments">
-    <img src="https://travis-ci.org/OrahKokos/coinpayments.svg?branch=master"
+  <a href="https://circleci.com/gh/OrahKokos/coinpayments">
+    <img src="
+https://img.shields.io/circleci/project/github/OrahKokos/coinpayments/version/next.svg
+"
          alt="build status">
   </a>
   <a href="https://codecov.io/github/OrahKokos/coinpayments">
