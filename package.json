@@ -1,6 +1,6 @@
 {
   "name": "coinpayments",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.",
   "homepage": "https://www.coinpayments.net",
   "bugs": {
@@ -15,7 +15,7 @@
     "lint": "node_modules/eslint/bin/eslint.js lib/",
     "pretty": "node_modules/prettier/bin-prettier.js lib/** --write",
     "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js",
-    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
+    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && node_modules/codecov/bin/codecov"
   },
   "repository": {
     "type": "git",
