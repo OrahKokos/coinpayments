@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: circleci/node:6.15.1-browsers-legacy
     steps:
+      - checkout
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
