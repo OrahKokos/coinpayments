@@ -5,7 +5,7 @@
     <img src="
 https://img.shields.io/node/v/coinpayments.svg
 "
-         alt="build status">
+         alt="node>=6.0.0">
   </a>
   <a href="https://travis-ci.org/OrahKokos/coinpayments">
     <img src="https://travis-ci.org/OrahKokos/coinpayments.svg?branch=master"
