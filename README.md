@@ -1,6 +1,12 @@
 # CoinPayments NodeJS client
 
 <p align="left">
+  <a href="https://img.shields.io/node/v/coinpayments.svg">
+    <img src="
+https://img.shields.io/node/v/coinpayments.svg
+"
+         alt="build status">
+  </a>
   <a href="https://travis-ci.org/OrahKokos/coinpayments">
     <img src="https://travis-ci.org/OrahKokos/coinpayments.svg?branch=master"
          alt="build status">

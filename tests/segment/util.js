@@ -186,9 +186,6 @@ it(`Should return error assertPayload create_mass_withdrawal`, function() {
   const payload = {
     unknown: `xxx`
   };
-  const result = CoinpaymentsUtil.assertPayload({
-    cmd,
-    ...payload
-  });
+  const result = CoinpaymentsUtil.assertPayload(Object.assign({}, { cmd }, payload));
   expect(result.isError).equal(true);
 });
