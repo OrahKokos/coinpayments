@@ -88,4 +88,4 @@ To:
 - Added
 
 ### New documentation
-[Version 2.0.0](https://github.com/OrahKokos/coinpayments/tree/version/2.0.0)
+[Version 2.0.0](https://github.com/OrahKokos/coinpayments/tree/version/next)
