@@ -1,16 +1,32 @@
-const common = require('../common.js');
-const Coinpayments = require('../../lib');
-const expect = require('chai').expect
+const { expect } = require(`chai`);
 
-it('should initilize with no errors', function () {
-	common.client.conn = new Coinpayments({
-		key: process.env.COINPAYMENTS_API_KEY_1,
-		secret: process.env.COINPAYMENTS_API_SECRET_1
-	});
+const CoinpaymentsError = require(`../../lib/error`);
 
-	common.merchant.conn = new Coinpayments({
-		key: process.env.COINPAYMENTS_API_KEY_2,
-		secret: process.env.COINPAYMENTS_API_SECRET_2
-	});
+const { credentials } = require(`../config`);
 
+const helper = require(`../helpers`);
+
+it(`Should not initilize with missing public key`, function() {
+  try {
+    helper.getClient(Object.assign({}, credentials, { key: undefined }));
+  } catch (exception) {
+    expect(exception).to.be.instanceOf(CoinpaymentsError);
+    expect(exception.message).to.equal(`Missing public key`);
+  }
+});
+
+it(`Should not initilize with missing private key`, function() {
+  try {
+    helper.getClient(Object.assign({}, credentials, { secret: undefined }));
+  } catch (exception) {
+    expect(exception).to.be.instanceOf(CoinpaymentsError);
+    expect(exception.message).to.equal(`Missing private key`);
+  }
+});
+
+it(`Should initilize valid payload`, function() {
+  const client = helper.getClient(credentials);
+  expect(client).to.have.property(`credentials`);
+  expect(client.credentials).to.have.property(`key`, `x`);
+  expect(client.credentials).to.have.property(`secret`, `y`);
 });

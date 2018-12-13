@@ -5,7 +5,7 @@ const helper = require(`../helpers`);
 let client, mock;
 
 const defaultPayload = {
-  cmd: `rates`
+  cmd: `get_pbn_list`
 };
 
 before(function() {
@@ -20,7 +20,7 @@ it(`Should be valid payload callback`, function(done) {
   const mockPayload = Object.assign({}, defaultPayload);
 
   mock = helper.prepareMock(mockPayload);
-  client.rates(function(err, response) {
+  client.tagList(function(err, response) {
     expect(err).equal(null);
     expect(response).equal(true);
     return done();
@@ -32,7 +32,7 @@ it(`Should be valid payload promise`, function(done) {
 
   mock = helper.prepareMock(mockPayload);
   client
-    .rates()
+    .tagList()
     .then(function(response) {
       expect(response).equal(true);
       return done();

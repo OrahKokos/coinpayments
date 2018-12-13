@@ -1,27 +1,27 @@
 {
   "name": "coinpayments",
-  "version": "1.1.8",
+  "version": "2.0.0",
   "description": "CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.",
   "homepage": "https://www.coinpayments.net",
   "bugs": {
     "url": "https://github.com/OrahKokos/coinpayments/issues",
     "email": "marko.paroski.ns@gmail.com"
   },
-  "main": "lib/index.js",
+  "main": "lib/",
   "engines": {
-    "node": "*"
+    "node": ">=6.0.0"
   },
   "scripts": {
-    "start": "node ./examples/index.js",
-    "lint": "node_modules/eslint/bin/eslint.js src/; exit 0",
-    "test": "mocha --reporter spec tests/index.js",
-    "build": "babel src --presets babel-preset-env --out-dir lib",
-    "watch": "babel src -w --presets babel-preset-env --out-dir lib"
+    "lint": "node_modules/eslint/bin/eslint.js lib/",
+    "pretty": "node_modules/prettier/bin-prettier.js lib/** --write",
+    "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js",
+    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/OrahKokos/coinpayments.git"
   },
+  "report-coverage": "codecov",
   "keywords": [
     "bitcoin",
     "btc",
@@ -122,18 +122,18 @@
   "person": {
     "name": "Marko Paroški",
     "email": "marko.paroski.ns@gmail.com",
-    "url": ""
+    "url": "https://github.com/OrahKokos"
   },
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
-    "babel-preset-env": "^1.6.1",
-    "body-parser": "^1.17.2",
-    "chai": "^4.0.2",
-    "dotenv": "^5.0.0",
-    "express": "^4.15.3",
-    "mocha": "^3.4.2"
+    "chai": "^4.1.2",
+    "codecov": "^3.0.4",
+    "eslint": "^5.4.0",
+    "mocha": "^3.4.2",
+    "nock": "^9.4.2",
+    "nyc": "^12.0.2",
+    "prettier": "^1.13.5",
+    "sinon": "^6.0.0"
   },
   "dependencies": {}
 }
