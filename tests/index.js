@@ -1,50 +1,36 @@
-const
-  env = require('dotenv'),
-  expect = require('chai').expect
-
-const
-  Coinpayments = require('../lib');
-
-const
-  common = require('./common.js');
-
-env.config();
-
 function runTest(name, path) {
-  describe(name, function () {
-  	require('./segment/' + path);
+  describe(name, function() {
+    require(`./segment/` + path);
   });
 }
 
-describe('Coinpayments tests', function() {
-
-	before(function (){
-		expect(process.env.COINPAYMENTS_API_KEY_1).to.not.equal(undefined);
-		expect(process.env.COINPAYMENTS_API_SECRET_1).to.not.equal(undefined);
-
-		expect(process.env.COINPAYMENTS_API_KEY_2).to.not.equal(undefined);
-		expect(process.env.COINPAYMENTS_API_SECRET_2).to.not.equal(undefined);
-
-		expect(process.env.COINPAYMENTS_CURRENCY).to.not.equal(undefined);
-		expect(process.env.COINPAYMENTS_FIXED_AMOUNT).to.not.equal(undefined);
-
-    expect(
-      process.env.COINPAYMENTS_MERCHANT_PBNTAG || 
-      process.env.COINPAYMENTS_MERCHANT_ID
-    ).to.not.equal(undefined);
-	});
-
-  runTest('Init Coinpayments client', 'init.js');
-  runTest('Test rates API', 'rates.js');
-  runTest('Test balance API', 'balance.js');
-  runTest('Test profile API', 'profile.js');
-  runTest('Test transaction API', 'transaction.js');
-  runTest('Test tx API', 'tx.js');
-
-  if(process.env.COINPAYMENTS_CURRENCY !== 'LTCT') {
-    runTest('Test conversion API', 'conversion.js');  
-  }
-
-  runTest('Test withdrawal API', 'withdrawal.js');
-
+describe(`Coinpayments tests`, function() {
+  runTest(`Init Coinpayments client`, `init.js`);
+  runTest(`Coinpayments auth`, `auth.js`);
+  runTest(`Coinpayments util`, `util.js`);
+  runTest(`Coinpayments command getBasicInfo`, `get-basic-info.js`);
+  runTest(`Coinpayments command balances`, `balances.js`);
+  runTest(`Coinpayments command rates`, `rates.js`);
+  runTest(`Coinpayments command getDepositAddress`, `get-deposit-address.js`);
+  runTest(`Coinpayments command createTransaction`, `create-transaction.js`);
+  runTest(`Coinpayments command getCallbackAddress`, `get-callback-address.js`);
+  runTest(`Coinpayments command getTx`, `get-transaction.js`);
+  runTest(`Coinpayments command getTxList`, `get-transaction-list.js`);
+  runTest(`Coinpayments command createTransfer`, `create-transfer.js`);
+  runTest(`Coinpayments command convertCoins`, `convert-coins.js`);
+  runTest(`Coinpayments command convertLimits`, `convert-limits.js`);
+  runTest(`Coinpayments command createWithdrawal`, `create-withdrawal.js`);
+  runTest(
+    `Coinpayments command getWithdrawalHistory`,
+    `get-withdrawal-history.js`
+  );
+  runTest(`Coinpayments command getWithdrawalInfo`, `get-withdrawal-info.js`);
+  runTest(`Coinpayments command getConversionInfo`, `get-conversion-info.js`);
+  runTest(`Coinpayments command getProfile`, `get-profile.js`);
+  runTest(`Coinpayments command tagList`, `tag-list.js`);
+  runTest(`Coinpayments command claimTag`, `claim-tag.js`);
+  runTest(`Coinpayments command updateTagProfile`, `update-tag-profil.js`);
+  runTest(`Coinpayments command getTxMulti`, `get-transaction-multi.js`);
+  runTest(`Coinpayments command createMassWithdrawal`, `mass-withdrawal.js`);
+  runTest(`Coinpayments response errors`, `error.js`);
 });

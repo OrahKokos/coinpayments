@@ -1,6 +1,9 @@
 .gitignore
-src/
 .travis.yml
-Procfile
+.env
+.eslintignore
 LICENSE
 README.md
+.nyc_output/
+coverage/
+coverage.lcov
