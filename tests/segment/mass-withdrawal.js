@@ -40,6 +40,48 @@ it(`Should be valid payload`, function(done) {
       amount: `1`,
       address: `SomeAddress4`,
       dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
+    },
+    {
+      currency: `XRP`,
+      amount: `1`,
+      address: `SomeAddress4`,
+      dest_tag: `DestTag`
     }
   ];
   const mockPayload = Object.assign({}, defaultPayload);
