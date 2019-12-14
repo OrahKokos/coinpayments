@@ -126,14 +126,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "chai": "^4.1.2",
-    "codecov": "^3.0.4",
-    "eslint": "^5.4.0",
-    "mocha": "^3.4.2",
-    "nock": "^9.4.2",
-    "nyc": "^12.0.2",
-    "prettier": "^1.13.5",
-    "sinon": "^6.0.0"
+    "chai": "^4.2.0",
+    "codecov": "^3.6.1",
+    "eslint": "^6.7.2",
+    "mocha": "^6.2.2",
+    "nock": "^11.7.0",
+    "nyc": "^14.1.1",
+    "prettier": "^1.19.1",
+    "sinon": "^7.5.0"
   },
   "dependencies": {}
 }
