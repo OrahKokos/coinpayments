@@ -1,6 +1,6 @@
 {
   "name": "coinpayments",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.",
   "homepage": "https://www.coinpayments.net",
   "bugs": {
@@ -12,16 +12,21 @@
     "node": ">=6"
   },
   "scripts": {
-    "lint": "node_modules/eslint/bin/eslint.js lib/",
-    "pretty": "node_modules/prettier/bin-prettier.js lib/** --write",
-    "test": "nyc --reporter=lcov mocha --reporter progress tests/index.js",
-    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && node_modules/codecov/bin/codecov"
+    "main": "dist/index.js",
+    "start": "ts-node-dev --inspect=4321 --respawn --transpileOnly src/index.ts",
+    "build": "rm -rf dist/ && tsc -p tsconfig.build.json",
+    "build:prod": "rm -rf dist/ && tsc -p tsconfig.prod.build.json",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "pretty": "prettier --write \"src/**/*.ts\"",
+    "test": "jest --config ./jest.config.js --coverage",
+    "postinstall": "node node_modules/husky/lib/installer/bin install",
+    "prepublish": "yarn build:prod"
   },
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git://github.com/OrahKokos/coinpayments.git"
   },
-  "report-coverage": "codecov",
   "keywords": [
     "bitcoin",
     "btc",
@@ -126,14 +131,18 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "chai": "^4.2.0",
-    "codecov": "^3.6.1",
-    "eslint": "^6.7.2",
-    "mocha": "^6.2.2",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.17",
+    "husky": "^3.1.0",
+    "jest": "^24.9.0",
     "nock": "^11.7.0",
-    "nyc": "^14.1.1",
     "prettier": "^1.19.1",
-    "sinon": "^7.5.0"
+    "ts-jest": "^24.2.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "tsconfig-paths": "^3.9.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.3"
   },
   "dependencies": {}
 }

@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 1`] = `Array []`;
+
+exports[`Validation unit tests getVariations tests Should return array on no variation 1`] = `
+Array [
+  Array [
+    "prop1",
+    "prop2",
+    "prop3",
+  ],
+]
+`;
+
+exports[`Validation unit tests getVariations tests Should return array on variation 1`] = `
+Array [
+  Array [
+    "prop1",
+    "prop2",
+    "prop3",
+    "prop4a",
+  ],
+  Array [
+    "prop1",
+    "prop2",
+    "prop3",
+    "prop4b",
+  ],
+]
+`;
