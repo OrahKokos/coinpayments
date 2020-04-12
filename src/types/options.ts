@@ -95,7 +95,7 @@ export type CoinpaymentsCreateWithdrawalOpts =
   | CoinpaymentsCreateWithdrawalTagOpts;
 
 export interface CoinpaymentsCreateMassWithdrawalElement {
-  amount: number;
+  amount: number | string;
   currency: string;
   address: string;
   dest_tag?: string;

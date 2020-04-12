@@ -19,6 +19,7 @@
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "pretty": "prettier --write \"src/**/*.ts\"",
     "test": "jest --config ./jest.config.js --coverage",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
     "postinstall": "node node_modules/husky/lib/installer/bin install",
     "prepublish": "yarn build:prod"
   },

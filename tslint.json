@@ -11,7 +11,8 @@
     "object-literal-key-quotes": false,
     "ordered-imports": false,
     "trailing-comma": true,
-    "interface-name": false
+    "interface-name": false,
+    "forin": false
   },
   "rulesDirectory": []
 }

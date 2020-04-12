@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "coenraads.bracket-pair-colorizer",
-    "esbenp.prettier-vscode",
-    "ms-vscode.vscode-typescript-tslint-plugin",
-    "eamodio.gitlens",
-    "leizongmin.node-module-intellisense"
-  ]
-}

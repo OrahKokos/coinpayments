@@ -76,6 +76,26 @@ export default class Coinpayments {
     }
 
     this.credentials = { key, secret };
+
+    this.getBasicInfo = this.getBasicInfo.bind(this);
+    this.rates = this.rates.bind(this);
+    this.balances = this.balances.bind(this);
+    this.getDepositAddress = this.getDepositAddress.bind(this);
+    this.createTransaction = this.createTransaction.bind(this);
+    this.getCallbackAddress = this.getCallbackAddress.bind(this);
+    this.getTx = this.getTx.bind(this);
+    this.getTxList = this.getTxList.bind(this);
+    this.getTxMulti = this.getTxMulti.bind(this);
+    this.createTransfer = this.createTransfer.bind(this);
+    this.convertCoins = this.convertCoins.bind(this);
+    this.convertLimits = this.convertLimits.bind(this);
+    this.getWithdrawalHistory = this.getWithdrawalHistory.bind(this);
+    this.getWithdrawalInfo = this.getWithdrawalInfo.bind(this);
+    this.getConversionInfo = this.getConversionInfo.bind(this);
+    this.getProfile = this.getProfile.bind(this);
+    this.tagList = this.tagList.bind(this);
+    this.updateTagProfile = this.updateTagProfile.bind(this);
+    this.claimTag = this.claimTag.bind(this);
   }
 
   /**
@@ -153,11 +173,11 @@ export default class Coinpayments {
     options: CoinpaymentsCreateWithdrawalOpts,
     callback?: returnCallback<CoinpaymentsCreateWithdrawalResponse>
   ) {
+    options = { auto_confirm: true, ...options };
     return request<CoinpaymentsCreateWithdrawalResponse>(
       this.credentials,
       mapPayload<CoinpaymentsCreateWithdrawalOpts>(options, {
         cmd: CMDS.CREATE_WITHDRAWAL,
-        auto_confirm: true,
       }),
       callback
     );
@@ -232,7 +252,11 @@ export default class Coinpayments {
     callback?: returnCallback<CoinpaymentsGetTxMultiResponse>
   ) {
     if (!(txIdArray instanceof Array) || !txIdArray.length) {
-      return callback(new CoinpaymentsError('Invalid argument', txIdArray));
+      const error = new CoinpaymentsError('Invalid argument', txIdArray);
+      if (callback) {
+        return callback(error);
+      }
+      return Promise.reject(error);
     }
     return request<CoinpaymentsGetTxMultiResponse>(
       this.credentials,
@@ -249,7 +273,9 @@ export default class Coinpayments {
    * @returns {(Function|Promise)}
    */
   public getTxList(
-    options?: CoinpaymentsGetTxListOpts,
+    options?:
+      | CoinpaymentsGetTxListOpts
+      | returnCallback<CoinpaymentsGetTxListResponse>,
     callback?: returnCallback<CoinpaymentsGetTxListResponse>
   ) {
     if (!options && !callback) {
@@ -335,8 +361,8 @@ export default class Coinpayments {
     return request<CoinpaymentsCreateTransferResponse>(
       this.credentials,
       mapPayload<CoinpaymentsCreateTransferOpts>(options, {
-        auto_confirm: 1,
         cmd: CMDS.CREATE_TRANSFER,
+        auto_confirm: true,
       }),
       callback
     );
@@ -384,7 +410,9 @@ export default class Coinpayments {
    * @returns {(Function|Promise)}
    */
   public getWithdrawalHistory(
-    options: CoinpaymentsGetWithdrawalHistoryOpts,
+    options?:
+      | CoinpaymentsGetWithdrawalHistoryOpts
+      | returnCallback<CoinpaymentsGetWithdrawalHistoryResponse>,
     callback?: returnCallback<CoinpaymentsGetWithdrawalHistoryResponse>
   ) {
     if (typeof options === 'function') {
@@ -514,7 +542,7 @@ export default class Coinpayments {
     return request<CoinpaymentsDeleteTagResponse>(
       this.credentials,
       mapPayload<CoinpaymentsDeleteTagOpts>(options, {
-        cmd: CMDS.RENEW_TAG,
+        cmd: CMDS.DELETE_TAG,
       }),
       callback
     );

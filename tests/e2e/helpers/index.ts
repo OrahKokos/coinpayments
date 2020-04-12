@@ -1,12 +1,18 @@
 import { format } from 'url';
+import { stringify } from 'querystring';
 
 import nock from 'nock';
 
-import { API_PROTOCOL, API_HOST, API_PATH } from '../../../src/constants';
+import {
+  API_PROTOCOL,
+  API_HOST,
+  API_PATH,
+  API_VALID_RESPONSE,
+} from '../../../src/constants';
 
 import {
-  applyDefaultOptionVales,
-  getRequestOptions,
+  applyDefaultOptionValues,
+  getPrivateHeaders,
 } from '../../../src/internal';
 
 const mockUrl = format({
@@ -14,19 +20,33 @@ const mockUrl = format({
   hostname: API_HOST,
 });
 
-export const prepareNock = (credentials, payload, _forceResponse?) => {
-  const expectedPayload = applyDefaultOptionVales(credentials, payload);
-  const expectedReqOps = getRequestOptions(credentials, payload);
+export const defaultResponseMock = {
+  error: API_VALID_RESPONSE,
+  result: true,
+};
 
-  console.log('Expected payload', expectedPayload);
+export const mockCredentials = {
+  key: 'mockKey',
+  secret: 'mockSecret',
+};
 
-  return nock(mockUrl, {
-    reqheaders: expectedReqOps.headers,
-  })
-    .post(API_PATH)
-    .query(expectedPayload)
-    .reply(200, {
-      error: 'ok',
-      result: true,
-    });
+export const mockResolveCallback = (scope, done) =>
+  jest.fn((error, data) => {
+    expect(error).toBe(null);
+    expect(data).toBe(true);
+    expect(scope.isDone()).toBeTruthy();
+    return done();
+  });
+
+export const prepareNock = (
+  credentials,
+  payload,
+  responseMock: any = defaultResponseMock
+) => {
+  const expectedPayload = applyDefaultOptionValues(credentials, payload);
+  const reqheaders = getPrivateHeaders(credentials, expectedPayload);
+
+  return nock(mockUrl, { reqheaders })
+    .post(API_PATH, stringify(expectedPayload))
+    .reply(200, responseMock);
 };

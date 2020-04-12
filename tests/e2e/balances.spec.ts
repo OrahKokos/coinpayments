@@ -1,41 +1,43 @@
-import { prepareNock } from './helpers';
+import { prepareNock, mockCredentials, mockResolveCallback } from './helpers';
 import CoinpaymentsClient from '../../src';
 
 import { CMDS } from '../../src/constants';
 
 describe('Balances e2e test', () => {
   let client;
-  const credentials = { key: 'x', secret: 'y' };
   beforeAll(() => {
-    client = new CoinpaymentsClient(credentials);
+    client = new CoinpaymentsClient(mockCredentials);
   });
-  it('Should catch valid payload - no args', () => {
-    const VALID_PAYLOAD = {
+  it('Should catch valid payload - no args', async () => {
+    const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.BALANCES,
     };
-    const nock = prepareNock(credentials, VALID_PAYLOAD);
-    client.balances();
-    expect(nock.isDone()).toBeTruthy();
+    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK);
+    const { balances } = client;
+    await balances();
+    expect(scope.isDone()).toBeTruthy();
   });
-  it('Should catch valid payload - only callback', () => {
-    const VALID_PAYLOAD = {
+  it('Should catch valid payload - only callback', done => {
+    const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.BALANCES,
     };
-    const nock = prepareNock(credentials, VALID_PAYLOAD);
-    const mockCallback = jest.fn();
-    client.balances(mockCallback);
-    expect(mockCallback).toHaveBeenCalled();
-    expect(nock.isDone()).toBeTruthy();
+    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK);
+    const { balances } = client;
+    const mockCallback = mockResolveCallback(scope, done);
+    return balances(mockCallback);
   });
-  it('Should catch valid payload - args & callback', () => {
-    const VALID_PAYLOAD = {
-      cmd: CMDS.BALANCES,
+  it('Should catch valid payload - args & callback', done => {
+    const VALID_API_PAYLOAD = {
       all: 1,
     };
-    const nock = prepareNock(credentials, VALID_PAYLOAD);
-    const mockCallback = jest.fn();
-    client.balances(VALID_PAYLOAD, mockCallback);
-    expect(mockCallback).toHaveBeenCalled();
-    expect(nock.isDone()).toBeTruthy();
+    const VALID_PAYLOAD_MOCK = {
+      cmd: CMDS.BALANCES,
+      ...VALID_API_PAYLOAD,
+    };
+
+    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK);
+    const { balances } = client;
+    const mockCallback = mockResolveCallback(scope, done);
+    return balances(VALID_API_PAYLOAD, mockCallback);
   });
 });

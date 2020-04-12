@@ -8,6 +8,7 @@ import {
   API_PROTOCOL,
   API_VERSION,
   API_FORMAT,
+  API_VALID_RESPONSE,
 } from './constants';
 import CoinpaymentsError from './error';
 import { resolveValidation } from './validation';
@@ -26,9 +27,7 @@ export const getPrivateHeaders = (
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest
 ) => {
-  const { secret, key } = credentials;
-
-  options.key = key;
+  const { secret } = credentials;
 
   const paramString = stringify(options);
   const signature = createHmac('sha512', secret)
@@ -43,7 +42,7 @@ export const getPrivateHeaders = (
 
 export const resolveRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
-  query: string,
+  options: CoinpaymentsRequest,
   callback?: returnCallback<ExpectedResponse>
 ) => {
   if (callback) {
@@ -51,28 +50,25 @@ export const resolveRequest = <ExpectedResponse>(
 
     return makeRequest<ExpectedResponse>(
       reqOps,
-      query,
+      options,
       callbackResolver,
       callback
     );
   }
   return new Promise<ExpectedResponse>((resolve, reject) => {
-    return makeRequest<ExpectedResponse>(reqOps, query, resolve, reject);
+    return makeRequest<ExpectedResponse>(reqOps, options, resolve, reject);
   });
 };
 
 export const makeRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
-  query: string,
+  options: CoinpaymentsRequest,
   resolve: resolveReturnType,
   reject: rejectReturnType
 ): void => {
-  console.log(reqOps, query);
+  // console.log('Request:', options);
   const req = httpsRequest(reqOps, res => {
     let chunks = '';
-    let data: CoinpaymentsInternalResponse<ExpectedResponse> = {
-      error: 'ok',
-    };
 
     res.setEncoding('utf8');
 
@@ -81,22 +77,24 @@ export const makeRequest = <ExpectedResponse>(
     });
 
     res.on('end', () => {
+      let data: CoinpaymentsInternalResponse<ExpectedResponse> = {
+        error: API_VALID_RESPONSE,
+      };
       try {
         data = JSON.parse(chunks);
       } catch (e) {
-        return reject(new CoinpaymentsError('Invalid response', data));
+        return reject(new CoinpaymentsError('Invalid response', chunks));
       }
 
-      if (data.error !== 'ok') {
+      if (data.error !== API_VALID_RESPONSE) {
         return reject(new CoinpaymentsError(data.error, data));
       }
-
       return resolve(data.result);
     });
   });
   req.on('error', reject);
-  req.write(query);
-  req.end();
+  req.write(stringify(options));
+  return req.end();
 };
 
 export const getRequestOptions = (
@@ -112,7 +110,7 @@ export const getRequestOptions = (
   };
 };
 
-export const applyDefaultOptionVales = (
+export const applyDefaultOptionValues = (
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest
 ): CoinpaymentsRequest => {
@@ -124,14 +122,13 @@ export const applyDefaultOptionVales = (
   };
 };
 
-export const request = <ExpectedResponse>(
+export const request = async <ExpectedResponse>(
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest,
   callback?: returnCallback<ExpectedResponse>
 ) => {
-  resolveValidation<ExpectedResponse>(options, callback);
-  options = applyDefaultOptionVales(credentials, options);
+  await resolveValidation<ExpectedResponse>(options, callback);
+  options = applyDefaultOptionValues(credentials, options);
   const reqOps = getRequestOptions(credentials, options);
-  const query = stringify(options);
-  return resolveRequest<ExpectedResponse>(reqOps, query, callback);
+  return resolveRequest<ExpectedResponse>(reqOps, options, callback);
 };

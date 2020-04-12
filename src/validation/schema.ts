@@ -27,6 +27,10 @@ const Schema = {
   ],
   [CMDS.RATES]: [],
   [CMDS.BALANCES]: [],
+  [CMDS.RENEW_TAG]: ['tagid', 'coin'],
+  [CMDS.DELETE_TAG]: ['tagid'],
+  [CMDS.CLAIM_COUPON]: ['coupon'],
+  [CMDS.BUY_TAG]: ['coin'],
 };
 
 export default Schema;
