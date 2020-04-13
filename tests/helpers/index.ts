@@ -8,9 +8,9 @@ import {
   API_HOST,
   API_PATH,
   API_VALID_RESPONSE,
-} from '../constants'
+} from '../../src/constants'
 
-import { applyDefaultOptionValues, getPrivateHeaders } from '../internal'
+import { applyDefaultOptionValues, getPrivateHeaders } from '../../src/internal'
 
 const mockUrl = format({
   protocol: API_PROTOCOL,
