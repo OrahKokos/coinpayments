@@ -1,6 +1,6 @@
-import { createHmac } from 'crypto';
-import { request as httpsRequest } from 'https';
-import { stringify } from 'querystring';
+import { createHmac } from 'crypto'
+import { request as httpsRequest } from 'https'
+import { stringify } from 'querystring'
 
 import {
   API_HOST,
@@ -9,56 +9,56 @@ import {
   API_VERSION,
   API_FORMAT,
   API_VALID_RESPONSE,
-} from './constants';
-import CoinpaymentsError from './error';
-import { resolveValidation } from './validation';
+} from './constants'
+import CoinpaymentsError from './error'
+import { validatePayload } from './validation'
 
 import {
   CoinpaymentsCredentials,
   CoinpaymentsRequest,
   CoinpaymentsInternalRequestOps,
   CoinpaymentsInternalResponse,
-  returnCallback,
+  CoinpaymentsReturnCallback,
   rejectReturnType,
   resolveReturnType,
-} from './types/base';
+} from './types/base'
 
 export const getPrivateHeaders = (
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest
 ) => {
-  const { secret } = credentials;
+  const { secret } = credentials
 
-  const paramString = stringify(options);
+  const paramString = stringify(options)
   const signature = createHmac('sha512', secret)
     .update(paramString)
-    .digest('hex');
+    .digest('hex')
 
   return {
     'Content-Type': 'application/x-www-form-urlencoded',
     HMAC: signature,
-  };
-};
+  }
+}
 
 export const resolveRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
   options: CoinpaymentsRequest,
-  callback?: returnCallback<ExpectedResponse>
+  callback?: CoinpaymentsReturnCallback<ExpectedResponse>
 ) => {
   if (callback) {
-    const callbackResolver = resolvedPayload => callback(null, resolvedPayload);
+    const callbackResolver = resolvedPayload => callback(null, resolvedPayload)
 
     return makeRequest<ExpectedResponse>(
       reqOps,
       options,
       callbackResolver,
       callback
-    );
+    )
   }
   return new Promise<ExpectedResponse>((resolve, reject) => {
-    return makeRequest<ExpectedResponse>(reqOps, options, resolve, reject);
-  });
-};
+    return makeRequest<ExpectedResponse>(reqOps, options, resolve, reject)
+  })
+}
 
 export const makeRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
@@ -66,36 +66,35 @@ export const makeRequest = <ExpectedResponse>(
   resolve: resolveReturnType,
   reject: rejectReturnType
 ): void => {
-  // console.log('Request:', options);
   const req = httpsRequest(reqOps, res => {
-    let chunks = '';
+    let chunks = ''
 
-    res.setEncoding('utf8');
+    res.setEncoding('utf8')
 
     res.on('data', chunk => {
-      chunks += chunk;
-    });
+      chunks += chunk
+    })
 
     res.on('end', () => {
       let data: CoinpaymentsInternalResponse<ExpectedResponse> = {
         error: API_VALID_RESPONSE,
-      };
+      }
       try {
-        data = JSON.parse(chunks);
+        data = JSON.parse(chunks)
       } catch (e) {
-        return reject(new CoinpaymentsError('Invalid response', chunks));
+        return reject(new CoinpaymentsError('Invalid response', chunks))
       }
 
       if (data.error !== API_VALID_RESPONSE) {
-        return reject(new CoinpaymentsError(data.error, data));
+        return reject(new CoinpaymentsError(data.error, data))
       }
-      return resolve(data.result);
-    });
-  });
-  req.on('error', reject);
-  req.write(stringify(options));
-  return req.end();
-};
+      return resolve(data.result)
+    })
+  })
+  req.on('error', reject)
+  req.write(stringify(options))
+  return req.end()
+}
 
 export const getRequestOptions = (
   credentials: CoinpaymentsCredentials,
@@ -107,8 +106,8 @@ export const getRequestOptions = (
     host: API_HOST,
     path: API_PATH,
     headers: getPrivateHeaders(credentials, options),
-  };
-};
+  }
+}
 
 export const applyDefaultOptionValues = (
   credentials: CoinpaymentsCredentials,
@@ -119,16 +118,23 @@ export const applyDefaultOptionValues = (
     version: API_VERSION,
     format: API_FORMAT,
     key: credentials.key,
-  };
-};
+  }
+}
 
-export const request = async <ExpectedResponse>(
+export const request = <ExpectedResponse>(
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest,
-  callback?: returnCallback<ExpectedResponse>
-) => {
-  await resolveValidation<ExpectedResponse>(options, callback);
-  options = applyDefaultOptionValues(credentials, options);
-  const reqOps = getRequestOptions(credentials, options);
-  return resolveRequest<ExpectedResponse>(reqOps, options, callback);
-};
+  callback?: CoinpaymentsReturnCallback<ExpectedResponse>
+): Promise<ExpectedResponse> | void => {
+  try {
+    validatePayload(options)
+  } catch (e) {
+    if (callback) {
+      return callback(e)
+    }
+    return Promise.reject(e)
+  }
+  options = applyDefaultOptionValues(credentials, options)
+  const reqOps = getRequestOptions(credentials, options)
+  return resolveRequest<ExpectedResponse>(reqOps, options, callback)
+}

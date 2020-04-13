@@ -12,7 +12,9 @@
     "ordered-imports": false,
     "trailing-comma": true,
     "interface-name": false,
-    "forin": false
+    "forin": false,
+    "array-type": false,
+    "semicolon": false
   },
   "rulesDirectory": []
 }
