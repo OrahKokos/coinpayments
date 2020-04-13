@@ -1,8 +1,8 @@
 export interface CoinpaymentsGetBasicInfoOpts {}
 
 export interface CoinpaymentsRatesOpts {
-  short?: boolean
-  accepted?: boolean
+  short?: number
+  accepted?: number
 }
 
 export interface CoinpaymentsCreateTransactionOpts {
@@ -29,7 +29,7 @@ export interface CoinpaymentsGetCallbackAddressOpts {
 
 export interface CoinpaymentsGetTxOpts {
   txid: string
-  full?: boolean
+  full?: number
 }
 
 export type CoinpaymentsGetTxMultiOpts = string[]
@@ -42,7 +42,7 @@ export interface CoinpaymentsGetTxListOpts {
 }
 
 export interface CoinpaymentsBalancesOpts {
-  all?: boolean
+  all?: number
 }
 
 export interface CoinpaymentsGetDepositAddressOpts {
@@ -53,6 +53,7 @@ export interface CoinpaymentsCreateTransferBaseOpts {
   amount: number
   currency: string
   auto_confirm?: boolean
+  note?: string
 }
 
 export interface CoinpaymentsCreateTransferMerchantOpts
@@ -71,18 +72,18 @@ export type CoinpaymentsCreateTransferOpts =
 
 export interface CoinpaymentsCreateWithdrawalBaseOpts {
   amount: number
-  add_tx_fee: boolean
+  add_tx_fee?: boolean
   currency: string
   currency2?: string
   dest_tag?: string
   ipn_url?: string
-  auto_confirm?: boolean | number
+  auto_confirm?: number
   note?: string
 }
 
 export interface CoinpaymentsCreateWithdrawalMerchantOpts
   extends CoinpaymentsCreateWithdrawalBaseOpts {
-  merchant: string
+  address: string
 }
 
 export interface CoinpaymentsCreateWithdrawalTagOpts
@@ -150,7 +151,6 @@ export interface CoinpaymentsUpdateTagProfileOpts {
   name?: string
   email?: string
   url?: string
-  image?: string
 }
 
 export interface CoinpaymentsRenewTagOpts {

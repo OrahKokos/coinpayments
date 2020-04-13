@@ -1,5 +1,5 @@
 export const API_VERSION = 1
-export const API_PROTOCOL = 'https'
+export const API_PROTOCOL = 'https:'
 export const API_HOST = 'www.coinpayments.net'
 export const API_PATH = '/api.php'
 export const API_FORMAT = 'json'

@@ -1,27 +1,24 @@
-# CoinPayments NodeJS client
+![alt text](https://www.coinpayments.net/images/logo.png 'CoinPayments')
 
-<p align="left">
-  <a href="https://img.shields.io/node/v/coinpayments.svg">
-    <img src="
-https://img.shields.io/node/v/coinpayments.svg
-"
-         alt="node>=6">
+<p>
+  <a href="https://circleci.com/gh/OrahKokos/coinpayments" rel="nofollow">
+    <img src="https://circleci.com/gh/OrahKokos/coinpayments.svg?style=shield" alt="CircleCI" />
   </a>
-  <a href="https://circleci.com/gh/OrahKokos/coinpayments">
-    <img src="
-https://circleci.com/gh/OrahKokos/coinpayments.svg?style=svg
-"
-         alt="build status">
+  <a href="https://codecov.io/github/OrahKokos/coinpayments" rel="nofollow">
+    <img src="https://codecov.io/github/OrahKokos/coinpayments/coverage.svg?branch=master" alt="Codecov" />
   </a>
-  <a href="https://codecov.io/github/OrahKokos/coinpayments">
-    <img src="https://codecov.io/github/OrahKokos/coinpayments/coverage.svg?branch=master">
+  <a href="https://snyk.io/test/github/OrahKokos/coinpayments?targetFile=package.json" rel="nofollow">
+    <img src="https://snyk.io/test/github/OrahKokos/coinpayments/badge.svg?targetFile=package.json" alt="Snyk" />
+  </a>
+  <a href="https://npm-stat.com/charts.html?package=coinpayments" rel="nofollow">
+    <img src="https://img.shields.io/npm/dm/coinpayments.svg" alt="Downloads/Month" />
   </a>
 </p>
 
-![alt text](https://www.coinpayments.net/images/logo.png "CoinPayments")
-
 CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.
 For more information visit their website [here](https://www.coinpayments.net/index.php?ref=831b8d495071e5b0e1015486f5001150).
+
+**Important note: This is a community module. contributors are in no way connected in any way with the company Coinpayments.**
 
 <a name="table" />
 
@@ -34,13 +31,10 @@ For more information visit their website [here](https://www.coinpayments.net/ind
     - [Init](#init)
     - [Get Basic Account Information](#get-basic-account-information)
     - [Get Profile Info](#get-profile-info)
-    - [Get Tag list](#get-tag-list)
-    - [Claim tag](#claim-tag)
-    - [Update Tag Profile](#update-tag-profile)
-    - [Get Deposit Address](#get-deposit-address)
-    - [Get Callback Address](#get-callback-address)
     - [Rates](#rates)
     - [Balances](#balances)
+    - [Get Deposit Address](#get-deposit-address)
+    - [Get Callback Address](#get-callback-address)
     - [Create Transaction](#create-transaction)
     - [Get Transaction Info](#get-transaction-info)
     - [Get Transaction Multi](#get-transaction-multi)
@@ -51,19 +45,22 @@ For more information visit their website [here](https://www.coinpayments.net/ind
     - [Create Withdrawal](#create-withdrawal)
     - [Create Mass Withdrawal](#create-mass-withdrawal)
     - [Get Withdrawal History](#get-withdrawal-history)
-  - [Local development](#development)
+    - [Claim tag](#claim-tag)
+    - [Get Tag list](#get-tag-list)
+    - [Update Tag Profile](#update-tag-profile)
+    - [Renew Tag](#renew-tag)
+    - [Delete Tag](#delete-tag)
+    - [Buy Tag](#buy-tag)
+    - [Claim Coupon](#claim-coupon)
   - [Instant Paymnt Notifications](#ipn)
   - [License](#license)
-  - [Support/Donate](#supportdonate)
 
 <a name="installation" />
 
 ## Installation
 
-No deps, clean nodejs.
-
 ```bash
-npm install coinpayments
+yarn add coinpayments
 ```
 
 <a name="setup" />
@@ -91,26 +88,28 @@ npm install coinpayments
 
 ## API Reference
 
+- Typescript support
+- Undocumented responses are empty `[]`.
 - All methods support Promise and Callback
 - All metods have bound context
-- All errors are instances of `CoinpaymentsError`
 
-```javascript
-const CoinpaymentsError = require(`coinpayments/lib/error`);
-```
+[back to top](#table)
 
 <a name="init" />
 
 ## Init
 
-```javascript
-const Coinpayments = require("coinpayments");
-const client = new Coinpayments(options);
+```typescript
+import Coinpayments from 'coinpayments';
+interface CoinpaymentsCredentials {
+  key: string
+  secret: string
+}
+const client = new Coinpayments(credentials: CoinpaymentsCredentials)
 ```
 
-- `options` **required**
-- `options.key` - **required** Public API key
-- `options.secret` - **required** Private API key
+- `key` - Public API key
+- `secret` - Private API key
 
 [back to top](#table)
 
@@ -120,15 +119,10 @@ const client = new Coinpayments(options);
 
 Get your basic account information.
 
-```javascript
-// callback (err, result)
-client.getBasicInfo(callback);
+Official doc: https://www.coinpayments.net/apidoc-get-basic-info
 
-// promise
-client.getBasicInfo().then().catch();
-
-// async/await
-await client.getBasicInfo();
+```typescript
+await client.getBasicInfo()
 ```
 
 Example response from server
@@ -140,7 +134,9 @@ Example response from server
   "merchant_id": "831b8d495071e5b0e1015486f5001150",
   "email": "marko.paroski.ns@gmail.com",
   "public_name": "OrahKokos",
-  "time_joined": 1417611250
+  "time_joined": 1417611250,
+  "kyc_status": false,
+  "swych_tos_accepted": false
 }
 ```
 
@@ -150,6 +146,8 @@ Example response from server
 - `email` - Your merchant email
 - `public_name` - Your merchant public name
 - `time_joined` - User joined timestamp
+- `kyc_status` - Unknown
+- `swych_tos_accepted` - Unknown
 
 [back to top](#table)
 
@@ -157,45 +155,42 @@ Example response from server
 
 ## Get Profile Info
 
-Get $PayByName Profile Information
+Get \$PayByName Profile Information
 
-```javascript
-// callback (err, result)
-client.getProfile(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-get-pbn-info
 
-// promise
-client.getProfile(options).then().catch();
-
-// async/await
-await client.getProfile(options);
+```typescript
+interface CoinpaymentsGetProfileOpts {
+  pbntag: string
+}
+await client.getProfile(options: CoinpaymentsGetProfileOpts)
 ```
 
-- `options.pbntag` - **_required_** Coinpayments merchant pbntag.
+- `pbntag` - Coinpayments merchant pbntag
 
-Example response from server
+**Example response from server**
 
 ```json
 {
-  "pbntag": "$orahkokos",
-  "merchant": "831b8d495071e5b0e1015486f5001150",
-  "profile_name": "",
-  "profile_url": "",
+  "pbntag": "$CoinPayments",
+  "merchant": "be1891193e57d28ba5a05114f8d618d2",
+  "profile_name": "$PayByName Demo Profile - Do NOT Send Coins To Me!",
+  "profile_url": "https://www.coinpayments.net",
   "profile_email": "",
   "profile_image": "",
-  "member_since": 1417611250,
+  "member_since": 1377891010,
   "feedback": {
-    "pos": 160,
-    "neg": 0,
-    "neut": 0,
-    "total": 160,
-    "percent": "100%",
-    "percent_str":
-      "<span style='color: #5cb85c;'><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i><i class='fa fa-star' aria-hidden='true'></i></span> <span style='color: #5cb85c;'>(100%)</span>"
+    "pos": 219,
+    "neg": 2,
+    "neut": "4",
+    "total": 225,
+    "percent": "99%",
+    "percent_str": "<span style=\"color: #5cb85c;\"><i class=\"fa fa-star\" aria-hidden=\"true\"></i><i class=\"fa fa-star\" aria-hidden=\"true\"></i><i class=\"fa fa-star\" aria-hidden=\"true\"></i><i class=\"fa fa-star\" aria-hidden=\"true\"></i><i class=\"fa fa-star\" aria-hidden=\"true\"></i></span> <span style=\"color: #5cb85c;\">(99%)</span>"
   }
 }
 ```
 
-- `pbntag` - This is the $PayByName tag in the same case as the owner entered it. It is recommended to display the tag this way versus how it was entered by a viewing user.
+- `pbntag` - This is the \$PayByName tag in the same case as the owner entered it. It is recommended to display the tag this way versus how it was entered by a viewing user.
 - `merchant` - This is the owner's merchant ID. It can be used to send transfers or payments to the owner.
 - `profile_name` - This is the owner's name (may be a store name, nickname, real name, etc.)
 - `profile_url` - This is the owner's website URL.
@@ -203,177 +198,6 @@ Example response from server
 - `profile_image` - The URL of the owner's profile picture.
 - `member_since` - The time (Unix timestamp) of when the user signed up for CoinPayments.
 - `feedback` - The owners current feedback. The 'percent' field with either be a percent as seen or 'No Rating' if the user has no feedback.
-
-[back to top](#table)
-
-<a name="gettaglist" />
-
-## Get Tag list
-
-Get a list of owned tags.
-
-```javascript
-// callback (err, result)
-client.tagList(callback);
-
-// promise
-client.tagList().then().catch();
-
-// async/await
-await client.tagList();
-```
-
-Example response from server
-
-```json
-[
-  {
-    "tagid": "e893b55c2216a20e6761b1a9f32409df",
-    "pbntag": "Test1",
-    "time_expires": 2147483647
-  },
-  {
-    "tagid": "4293b55c2216a20e6761b1a9f32409de",
-    "pbntag": "Test2",
-    "time_expires": 2147483647
-  },
-  {
-    "tagid": "35df17c48fc16cff8dcee35cedd42d2d",
-    "pbntag": "",
-    "time_expires": 1497037845
-  }
-]
-```
-
-- `tagid` - This is the unique identifier of the tag in the system. This is the identifier you will use with the 'update_pbn_tag' and 'claim_pbn_tag' API calls.
-- `pbntag` - This is the $PayByName tag. An empty string means the tag is unclaimed. (Note that the tags do not have a $ at the front.)
-- `time_expires` - The time (Unix timestamp) of when the tag expires.
-
-[back to top](#table)
-
-<a name="claimtag" />
-
-## Claim tag
-
-Claim $PayByName Tag
-
-```javascript
-// callback (err, result)
-client.claimTag(options, callback);
-
-// promise
-client.claimTag(options).then().catch();
-
-// async/await
-await client.claimTag(options);
-```
-
-- `options` - **_required_**.
-- `options.tagid` - **_required_**. Unique tag ID.
-- `options.name` - **_required_** Name for the tag; for example a value of 'Apple' would be the PayByName tag $Apple. Make sure to use the case you want the tag displayed with.
-
-Example response from server
-
-```json
-[]
-```
-
-[back to top](#table)
-
-<a name="updatetagprofile" />
-
-## Update Tag Profile
-
-Update $PayByName Profile
-
-```javascript
-// callback (err, result)
-client.updateTagProfile(options, callback);
-
-// promise
-client.updateTagProfile(options).then().catch();
-
-// async/await
-await client.updateTagProfile(options);
-```
-
-- `options` - **_required_**. Any enabled currency.
-- `options.tagid` - **_required_**. Unique tag ID
-- `options.name` - **_optional_**. Name for the profile. If field is not supplied the current name will be unchanged.
-- `options.email` - **_optional_**. Email for the profile. If field is not supplied the current email will be unchanged.
-- `options.url` - **_optional_**. Website URL for the profile. If field is not supplied the current URL will be unchanged.
-- `options.image` - **_NOT SUPPORTED_**. HTTP POST with a JPG or PNG image 250KB or smaller. This is an actual "multipart/form-data" file POST and not a URL to a file. If field is not supplied the current image will be unchanged.
-- `callback` - **_required_** callback function, accepts 2 values (`error`,`result`)
-  Example response from server
-
-```json
-[]
-```
-
-[back to top](#table)
-
-<a name="getdeposit" />
-
-## Get Deposit Address
-
-Get a deposit address. This action does not include a fee and will not trigger IPN
-
-```javascript
-// callback (err, result)
-client.getDepositAddress(options, callback);
-
-// promise
-client.getDepositAddress(options).then().catch();
-
-// async/await
-await client.getDepositAddress(options);
-```
-
-- `options` - **required**
-- `options.currency` - **required**. Any enabled currency.
-
-Example response from server
-
-```json
-{
-  "address": "1BitcoinAddress"
-}
-```
-
-- `address` - Deposit address
-
-[back to top](#table)
-
-<a name="getcallback" />
-
-## Get Callback Address
-
-Get a callback address. This action does a fee and will trigger IPN.
-
-```javascript
-// callback (err, result)
-client.getCallbackAddress(options, callback);
-
-// promise
-client.getCallbackAddress(options).then().catch();
-
-// async/await
-await client.getCallbackAddress(options);
-```
-
-- `options` - **required**
-- `options.currency` - **required**. Any enabled currency.
-- `options.ipn_url` - **optional** explicit URL for the IPN to send POST requests to.
-
-Example response from server
-
-```json
-{
-  "address": "1BitcoinAddress"
-}
-```
-
-- `address` - Callback address
 
 [back to top](#table)
 
@@ -385,22 +209,20 @@ Example response from server
 
 Get Exchange Rates / Supported Coins
 
-```javascript
-// callback (err, result)
-client.rates(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-rates
 
-// promise
-client.rates(options).then().catch();
-
-// async/await
-await client.rates(options);
+```typescript
+interface CoinpaymentsRatesOpts {
+  short?: number
+  accepted?: number
+}
+await client.rates(options?: CoinpaymentsRatesOpts)
 ```
 
-- `options` - **_optional_**
-- `options.short` - **_optional_** If set to `1`, the response won't include the full coin names and number of confirms needed to save bandwidth. (default `0`)
-- `options.accepted` - **_optional_** If set to `1`, the response will include only those coins which are enabled for acceptance on your Coin Acceptance Page. (default `0`)
+- `short` - If set to `1`, the response won't include the full coin names and number of confirms needed to save bandwidth. (default `0`)
+- `accepted` - If set to `1`, the response will include only those coins which are enabled for acceptance on your Coin Acceptance Page. (default `0`)
 
-Example Response from server:
+**Example Response from server**
 
 ```json
 {
@@ -412,12 +234,14 @@ Example Response from server:
       "status": "online",
       "name": "Bitcoin",
       "confirms": "2",
+      "can_convert": 0,
       "capabilities": [
         "payments",
         "wallet",
         "transfers",
         "convert"
-      ]
+      ],
+      "explorer": 'https://etherscan.io/tx/%txid%'
     },
     "LTC": {
       "is_fiat": 0,
@@ -427,12 +251,14 @@ Example Response from server:
       "status": "online",
       "name": "Litecoin",
       "confirms": "3",
+      "can_convert": 0,
       "capabilities": [
         "payments",
         "wallet",
         "transfers",
         "convert"
-      ]
+      ],
+      "explorer": 'https://etherscan.io/tx/%txid%'
     },
     "USD": {
       "is_fiat": 1,
@@ -442,7 +268,9 @@ Example Response from server:
       "status": "online",
       "name": "United States Dollar",
       "confirms": "1",
-      "capabilities": []
+      "can_convert": 0,
+      "capabilities": [],
+      "explorer": 'https://etherscan.io/tx/%txid%'
     },
     ...
   }
@@ -455,7 +283,9 @@ Example Response from server:
 - `accepted` - 1 if you have the coin enabled for acceptance, 0 otherwise.
 - `tx_fee` - Transaction fee.
 - `status` - Cloud wallet/network status `online` or `offline`.
+- `can_convert` - Is convertable `0` or `1`.
 - `capabilities` - Offered services for the given cryptocurrency. Can be: `"payments"`, `"wallet"`, `"transfers"`, `"dest_tag"`, `"convert"`
+- `explorer` - Link to block explorer
 
 [back to top](#table)
 
@@ -467,19 +297,16 @@ Example Response from server:
 
 Coin Balances
 
-```javascript
-// callback (err, result)
-client.balances(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-balances
 
-// promise
-client.balances(options).then().catch();
-
-// async/await
-await client.balances(options);
+```typescript
+interface CoinpaymentsBalancesOpts {
+  all?: number
+}
+await client.balances(options?: CoinpaymentsBalancesOpts)
 ```
 
-- `options` - **optional**
-- `options.all` - **optional** If set to `1`, the response will include all coins, even those with 0 balance. (default `0`)
+- `all` - If set to `1`, the response will include all coins, even those with 0 balance. (default `0`)
 
 Example Response from server:
 
@@ -507,6 +334,68 @@ Example Response from server:
 
 [back to top](#table)
 
+<a name="getdeposit" />
+
+## Get Deposit Address
+
+Get a deposit address. This action does not include a fee and will **not trigger IPN**
+
+Official doc: https://www.coinpayments.net/apidoc-get-deposit-address
+
+```typescript
+interface CoinpaymentsGetDepositAddressOpts {
+  currency: string;
+}
+await client.getDepositAddress(options: CoinpaymentsGetDepositAddressOpts)
+```
+
+- `currency` - Any enabled currency. e.g 'BTC'
+
+**Example response from server**
+
+```json
+{
+  "address": "1BitcoinAddress"
+}
+```
+
+- `address` - Deposit address
+
+[back to top](#table)
+
+<a name="getcallback" />
+
+## Get Callback Address
+
+Get a callback address. This action does a fee and will trigger IPN.
+
+Official doc: https://www.coinpayments.net/apidoc-get-deposit-address
+
+```typescript
+interface CoinpaymentsGetCallbackAddressOpts {
+  currency: string
+  ipn_url?: string
+  label?: string
+}
+await client.getCallbackAddress(options: CoinpaymentsGetCallbackAddressOpts)
+```
+
+- `currency` - Any enabled currency. e.g 'BTC'
+- `ipn_url` - Explicit URL for the IPN to send POST requests to.
+- `label` - Optionally sets the address label.
+
+Example response from server
+
+```json
+{
+  "address": "1BitcoinAddress"
+}
+```
+
+- `address` - Callback address
+
+[back to top](#table)
+
 <a name="createtransaction" />
 
 ## Create Transaction
@@ -515,34 +404,45 @@ Example Response from server:
 
 Create Transaction
 
-```javascript
-// callback (err, result)
-client.createTransaction(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-create-transaction
 
-// promise
-client.createTransaction(options).then().catch();
-
-// async/await
-await client.createTransaction(options);
+```typescript
+interface CoinpaymentsCreateTransactionOpts {
+  currency1: string
+  currency2: string
+  amount: number
+  buyer_email: string
+  address?: string
+  buyer_name?: string
+  item_name?: string
+  item_number?: string
+  invoice?: string
+  custom?: string
+  ipn_url?: string
+  success_url?: string
+  cancel_url?: string
+}
+await client.createTransaction(options: CoinpaymentsCreateTransactionOpts)
 ```
 
-- `options` - **required**
-- `options.currency1` - **required** The original currency (displayed currency) in which the price is presented
-- `options.currency2` - **required** The currency the buyer will be sending.
-- `options.amount` - **required** Expected amount to pay, where the price is expressed in `options.currency1`
-- `options.buyer_email` - **required** Set the buyer's email address. This will let us send them a notice if they underpay or need a refund. We will not add them to our mailing list or spam them or anything like that.
+- `currency1` - The original currency (displayed currency) in which the price is presented
+- `currency2` - The currency the buyer will be sending.
+- `amount` - Expected amount to pay, where the price is expressed in `currency1`
+- `buyer_email` - Set the buyer's email address. This will let us send them a notice if they underpay or need a refund. We will not add them to our mailing list or spam them or anything like that.
 
-If `options.currency1` is not equal to `options.currency2` the expected payment amount in the response of the request will auto convert to the expected amount in `options.currency2`
+If `currency1` is not equal to `currency2` the expected payment amount in the response of the request will auto convert to the expected amount in `currency2`
 
-- `options.address` - **optional** Address to send the funds to ( if not set, it will use the wallet address of your coinpayments cloud wallet ) **Must be payment address from** `options.currency2` **network**
-- `options.buyer_name` - **optional** Set buyer name for your reference
-- `options.item_name` - **optional** Set item name for your reference, included in IPN
-- `options.item_number` - **optional** Set item number for your reference, included in IPN
-- `options.invoice` - **optional** Custom field, included in IPN
-- `options.custom` - **optional** Custom field, included in IPN
-- `options.ipn_url` - **optional** explicit URL for the IPN to send POST requests to.
+- `address` - Address to send the funds to ( if not set, it will use the wallet address of your coinpayments cloud wallet ) **Must be payment address from** `currency2` **network**
+- `buyer_name` - Set buyer name for your reference
+- `item_name` - Set item name for your reference, included in IPN
+- `item_number` - Set item number for your reference, included in IPN
+- `invoice` - Custom field, included in IPN
+- `custom` - Custom field, included in IPN
+- `ipn_url` - explicit URL for the IPN to send POST requests to.
+- `success_url` - Sets a URL to go to if the buyer does complete payment. (Only if you use the returned 'checkout_url', no effect/need if designing your own checkout page.)
+- `cancel_url` - Sets a URL to go to if the buyer does not complete payment. (Only if you use the returned 'checkout_url', no effect/need if designing your own checkout page.)
 
-Example Response from server:
+**Example Response from server**
 
 ```json
 {
@@ -551,8 +451,12 @@ Example Response from server:
   "address": "PVS1Xo3xCU2MyXHadU2EbhFZCbnyjZHBjx",
   "confirms_needed": "5",
   "timeout": 5400,
-  "status_url": "https://www.coinpayments.net/index.php?cmd=status&id=d17a8ee84b1de669bdd0f15b38f,
-  "qrcode_url": "https://www.coinpayments.net/qrgen.php?id=CPBF4COHLYGEZZYIGFDKFY9NDP&key=90e5561c1e8cd4452069f7726d3e0370"
+  "checkout_url": "https://www.coinpayments.net/index.php?cmd=checkout&id=CPED3H7GIFTDRZ4AICVZXGXZ
+WH&key=4d7321119c0a533250de336138d4bb14",
+  "status_url": "https://www.coinpayments.net/index.php?cmd=status&id=CPED3H7GIFTDRZ4AICVZXGXZWH
+&key=4d7321119c0a533250de336138d4bb14",
+  "qrcode_url": "https://www.coinpayments.net/qrgen.php?id=CPED3H7GIFTDRZ4AICVZXGXZWH&key=4d7321
+119c0a533250de336138d4bb14"
 }
 ```
 
@@ -561,6 +465,7 @@ Example Response from server:
 - `txn_id` - The CoinPayments.net transaction ID.
 - `confirms_needed` - The number of confirms needed for the transaction to be complete.
 - `timeout` - How long the buyer has to send the coins and have them be confirmed in seconds.
+- `checkout_url` - While normally you would be designing the full checkout experience on your site you can use this URL to provide the final payment page to the buyer.
 - `status_url` - A URL where the buyer can view the payment progress and leave feedback for you.
 - `qrcode_url` - A URL to a generated QR code.
 
@@ -574,19 +479,18 @@ Example Response from server:
 
 Query the server for transaction and returns the status of the payment.
 
-```javascript
-// callback (err, result)
-client.getTx(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-get-tx-info
 
-// promise
-client.getTx(options).then().catch();
-
-// async/await
-await client.getTx(options);
+```typescript
+interface CoinpaymentsGetTxOpts {
+  txid: string
+  full?: number
+}
+await client.getTx(options: CoinpaymentsGetTxOpts)
 ```
 
-- `txid` - **required** - transaction hash value
-- `full` - **optional** - Set to 1 to also include the raw checkout and shipping data for the payment if available. (default: 0)
+- `txid` - Transaction hash value
+- `full` - Set to `1` to also include the raw checkout and shipping data for the payment if available. (default: `0`)
 
 Example Response from server:
 
@@ -625,20 +529,19 @@ Example Response from server:
 
 ## Get Transaction Multi
 
+---
+
 Get multiple transaction status.
 
-```javascript
-// callback (err, result)
-client.getTxMulti(txn_id_array, callback);
+Official doc: https://www.coinpayments.net/apidoc-get-tx-info
 
-// promise
-client.getTxMulti(txn_id_array).then().catch();
+```typescript
+type CoinpaymentsGetTxMultiOpts = string[];
 
-// async/await
-await client.getTxMulti(txn_id_array);
+await client.getTxMulti(txn_id_array: CoinpaymentsGetTxMultiOpts)
 ```
 
-- `txn_id_array` - **required**. Array of transaction ids.
+- `txn_id_array` - Array of transaction ids.
 
 Example response from server
 
@@ -650,8 +553,12 @@ Example response from server
   "address": "PVS1Xo3xCU2MyXHadU2EbhFZCbnyjZHBjx",
   "confirms_needed": "5",
   "timeout": 5400,
-  "status_url": "https://www.coinpayments.net/index.php?cmd=status&id=d17a8ee84b1de669bdd0f15b38f,
-  "qrcode_url": "https://www.coinpayments.net/qrgen.php?id=CPBF4COHLYGEZZYIGFDKFY9NDP&key=90e5561c1e8cd4452069f7726d3e0370"
+  "checkout_url": "https://www.coinpayments.net/index.php?cmd=checkout&id=CPED3H7GIFTDRZ4AICVZXGXZ
+WH&key=4d7321119c0a533250de336138d4bb14",
+  "status_url": "https://www.coinpayments.net/index.php?cmd=status&id=CPED3H7GIFTDRZ4AICVZXGXZWH
+&key=4d7321119c0a533250de336138d4bb14",
+  "qrcode_url": "https://www.coinpayments.net/qrgen.php?id=CPED3H7GIFTDRZ4AICVZXGXZWH&key=4d7321
+119c0a533250de336138d4bb14"
 },
 ...
 ```
@@ -665,28 +572,30 @@ Example response from server
 
 ## Get Transaction LIST
 
+---
+
 Get a list of transaction ids.
 
-```javascript
-// callback (err, result)
-client.getTxList(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-get-tx-ids
 
-// promise
-client.getTxList(options).then().catch();
-
-// async/await
-await client.getTxList(options);
+```typescript
+interface CoinpaymentsGetTxListOpts {
+  limit?: string
+  start?: string
+  newer?: string
+  all?: string
+}
+await client.getTxList(options: CoinpaymentsGetTxListOpts)
 ```
 
-- `options` - **optional**. Any enabled currency.
-- `options.limit` - The maximum number of transaction IDs to return from 1-100. (default: 25)
-- `options.start` - What transaction # to start from (for iteration/pagination.) (default: 0, starts with your newest transactions.)
-- `options.newer` - Return transactions started at the given Unix timestamp or later. (default: 0)
-- `options.all` - By default we return an array of TX IDs where you are the seller for use with get_tx_info_multi or get_tx_info. If all is set to 1 returns an array with TX IDs and whether you are the seller or buyer for the transaction.
+- `limit` - The maximum number of transaction IDs to return from 1-100. (default: 25)
+- `start` - What transaction # to start from (for iteration/pagination.) (default: 0, starts with your newest transactions.)
+- `newer` - Return transactions started at the given Unix timestamp or later. (default: 0)
+- `all` - By default we return an array of TX IDs where you are the seller for use with get_tx_info_multi or get_tx_info. If all is set to 1 returns an array with TX IDs and whether you are the seller or buyer for the transaction.
 
-Example response from server
+**Example response from server**
 
-```javascript
+```json
 [
   'CPBF23CBUSHKKOMV1OPMRBNEFV',
   'CPBF4COHLYGEZZYIGFDKFY9NDP',
@@ -704,34 +613,36 @@ Each element in the array represents a `txn_id`
 
 ## Get Conversion Limits
 
+---
+
 Get conversion limits.
 
-```javascript
-// callback (err, result)
-client.convertLimits(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-convert-limits
 
-// promise
-client.convertLimits(options).then().catch();
-
-// async/await
-await client.convertLimits(options);
+```typescript
+interface CoinpaymentsConvertLimitsOpts {
+  from: string
+  to: string
+}
+await client.convertLimits(options: CoinpaymentsConvertLimitsOpts)
 ```
 
-- `options` - **required**.
-- `options.from` - **required** From currency.
-- `options.to` - **required** To currency.
+- `from` - From currency.
+- `to` - To currency.
 
 Example response from server
 
 ```json
 {
   "min": "0.00301250",
-  "max": "0.80637488"
+  "max": "0.80637488",
+  "shapeshift_linked": true
 }
 ```
 
 - `min` - Min conversion
 - `max` - Max conversion
+- `shapeshift_linked` - Unknown
 
 _Note1_ that a 'max' value of 0.00000000 is valid and means there is no known upper limit available.
 
@@ -743,31 +654,27 @@ _Note2_: Due to provider fluctuation limits do vary often.
 
 ## Convert Coins
 
+---
+
 Convert coins. Coinpayments utilizes [Shapeshift.io](https://shapeshift.io) services.
 
-```javascript
-// callback (err, result)
-client.convertCoins(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-convert-limits
 
-// promise
-client.convertCoins(options).then().catch();
-
-// async/await
-await client.convertCoins(options);
+```typescript
+await client.convertCoins(options)
 ```
 
-- `options` - **required**.
-- `options.amount` - **required**. The amount convert in the 'from' currency below.
-- `options.from` - **required** From currency.
-- `options.to` - **required** To currency.
-- `options.address` - **optional** The address to send the funds to. If blank or not included the coins will go to your CoinPayments Wallet.
-- `options.dest_tag` - **optional** The destination tag to use for the withdrawal (for Ripple.) If 'address' is not included this has no effect.
+- `amount` - The amount convert in the 'from' currency below.
+- `from` - From currency.
+- `to` - To currency.
+- `address` - The address to send the funds to. If blank or not included the coins will go to your CoinPayments Wallet.
+- `dest_tag` - The destination tag to use for the withdrawal (for Ripple.) If 'address' is not included this has no effect.
 
 Example response from server
 
 ```json
 {
-  "id": "string"
+  "id": "id"
 }
 ```
 
@@ -779,25 +686,43 @@ Example response from server
 
 ## Create Transfer
 
+---
+
 Transfers are performed as internal coin transfers/accounting entries when possible. For coins not supporting that ability a withdrawal is created instead.
 
-```javascript
-// callback (err, result)
-client.createTransfer(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-create-transfer
 
-// promise
-client.createTransfer(options).then().catch();
+```typescript
+interface CoinpaymentsCreateTransferBaseOpts {
+  amount: number
+  currency: string
+  auto_confirm?: boolean
+  note?: string
+}
 
-// async/await
-await client.createTransfer(options);
+interface CoinpaymentsCreateTransferMerchantOpts
+  extends CoinpaymentsCreateTransferBaseOpts {
+  merchant: string
+}
+
+interface CoinpaymentsCreateTransferTagOpts
+  extends CoinpaymentsCreateTransferBaseOpts {
+  pbntag: string
+}
+
+type CoinpaymentsCreateTransferOpts =
+  | CoinpaymentsCreateTransferMerchantOpts
+  | CoinpaymentsCreateTransferTagOpts;
+
+await client.createTransfer(options: CoinpaymentsCreateTransferOpts)
 ```
 
-- `options` - **required**. Any enabled currency.
-- `options.amount` - **required** The amount of the transfer in the currency below.
-- `options.currency` - **required** The cryptocurrency to withdraw. (BTC, LTC, etc.)
-- `options.merchant` - **optional** The merchant ID to send the funds to, either this OR pbntag must be specified. Remember: this is a merchant ID and not a username.
-- `options.pbntag` - **optional** The $PayByName tag to send the funds to, either this OR merchant must be specified.
-- `options.auto_confirm` - **optional** If set to `0` the withdrawal will require an email confirmation in order for withdraw funds to go forth. (default `1`)
+- `amount` - The amount of the transfer in the currency below.
+- `currency` - The cryptocurrency to withdraw. (BTC, LTC, etc.)
+- `merchant` - The merchant ID to send the funds to, either this OR pbntag must be specified. Remember: this is a merchant ID and not a username.
+- `pbntag` - The \$PayByName tag to send the funds to, either this OR merchant must be specified.
+- `auto_confirm` - If set to `0` the withdrawal will require an email confirmation in order for withdraw funds to go forth. (default `1`)
+- `note` - This lets you set the note for the withdrawal.
 
 Example response from server
 
@@ -821,25 +746,45 @@ Example response from server
 
 Makes a withdrawal of funds from server to a determined wallet address.
 
-```javascript
-// callback (err, result)
-client.createWithdrawal(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-create-withdrawal
 
-// promise
-client.createWithdrawal(options).then().catch();
+```typescript
+export interface CoinpaymentsCreateWithdrawalBaseOpts {
+  amount: number
+  add_tx_fee?: number
+  currency: string
+  currency2?: string
+  dest_tag?: string
+  ipn_url?: string
+  auto_confirm?: number
+  note?: string
+}
 
-// async/await
-await client.createWithdrawal(options);
+export interface CoinpaymentsCreateWithdrawalMerchantOpts
+  extends CoinpaymentsCreateWithdrawalBaseOpts {
+  address: string
+}
+
+export interface CoinpaymentsCreateWithdrawalTagOpts
+  extends CoinpaymentsCreateWithdrawalBaseOpts {
+  pbntag: string
+}
+
+export type CoinpaymentsCreateWithdrawalOpts =
+  | CoinpaymentsCreateWithdrawalMerchantOpts
+  | CoinpaymentsCreateWithdrawalTagOpts;
+
+await client.createWithdrawal(options: CoinpaymentsCreateWithdrawalOpts)
 ```
 
-- `options` - **required**
-- `options.amount` - **required** The amount to withdraw
-- `options.currency` - **required** The currency to withdraw
-- `options.add_tx_fee` - **optional** If set to 1, add the coin TX fee to the withdrawal amount so the sender pays the TX fee instead of the receiver.
-- `options.address` - **required** Wallet address to send the funds to. \*\*Must be wallet address from the same network as = `options.currency`
-- `options.auto_confirm` - **optional** If set to `0` the withdrawal will require an email confirmation in order for withdraw funds to go forth. (default `1`)
-- `options.ipn_url` - **optional** explicit URL for the IPN to send POST requests to.
-- `options.note` - **optional** This lets you set the note for the withdrawal.
+- `amount` - The amount to withdraw
+- `currency` - The currency to withdraw
+- `add_tx_fee` - If set to `1`, add the coin TX fee to the withdrawal amount so the sender pays the TX fee instead of the receiver.
+- `pbntag` - The \$PayByName tag to send the funds to, either this OR merchant must be specified.
+- `address` - Wallet address to send the funds to. \*\*Must be wallet address from the same network as = `currency`
+- `auto_confirm` - If set to `0` the withdrawal will require an email confirmation in order for withdraw funds to go forth. (default `1`)
+- `ipn_url` - explicit URL for the IPN to send POST requests to.
+- `note` - This lets you set the note for the withdrawal.
 
 Example Response from server:
 
@@ -861,24 +806,28 @@ Example Response from server:
 
 ## Create Mass Withdrawal
 
+---
+
 Create a mass withdrawal
 
-```javascript
-// callback (err, result)
-client.createMassWithdrawal(withdrawalArray, callback);
+Official doc: https://www.coinpayments.net/apidoc-create-withdrawal
 
-// promise
-client.createMassWithdrawal(withdrawalArray).then().catch();
+```typescript
+interface CoinpaymentsCreateMassWithdrawalElement {
+  amount: number | string
+  currency: string
+  address: string
+  dest_tag?: string
+}
+type CoinpaymentsCreateMassWithdrawalOpts = CoinpaymentsCreateMassWithdrawalElement[];
 
-// async/await
-await client.createMassWithdrawal(withdrawalArray);
+await client.createMassWithdrawal(withdrawalArray: CoinpaymentsCreateMassWithdrawalOpts);
 ```
 
-- `withdrawalArray` - **required**. An array with withdrawal object.
-- `withdrawalArray[n].amount` - **required**. Every withdrawal object needs to have amount of currency below.
-- `withdrawalArray[n].address` - **required**. Every withdrawal object needs to have address to withdraw funds to.
-- `withdrawalArray[n].currency` - **required**. Every withdrawal object needs to have currency.
-- `withdrawalArray[n].dest_tag` - **optional**. Some currencies need dest_tag in order to withdraw.
+- `amount` - Every withdrawal object needs to have amount of currency below.
+- `address` - Every withdrawal object needs to have address to withdraw funds to.
+- `currency` - Every withdrawal object needs to have currency.
+- `dest_tag` - Some currencies need dest_tag in order to withdraw.
 
 Example response from server
 
@@ -895,31 +844,31 @@ Example response from server
 
 - `wd[n]` - Represents mapped withdrawalArray
 - `wd[n].error` - Error
-- `wd[n].status` - status = 0 or 1. 0 = Withdrawal created, waiting for email confirmation. 1 = Withdrawal created with no email confirmation needed.
+- `wd[n].status` - status = `0` or `1`. `0` = Withdrawal created, waiting for email confirmation. `1` = Withdrawal created with no email confirmation needed.
 - `wd[n].amount` - Withdrawal amount
 
 [back to top](#table)
 
 <a name="getwithdrawalinfo" />
 
-##Get Withdrawal Info
+## Get Withdrawal Info
+
+---
 
 Query the server for Withdraw ID status.
 
-```javascript
-// callback (err, result)
-client.getWithdrawalInfo(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-get-withdrawal-info
 
-// promise
-client.getWithdrawalInfo(options).then().catch();
-
-// async/await
-await client.getWithdrawalInfo(options);
+```typescript
+interface CoinpaymentsGetWithdrawalInfoOpts {
+  id: string
+}
+await client.getWithdrawalInfo(options: CoinpaymentsGetWithdrawalInfoOpts)
 ```
 
-- `options.id` - **required** (String) - Withdrawal id.
+- `id` - Withdrawal id.
 
-Example Response from server:
+**Example Response from server**
 
 ```json
 {
@@ -930,19 +879,18 @@ Example Response from server:
   "amount": 10000000000,
   "amountf": "100.00000000",
   "send_address": "PVtAyX2HgVmYk8BCw9NGvtaDNdkX2phrVA",
-  "send_txid":
-    "b601e7839c4c237f0fac36e93f98d648cfec402b8f8dbce617c675dac247599e"
+  "send_txid": "b601e7839c4c237f0fac36e93f98d648cfec402b8f8dbce617c675dac247599e"
 }
 ```
 
 - `time_created` - The time the withdrawal request was submitted.
-- `status` - The status of the withdrawal (-1 = Cancelled, 0 = Waiting for email confirmation, 1 = Pending, 2 = Complete).
+- `status` - The status of the withdrawal (`-1` = Cancelled, `0` = Waiting for email confirmation, `1` = Pending, `2` = Complete).
 - `status_text` - The status of the withdrawal in text format.
 - `coin` - The ticker symbol of the coin for the withdrawal.
 - `amount` - The amount of the withdrawal (in Satoshis).
 - `amountf` - The amount of the withdrawal (as a floating point number).
-- `send_address` - The address the withdrawal was sent to. (only in response if status == 2)
-- `send_txid` - The coin TX ID of the send. (only in response if status == 2)
+- `send_address` - The address the withdrawal was sent to. (only in response if status == `2`)
+- `send_txid` - The coin TX ID of the send. (only in response if status == `2`)
 
 [back to top](#table)
 
@@ -950,25 +898,26 @@ Example Response from server:
 
 ## Get Withdrawal History
 
+---
+
 Get withdrawal histroy
 
-```javascript
-// callback (err, result)
-client.getWithdrawalHistory(options, callback);
+Official doc: https://www.coinpayments.net/apidoc-get-withdrawal-history
 
-// promise
-client.getWithdrawalHistory(options).then().catch();
-
-// async/await
-await client.getWithdrawalHistory(options);
+```typescript
+interface CoinpaymentsGetWithdrawalHistoryOpts {
+  limit?: number
+  start?: number
+  newer?: Date
+}
+await client.getWithdrawalHistory(options?: CoinpaymentsGetWithdrawalHistoryOpts)
 ```
 
-- `options` - **optional**. Any enabled currency.
-- `options.limit` - **optional** The maximum number of withdrawals to return from 1-100. (default: 25)
-- `options.start` - **optional** What withdrawals # to start from (for iteration/pagination.) (default: 0, starts with your newest withdrawals.)
-- `options.newer` - **optional** Return withdrawals submitted at the given Unix timestamp or later. (default: 0)
+- `limit` - The maximum number of withdrawals to return from 1-100. (default: 25)
+- `start` - What withdrawals # to start from (for iteration/pagination.) (default: 0, starts with your newest withdrawals.)
+- `newer` - Return withdrawals submitted at the given Unix timestamp or later. (default: 0)
 
-Example response from server
+**Example response from server**
 
 ```json
 [
@@ -1000,13 +949,181 @@ Example response from server
 
 [back to top](#table)
 
-<a name="development" />
+<a name="claimtag" />
 
-## Local development
+## Claim tag
 
-Payment notifications are not available for local development. However, there is a feature which is outside of scope of this module.
-Most Coinpayment buttons [(Frontend form submissions)](https://www.coinpayments.net/merchant-tools-simple) have a bunch of handy parameters. Most handy would be: `success_url`, `cancel_url`.
-Like most eCommerce systems, there are usually two endpoints, one for callback URL ( client triggered ) and POST notifications ( payment processor confirmations ). Preferably on local development, using forms requests should be enought, however staging/production environments should include notifications.
+Claim \$PayByName Tag
+
+Official doc: https://www.coinpayments.net/apidoc-claim-pbn-tag
+
+```typescript
+interface CoinpaymentsClaimTagOpts {
+  tagid: string
+  name: string
+}
+await client.claimTag(options: CoinpaymentsClaimTagOpts)
+```
+
+- `tagid` - Unique tag ID
+- `name` - Name for the tag; for example a value of 'Apple' would be the PayByName tag \$Apple. Make sure to use the case you want the tag displayed with
+
+[back to top](#table)
+
+<a name="gettaglist" />
+
+## Get Tag list
+
+Get a list of owned tags.
+
+Official doc: https://www.coinpayments.net/apidoc-get-pbn-list
+
+```typescript
+await client.tagList()
+```
+
+**Example response from server**
+
+```json
+[
+  {
+    "tagid": "e893b55c2216a20e6761b1a9f32409df",
+    "pbntag": "Test1",
+    "time_expires": 2147483647
+  },
+  {
+    "tagid": "4293b55c2216a20e6761b1a9f32409de",
+    "pbntag": "Test2",
+    "time_expires": 2147483647
+  },
+  {
+    "tagid": "35df17c48fc16cff8dcee35cedd42d2d",
+    "pbntag": "",
+    "time_expires": 1497037845
+  }
+]
+```
+
+- `tagid` - This is the unique identifier of the tag in the system. This is the identifier you will use with the 'update_pbn_tag' and 'claim_pbn_tag' API calls.
+- `pbntag` - This is the $PayByName tag. An empty string means the tag is unclaimed. (Note that the tags do not have a $ at the front.)
+- `time_expires` - The time (Unix timestamp) of when the tag expires.
+
+[back to top](#table)
+
+<a name="updatetagprofile" />
+
+## Update Tag Profile
+
+Update \$PayByName Profile
+
+Official doc: https://www.coinpayments.net/apidoc-update-pbn-tag
+
+```typescript
+interface CoinpaymentsUpdateTagProfileOpts {
+  tagid: string
+  name?: string
+  email?: string
+  url?: string
+}
+await client.updateTagProfile(options: CoinpaymentsUpdateTagProfileOpts)
+```
+
+- `tagid` - Unique tag ID
+- `name` - Name for the profile. If field is not supplied the current name will be unchanged.
+- `email` - Email for the profile. If field is not supplied the current name will be unchanged.
+- `url` - Website URL for the profile. If field is not supplied the current name will be unchanged.
+
+[back to top](#table)
+
+<a name="renewtag" />
+
+## Renew Tag
+
+---
+
+Renew Tag
+
+Official doc: https://www.coinpayments.net/apidoc-renew-pbn-tag
+
+```typescript
+interface CoinpaymentsRenewTagOpts {
+  tagid: string
+  coin: string
+  years?: number
+}
+await client.renewTag(options: CoinpaymentsRenewTagOpts)
+```
+
+- `tagid` - Unique tag ID
+- `coin` - The coin to purchase the renewal with
+- `years` - The number of years to renew the tag for. (Default: `1`)
+
+[back to top](#table)
+
+<a name="deletetag" />
+
+## Delete Tag
+
+---
+
+Delete Tag
+
+Official doc: https://www.coinpayments.net/apidoc-delete-pbn-tag
+
+```typescript
+interface CoinpaymentsDeleteTagOpts {
+  tagid: string
+}
+await client.deleteTag(options: CoinpaymentsDeleteTagOpts)
+```
+
+- `tagid` - Unique tag ID
+
+[back to top](#table)
+
+<a name="buytag" />
+
+## Buy Tag
+
+---
+
+Buy Tag
+
+Official doc: https://www.coinpayments.net/apidoc-buy-pbn-tags
+
+```typescript
+interface CoinpaymentsBuyTagOpts {
+  coin: string
+  num?: number
+}
+await client.buyTag(options: CoinpaymentsBuyTagOpts)
+```
+
+- `coin` - The coin to purchase the renewal with.
+- `num` - The number of tags to buy: `1`, `5`, or `10`. (Default: `1`)
+
+[back to top](#table)
+
+<a name="claimcoupon" />
+
+## Claim coupon
+
+---
+
+Claim coupon
+
+Official doc: https://www.coinpayments.net/apidoc-claim-pbn-coupon
+
+```typescript
+interface CoinpaymentsClaimCouponOpts {
+  coupon: string
+}
+await client.claimCoupon(options: CoinpaymentsClaimCouponOpts)
+```
+
+- `coupon` - The coupon code to redeem.
+
+[back to top](#table)
 
 <a name="ipn" />
 
@@ -1030,13 +1147,3 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [back to top](#table)
-
-<a name="support" />
-
-## Support/Donate
-
-**Disclaimer**: I have no connections to the company Coinpayments.
-
-Support the development of opensource projects.
-
-Coinpayments merchant id `831b8d495071e5b0e1015486f5001150`

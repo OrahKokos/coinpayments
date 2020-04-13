@@ -161,7 +161,7 @@ export default class Coinpayments {
     options: CoinpaymentsCreateWithdrawalOpts,
     callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateWithdrawalResponse>
   ) {
-    options = { auto_confirm: true, ...options }
+    options = { auto_confirm: 1, ...options }
     return request<CoinpaymentsCreateWithdrawalResponse>(
       this.credentials,
       mapPayload<CoinpaymentsCreateWithdrawalOpts>(options, {

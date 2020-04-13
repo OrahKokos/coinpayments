@@ -14,7 +14,7 @@ describe('Create mass withdrawal e2e test', () => {
     currency: 'x',
     amount: 1,
     pbntag: 'pbntag',
-    auto_confirm: false,
+    auto_confirm: 0,
   }
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
@@ -22,12 +22,12 @@ describe('Create mass withdrawal e2e test', () => {
   it('Should catch valid payload', async () => {
     const VALID_PAYLOAD_MOCK_1 = {
       cmd: CMDS.CREATE_WITHDRAWAL,
-      auto_confirm: true,
+      auto_confirm: 1,
       ...VALID_API_PAYLOAD_1,
     }
     const VALID_PAYLOAD_MOCK_2 = {
       cmd: CMDS.CREATE_WITHDRAWAL,
-      auto_confirm: false,
+      auto_confirm: 0,
       ...VALID_API_PAYLOAD_2,
     }
     const scope1 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK_1)

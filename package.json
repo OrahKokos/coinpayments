@@ -14,7 +14,7 @@
   },
   "scripts": {
     "main": "dist/index.js",
-    "start": "ts-node-dev --inspect=4321 --respawn --transpileOnly src/index.ts",
+    "start": "ts-node-dev --inspect=4321 --respawn --transpileOnly src/test.ts",
     "build": "rm -rf dist/ && tsc -p tsconfig.build.json",
     "build:prod": "rm -rf dist/ && tsc -p tsconfig.prod.build.json",
     "lint": "tslint -p tsconfig.json -c tslint.json",

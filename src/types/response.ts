@@ -7,6 +7,8 @@ export interface CoinpaymentsGetBasicInfoResponse {
   email: string
   public_name: string
   time_joined: number
+  kyc_status: boolean
+  swych_tos_accepted: boolean
 }
 
 export interface CoinpaymentsGetProfileResponse {
@@ -58,9 +60,11 @@ export interface CoinpaymentsRatesResponse {
     last_update: string
     tx_fee: string
     status: string
-    name?: string
-    confirms?: string
+    name: string
+    confirms: string
+    can_convert: number | boolean
     capabilities: string[]
+    explorer: string
   }
 }
 
@@ -116,6 +120,7 @@ export type CoinpaymentsGetTxListResponse = string[]
 export interface CoinpaymentsConvertLimitsResponse {
   min: string
   max: string
+  shapeshift_linked: boolean
 }
 
 export interface CoinpaymentsConvertCoinsResponse {
