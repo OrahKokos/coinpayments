@@ -226,54 +226,43 @@ await client.rates(options?: CoinpaymentsRatesOpts)
 
 ```json
 {
-    "BTC": {
-      "is_fiat": 0,
-      "rate_btc": "1.000000000000000000000000",
-      "last_update": "1375473661",
-      "tx_fee": "0.00100000",
-      "status": "online",
-      "name": "Bitcoin",
-      "confirms": "2",
-      "can_convert": 0,
-      "capabilities": [
-        "payments",
-        "wallet",
-        "transfers",
-        "convert"
-      ],
-      "explorer": 'https://etherscan.io/tx/%txid%'
-    },
-    "LTC": {
-      "is_fiat": 0,
-      "rate_btc": "0.018343387500000000000000",
-      "last_update": "1518463609",
-      "tx_fee": "0.00100000",
-      "status": "online",
-      "name": "Litecoin",
-      "confirms": "3",
-      "can_convert": 0,
-      "capabilities": [
-        "payments",
-        "wallet",
-        "transfers",
-        "convert"
-      ],
-      "explorer": 'https://etherscan.io/tx/%txid%'
-    },
-    "USD": {
-      "is_fiat": 1,
-      "rate_btc": "0.000114884285404190000000",
-      "last_update": "1518463609",
-      "tx_fee": "0.00000000",
-      "status": "online",
-      "name": "United States Dollar",
-      "confirms": "1",
-      "can_convert": 0,
-      "capabilities": [],
-      "explorer": 'https://etherscan.io/tx/%txid%'
-    },
-    ...
+  "BTC": {
+    "is_fiat": 0,
+    "rate_btc": "1.000000000000000000000000",
+    "last_update": "1375473661",
+    "tx_fee": "0.00100000",
+    "status": "online",
+    "name": "Bitcoin",
+    "confirms": "2",
+    "can_convert": 0,
+    "capabilities": ["payments", "wallet", "transfers", "convert"],
+    "explorer": "https://etherscan.io/tx/%txid%"
+  },
+  "LTC": {
+    "is_fiat": 0,
+    "rate_btc": "0.018343387500000000000000",
+    "last_update": "1518463609",
+    "tx_fee": "0.00100000",
+    "status": "online",
+    "name": "Litecoin",
+    "confirms": "3",
+    "can_convert": 0,
+    "capabilities": ["payments", "wallet", "transfers", "convert"],
+    "explorer": "https://etherscan.io/tx/%txid%"
+  },
+  "USD": {
+    "is_fiat": 1,
+    "rate_btc": "0.000114884285404190000000",
+    "last_update": "1518463609",
+    "tx_fee": "0.00000000",
+    "status": "online",
+    "name": "United States Dollar",
+    "confirms": "1",
+    "can_convert": 0,
+    "capabilities": [],
+    "explorer": "https://etherscan.io/tx/%txid%"
   }
+}
 ```
 
 - `name` - The coin's full/display name.
@@ -570,7 +559,7 @@ WH&key=4d7321119c0a533250de336138d4bb14",
 
 <a name="gettxlist" />
 
-## Get Transaction LIST
+## Get Transaction List
 
 ---
 
@@ -597,10 +586,10 @@ await client.getTxList(options: CoinpaymentsGetTxListOpts)
 
 ```json
 [
-  'CPBF23CBUSHKKOMV1OPMRBNEFV',
-  'CPBF4COHLYGEZZYIGFDKFY9NDP',
-  'CPBF6BFPJTSLC3Z49CT82NVYJ8',
-  'CPBF2L8QSXIG2YGKLVO5N0WTXJ',
+  "CPBF23CBUSHKKOMV1OPMRBNEFV",
+  "CPBF4COHLYGEZZYIGFDKFY9NDP",
+  "CPBF6BFPJTSLC3Z49CT82NVYJ8",
+  "CPBF2L8QSXIG2YGKLVO5N0WTXJ",
   ...
 ]
 ```
@@ -734,7 +723,7 @@ Example response from server
 ```
 
 - `id` - The CoinPayments transfer/withdrawal ID. (This is not a coin network TX ID.)
-- `status` - status = 0 or 1. 0 = Transfer created, waiting for email confirmation. 1 = Transfer created with no email confirmation needed.
+- `status` - status = `0` or `1`. `0` = Transfer created, waiting for email confirmation. `1` = Transfer created with no email confirmation needed.
 
 [back to top](#table)
 
@@ -798,7 +787,7 @@ Example Response from server:
 
 - `id` - The CoinPayments.net withdrawal ID.
 - `amount` - Amount to be withdrawn
-- `status` - 0 or 1. 0 = Withdrawal created, waiting for email confirmation. 1 = Withdrawal created with no email confirmation needed
+- `status` - `0` or `1`. `0` = Withdrawal created, waiting for email confirmation. `1` = Withdrawal created with no email confirmation needed
 
 [back to top](#table)
 
@@ -942,8 +931,7 @@ await client.getWithdrawalHistory(options?: CoinpaymentsGetWithdrawalHistoryOpts
     "amountf": "0.10000000",
     "send_address": "PMmPaNBzQEmJSZ6XYSDeXYxAC8MVJx3nGM",
     "send_txid": "8d990f0a833c8c61177ed0b0a7e5ff2e3fa03cc28a9cf5d1dfb171c45b0712c3"
-  },
-  ...
+  }
 ]
 ```
 
