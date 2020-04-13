@@ -16,7 +16,7 @@
     "build:prod": "rm -rf dist/ && tsc -p tsconfig.prod.build.json",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "pretty": "prettier --write \"src/**/*.ts\"",
-    "test": "jest --config ./jest.config.js --coverage",
+    "test": "jest --config ./jest.config.js --coverage --runInBand",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
     "prepublish": "yarn build:prod"
   },
