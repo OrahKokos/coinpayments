@@ -106,7 +106,7 @@ export default class Coinpayments {
       | CoinpaymentsRatesOpts
       | CoinpaymentsReturnCallback<CoinpaymentsRatesResponse>,
     callback?: CoinpaymentsReturnCallback<CoinpaymentsRatesResponse>
-  ): Promise<CoinpaymentsRatesResponse> | void {
+  ): Promise<CoinpaymentsRatesResponse> {
     if (!options && !callback) {
       options = {}
     }

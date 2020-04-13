@@ -8,10 +8,41 @@ describe('Internal integration tests', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should trigger callback on invalid validation', done => {
+  // Validation - callback
+  it('Should trigger callback on valid validation', done => {
+    const VALID_PAYLOAD = { txid: 'txid' }
+    const VALID_PAYLOAD_MOCK = {
+      cmd: CMDS.GET_TX,
+      ...VALID_PAYLOAD,
+    }
+    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    client.getTx(VALID_PAYLOAD, (err, response) => {
+      expect(err).toBeNull()
+      expect(response).toBeTruthy()
+      expect(scope.isDone()).toBeTruthy()
+      return done()
+    })
+  })
+  // Invalidation - callback
+  it('Should trigger callback on valid validation', done => {
     const INVALID_PAYLOAD = {}
     client.getTx(INVALID_PAYLOAD, err => {
       expect(err).toBeInstanceOf(Error)
+      return done()
+    })
+  })
+  // resolveRequest Callback
+  it('Should trigger callback on resolveRequest - API Error', done => {
+    const VALID_PAYLOAD = { txid: 'txid' }
+    const VALID_PAYLOAD_MOCK = {
+      cmd: CMDS.GET_TX,
+      ...VALID_PAYLOAD,
+    }
+    const API_ERROR = { error: 'not-ok' }
+    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK, API_ERROR)
+    client.getTx(VALID_PAYLOAD, err => {
+      expect(err).toBeInstanceOf(Error)
+      expect(scope.isDone()).toBeTruthy()
       return done()
     })
   })

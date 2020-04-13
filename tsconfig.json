@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "module": "CommonJS",
+    "allowSyntheticDefaultImports": true,
+    "target": "ES6",
     "baseUrl": "./src",
-    "lib": ["es2017", "es7", "es6", "dom"],
+    "lib": ["ES2017", "ES7", "ES6"],
     "allowJs": false,
     "checkJs": false,
     "outDir": "./dist",

@@ -19,8 +19,6 @@ import {
   CoinpaymentsInternalRequestOps,
   CoinpaymentsInternalResponse,
   CoinpaymentsReturnCallback,
-  rejectReturnType,
-  resolveReturnType,
 } from './types/base'
 
 export const getPrivateHeaders = (
@@ -40,60 +38,60 @@ export const getPrivateHeaders = (
   }
 }
 
-export const resolveRequest = <ExpectedResponse>(
+export const resolveRequest = async <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
   options: CoinpaymentsRequest,
   callback?: CoinpaymentsReturnCallback<ExpectedResponse>
-) => {
-  if (callback) {
-    const callbackResolver = resolvedPayload => callback(null, resolvedPayload)
-
-    return makeRequest<ExpectedResponse>(
-      reqOps,
-      options,
-      callbackResolver,
-      callback
-    )
+): Promise<ExpectedResponse> => {
+  let response
+  try {
+    response = await makeRequest<ExpectedResponse>(reqOps, options)
+  } catch (e) {
+    if (callback) {
+      return callback(e)
+    }
+    return Promise.reject(e)
   }
-  return new Promise<ExpectedResponse>((resolve, reject) => {
-    return makeRequest<ExpectedResponse>(reqOps, options, resolve, reject)
-  })
+  if (callback) {
+    return callback(null, response)
+  }
+  return Promise.resolve(response)
 }
 
 export const makeRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
-  options: CoinpaymentsRequest,
-  resolve: resolveReturnType,
-  reject: rejectReturnType
-): void => {
-  const req = httpsRequest(reqOps, res => {
-    let chunks = ''
+  options: CoinpaymentsRequest
+) => {
+  return new Promise((resolve, reject) => {
+    const req = httpsRequest(reqOps, res => {
+      let chunks = ''
 
-    res.setEncoding('utf8')
+      res.setEncoding('utf8')
 
-    res.on('data', chunk => {
-      chunks += chunk
+      res.on('data', chunk => {
+        chunks += chunk
+      })
+
+      res.on('end', () => {
+        let data: CoinpaymentsInternalResponse<ExpectedResponse> = {
+          error: API_VALID_RESPONSE,
+        }
+        try {
+          data = JSON.parse(chunks)
+        } catch (e) {
+          return reject(new CoinpaymentsError('Invalid response', chunks))
+        }
+
+        if (data.error !== API_VALID_RESPONSE) {
+          return reject(new CoinpaymentsError(data.error, data))
+        }
+        return resolve(data.result)
+      })
     })
-
-    res.on('end', () => {
-      let data: CoinpaymentsInternalResponse<ExpectedResponse> = {
-        error: API_VALID_RESPONSE,
-      }
-      try {
-        data = JSON.parse(chunks)
-      } catch (e) {
-        return reject(new CoinpaymentsError('Invalid response', chunks))
-      }
-
-      if (data.error !== API_VALID_RESPONSE) {
-        return reject(new CoinpaymentsError(data.error, data))
-      }
-      return resolve(data.result)
-    })
+    req.on('error', reject)
+    req.write(stringify(options))
+    return req.end()
   })
-  req.on('error', reject)
-  req.write(stringify(options))
-  return req.end()
 }
 
 export const getRequestOptions = (
@@ -125,7 +123,7 @@ export const request = <ExpectedResponse>(
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest,
   callback?: CoinpaymentsReturnCallback<ExpectedResponse>
-): Promise<ExpectedResponse> | void => {
+): Promise<ExpectedResponse> => {
   try {
     validatePayload(options)
   } catch (e) {

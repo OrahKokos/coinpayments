@@ -29,11 +29,3 @@ export interface CoinpaymentsInternalResponse<ExpectedResponse> {
   error?: isCoinpaymentsError
   result?: ExpectedResponse
 }
-
-export type rejectReturnType = (
-  err: CoinpaymentsError | Error
-) => any | PromiseLike<any>
-
-export type resolveReturnType = <ExpectedResponse>(
-  ExpectedResponse
-) => any | PromiseLike<ExpectedResponse>
