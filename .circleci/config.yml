@@ -35,10 +35,10 @@ jobs:
       - node/install-packages
       - run:
           name: Run Linter
-          command: yarn lint
+          command: npm run lint
       - run:
           name: Run tests
-          command: yarn test
+          command: npm run test
       - codecov/upload:
           file: coverage/*.json
 workflows:
