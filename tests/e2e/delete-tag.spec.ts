@@ -1,4 +1,8 @@
-import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  generateInvalidPayloadTests,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -20,11 +24,5 @@ describe('Delete tag e2e test', () => {
     await client.deleteTag(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })
-  it('Should throw error on invalid payload', async () => {
-    for (const key in VALID_API_PAYLOAD) {
-      const invalidPayloadOverride = { ...VALID_API_PAYLOAD }
-      delete invalidPayloadOverride[key]
-      await expect(client.deleteTag(invalidPayloadOverride)).rejects.toThrow()
-    }
-  })
+  generateInvalidPayloadTests('deleteTag', VALID_API_PAYLOAD)
 })

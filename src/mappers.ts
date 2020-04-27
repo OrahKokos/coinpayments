@@ -29,7 +29,10 @@ export const mapMassWithdrawalPayload = (
 
     return ops
   }, {})
-  return mapPayload<object>(payload, defaultFields)
+  return {
+    ...defaultFields,
+    ...payload,
+  }
 }
 
 export const mapGetTxMultiPayload = (
@@ -37,5 +40,8 @@ export const mapGetTxMultiPayload = (
   defaultFields: CoinpaymentsRequest
 ): CoinpaymentsRequest => {
   const payload = { txid: txArray.join('|') }
-  return mapPayload<{ txid: string }>(payload, defaultFields)
+  return {
+    ...defaultFields,
+    ...payload,
+  }
 }

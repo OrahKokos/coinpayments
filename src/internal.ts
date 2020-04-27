@@ -41,7 +41,7 @@ export const getPrivateHeaders = (
 export const makeRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
   options: CoinpaymentsRequest
-) => {
+): Promise<ExpectedResponse> => {
   return new Promise((resolve, reject) => {
     const req = httpsRequest(reqOps, res => {
       let chunks = ''
@@ -74,30 +74,10 @@ export const makeRequest = <ExpectedResponse>(
   })
 }
 
-export const resolveRequest = async <ExpectedResponse>(
-  reqOps: CoinpaymentsInternalRequestOps,
-  options: CoinpaymentsRequest,
-  callback?: CoinpaymentsReturnCallback<ExpectedResponse>
-): Promise<ExpectedResponse> => {
-  let response
-  try {
-    response = await makeRequest<ExpectedResponse>(reqOps, options)
-  } catch (e) {
-    if (callback) {
-      return callback(e)
-    }
-    return Promise.reject(e)
-  }
-  if (callback) {
-    return callback(null, response)
-  }
-  return Promise.resolve(response)
-}
-
 export const getRequestOptions = (
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest
-) => {
+): CoinpaymentsInternalRequestOps => {
   return {
     protocol: API_PROTOCOL,
     method: 'post',
@@ -119,20 +99,27 @@ export const applyDefaultOptionValues = (
   }
 }
 
-export const request = <ExpectedResponse>(
+export const request = async <ExpectedResponse>(
   credentials: CoinpaymentsCredentials,
   options: CoinpaymentsRequest,
   callback?: CoinpaymentsReturnCallback<ExpectedResponse>
 ): Promise<ExpectedResponse> => {
   try {
     validatePayload(options)
+    options = applyDefaultOptionValues(credentials, options)
+    const reqOps = getRequestOptions(credentials, options)
+    const response: ExpectedResponse = await makeRequest<ExpectedResponse>(
+      reqOps,
+      options
+    )
+    if (callback) {
+      return callback(null, response)
+    }
+    return response
   } catch (e) {
     if (callback) {
       return callback(e)
     }
     return Promise.reject(e)
   }
-  options = applyDefaultOptionValues(credentials, options)
-  const reqOps = getRequestOptions(credentials, options)
-  return resolveRequest<ExpectedResponse>(reqOps, options, callback)
 }

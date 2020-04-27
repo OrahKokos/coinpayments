@@ -8,7 +8,7 @@ import { CoinpaymentsRequest } from '../types/base'
 export const getVariations = (validationSchema: any): Array<Array<string>> => {
   const variations = validationSchema.find(key => Array.isArray(key))
   const staticKeys = validationSchema.filter(key => !Array.isArray(key))
-  if (!variations || !variations.length) {
+  if (!variations?.length) {
     return [validationSchema]
   }
   return variations.map(variation => {

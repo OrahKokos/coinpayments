@@ -1,4 +1,8 @@
-import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  generateInvalidPayloadTests,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -37,16 +41,12 @@ describe('Create transfer integration test', () => {
     await client.createTransfer(VALID_API_PAYLOAD_2)
     expect(scope2.isDone()).toBeTruthy()
   })
-  it('Should throw error on invalid payload', async () => {
-    for (const key in VALID_API_PAYLOAD_1) {
-      const invalidPayloadOverride = { ...VALID_API_PAYLOAD_1 }
-      delete invalidPayloadOverride[key]
-      await expect(
-        client.createTransfer(invalidPayloadOverride)
-      ).rejects.toThrow()
-    }
+
+  it('Should throw error on mutually exclusive option', async () => {
     await expect(
       client.createTransfer({ ...VALID_API_PAYLOAD_1, ...VALID_API_PAYLOAD_2 })
     ).rejects.toThrow()
   })
+
+  generateInvalidPayloadTests('convertLimits', VALID_API_PAYLOAD_1)
 })

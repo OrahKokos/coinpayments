@@ -1,10 +1,14 @@
-import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  generateInvalidPayloadTests,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
 
 describe('Create transaction e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   const VALID_API_PAYLOAD = {
     currency1: 'x',
     currency2: 'y',
@@ -23,13 +27,6 @@ describe('Create transaction e2e test', () => {
     await client.createTransaction(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })
-  it('Should throw error on invalid payload', async () => {
-    for (const key in VALID_API_PAYLOAD) {
-      const invalidPayloadOverride = { ...VALID_API_PAYLOAD }
-      delete invalidPayloadOverride[key]
-      await expect(
-        client.createTransaction(invalidPayloadOverride)
-      ).rejects.toThrow()
-    }
-  })
+
+  generateInvalidPayloadTests('createTransaction', VALID_API_PAYLOAD)
 })

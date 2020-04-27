@@ -3,6 +3,8 @@ import { stringify } from 'querystring'
 
 import nock from 'nock'
 
+import CoinpaymentsClient from '../../src'
+
 import {
   API_PROTOCOL,
   API_HOST,
@@ -34,6 +36,22 @@ export const assertDefaultResponseCallback = (scope, done) =>
     expect(scope.isDone()).toBeTruthy()
     return done()
   })
+
+export const generateInvalidPayloadTests = (fnName, VALID_API_PAYLOAD) => {
+  let client: CoinpaymentsClient
+  beforeAll(() => {
+    client = new CoinpaymentsClient(mockCredentials)
+  })
+  describe('Invalidation tests', () => {
+    for (const key in VALID_API_PAYLOAD) {
+      it(`Should throw error on ${fnName} invalid payload: Missing ${key}`, async () => {
+        const invalidPayloadOverride = { ...VALID_API_PAYLOAD }
+        delete invalidPayloadOverride[key]
+        expect(client[fnName](invalidPayloadOverride)).rejects.toThrow()
+      })
+    }
+  })
+}
 
 export const prepareHTTPInterceptor = (
   credentials,

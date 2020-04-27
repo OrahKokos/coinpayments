@@ -1,4 +1,8 @@
-import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  generateInvalidPayloadTests,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -38,14 +42,7 @@ describe('Create mass withdrawal e2e test', () => {
     await client.createWithdrawal(VALID_API_PAYLOAD_2)
     expect(scope2.isDone()).toBeTruthy()
   })
-  it('Should throw error on invalid payload', async () => {
-    for (const key in VALID_API_PAYLOAD_1) {
-      const invalidPayloadOverride = { ...VALID_API_PAYLOAD_1 }
-      delete invalidPayloadOverride[key]
-      await expect(
-        client.createWithdrawal(invalidPayloadOverride)
-      ).rejects.toThrow()
-    }
+  it('Should throw error on mutually exclusive option', async () => {
     await expect(
       client.createWithdrawal({
         ...VALID_API_PAYLOAD_1,
@@ -53,4 +50,5 @@ describe('Create mass withdrawal e2e test', () => {
       })
     ).rejects.toThrow()
   })
+  generateInvalidPayloadTests('createWithdrawal', VALID_API_PAYLOAD_1)
 })
