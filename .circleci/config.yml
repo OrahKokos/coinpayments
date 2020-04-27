@@ -2,14 +2,33 @@ version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.5
   node: circleci/node@2.0.3
+docker_default: &default
+  docker:
+    - image: "cimg/base:stable"
 jobs:
-  build-test:
-    docker:
-      - image: cimg/base:stable
+  run-tests-latest:
+    <<: *default
     steps:
-      - checkout
       - node/install:
           install-yarn: true
+          node-version: latest
+      - run: node --version
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: yarn.lock
+      - run:
+          name: Run Linter
+          command: yarn lint
+      - run:
+          name: Run tests
+          command: yarn test
+      - codecov/upload:
+          file: coverage/*.json
+  run-tests-legacy:
+    <<: *default
+    steps:
+      - node/install:
+          node-version: 6.15.1-browsers-legacy
       - run: node --version
       - node/install-packages
       - run:
@@ -21,9 +40,8 @@ jobs:
       - codecov/upload:
           file: coverage/*.json
 workflows:
-  matrix-tests:
+  run-tests:
     jobs:
-      - node/test:
-          version: latest
-      - node/test:
-          version: 6.15.1-browsers-legacy
+      - checkout
+      - run-tests-latest
+      - run-tests-legacy
