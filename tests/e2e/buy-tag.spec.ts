@@ -3,6 +3,7 @@ import {
   mockCredentials,
   generateInvalidPayloadTests,
 } from '../helpers'
+
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
