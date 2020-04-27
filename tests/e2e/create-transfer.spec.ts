@@ -8,7 +8,7 @@ import CoinpaymentsClient from '../../src'
 import { CMDS } from '../../src/constants'
 
 describe('Create transfer integration test', () => {
-  let client
+  let client: CoinpaymentsClient
   const VALID_API_PAYLOAD_1 = {
     currency: 'x',
     amount: '1',
@@ -23,7 +23,7 @@ describe('Create transfer integration test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async () => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK_1 = {
       cmd: CMDS.CREATE_TRANSFER,
       auto_confirm: true,

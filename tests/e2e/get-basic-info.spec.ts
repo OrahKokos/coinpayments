@@ -8,11 +8,11 @@ import CoinpaymentsClient from '../../src'
 import { CMDS } from '../../src/constants'
 
 describe('Create transaction e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async done => {
+  it('Should not throw error on valid payload', async done => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.GET_BASIC_INFO,
     }

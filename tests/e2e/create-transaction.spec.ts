@@ -18,7 +18,7 @@ describe('Create transaction e2e test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async () => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.CREATE_TRANSACTION,
       ...VALID_API_PAYLOAD,

@@ -8,7 +8,7 @@ import CoinpaymentsClient from '../../src'
 import { CMDS } from '../../src/constants'
 
 describe('Claim tag e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   const VALID_API_PAYLOAD = {
     tagid: 'tagid',
     name: 'name',
@@ -16,7 +16,7 @@ describe('Claim tag e2e test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async () => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.CLAIM_TAG,
       ...VALID_API_PAYLOAD,

@@ -12,7 +12,7 @@ describe('Get tag list e2e test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async done => {
+  it('Should not throw error on valid payload', async done => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.GET_TAG_LIST,
     }

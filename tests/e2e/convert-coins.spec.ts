@@ -8,7 +8,7 @@ import CoinpaymentsClient from '../../src'
 import { CMDS } from '../../src/constants'
 
 describe('Convert coins e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   const VALID_API_PAYLOAD = {
     from: 'x',
     to: 'y',
@@ -17,7 +17,7 @@ describe('Convert coins e2e test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async () => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.CONVERT,
       ...VALID_API_PAYLOAD,

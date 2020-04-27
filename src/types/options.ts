@@ -50,7 +50,7 @@ export interface CoinpaymentsGetDepositAddressOpts {
 }
 
 export interface CoinpaymentsCreateTransferBaseOpts {
-  amount: number
+  amount: number | string
   currency: string
   auto_confirm?: boolean
   note?: string

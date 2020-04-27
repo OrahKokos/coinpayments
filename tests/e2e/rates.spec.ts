@@ -8,11 +8,11 @@ import CoinpaymentsClient from '../../src'
 import { CMDS } from '../../src/constants'
 
 describe('Rates e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload - no args', async () => {
+  it('Should not throw error on valid payload - no args', async () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.RATES,
     }
@@ -21,7 +21,7 @@ describe('Rates e2e test', () => {
     await rates()
     expect(scope.isDone()).toBeTruthy()
   })
-  it('Should catch valid payload - only callback', done => {
+  it('Should not throw error on valid payload - only callback', done => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.RATES,
     }
@@ -30,7 +30,7 @@ describe('Rates e2e test', () => {
     const mockCallback = assertDefaultResponseCallback(scope, done)
     return rates(mockCallback)
   })
-  it('Should catch valid payload - args & callback', done => {
+  it('Should not throw error on valid payload - args & callback', done => {
     const VALID_API_PAYLOAD = {
       accepted: 1,
       short: 1,

@@ -5,7 +5,7 @@ import { mapMassWithdrawalPayload } from '../../src/mappers'
 import { CMDS } from '../../src/constants'
 
 describe('Create transaction e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   const VALID_API_PAYLOAD = [
     {
       currency: 'BTC',
@@ -88,7 +88,7 @@ describe('Create transaction e2e test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async () => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK = mapMassWithdrawalPayload(VALID_API_PAYLOAD, {
       cmd: CMDS.CREATE_MASS_WITHDRAWAL,
     })
@@ -99,7 +99,7 @@ describe('Create transaction e2e test', () => {
   })
   it('Should throw error on invalid payload', async () => {
     await expect(
-      client.createMassWithdrawal(INVALID_API_PAYLOAD)
+      client.createMassWithdrawal.call(client, INVALID_API_PAYLOAD)
     ).rejects.toThrow()
   })
 })

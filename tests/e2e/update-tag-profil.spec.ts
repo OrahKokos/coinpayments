@@ -1,17 +1,21 @@
-import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  generateInvalidPayloadTests,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
 
 describe('Update tag profile e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   const VALID_API_PAYLOAD = {
     tagid: 'tagid',
   }
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should catch valid payload', async () => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.UPDATE_TAG,
       ...VALID_API_PAYLOAD,
@@ -20,13 +24,5 @@ describe('Update tag profile e2e test', () => {
     await client.updateTagProfile(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })
-  it('Should throw error on invalid payload', async () => {
-    for (const key in VALID_API_PAYLOAD) {
-      const invalidPayloadOverride = { ...VALID_API_PAYLOAD }
-      delete invalidPayloadOverride[key]
-      await expect(
-        client.updateTagProfile(invalidPayloadOverride)
-      ).rejects.toThrow()
-    }
-  })
+  generateInvalidPayloadTests('updateTagProfile', VALID_API_PAYLOAD)
 })
