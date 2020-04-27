@@ -44,6 +44,5 @@ jobs:
 workflows:
   run-tests:
     jobs:
-      - checkout
       - run-tests-latest
       - run-tests-legacy
