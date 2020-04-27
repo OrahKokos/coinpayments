@@ -30,7 +30,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: 6.15.1-browsers-legacy
+          node-version: 6.17.1
       - run: node --version
       - node/install-packages
       - run:
