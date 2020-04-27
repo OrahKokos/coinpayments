@@ -1,24 +1,17 @@
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.5
+  node: circleci/node@2.0.3
 jobs:
-  build:
+  build-test:
     docker:
-      - image: circleci/node:latest
+      - image: cimg/base:stable
     steps:
       - checkout
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
+      - node/install:
+          install-yarn: true
+      - run: node --version
+      - node/install-packages
       - run:
           name: Run Linter
           command: yarn lint
@@ -27,3 +20,10 @@ jobs:
           command: yarn test
       - codecov/upload:
           file: coverage/*.json
+workflows:
+  matrix-tests:
+    jobs:
+      - node/test:
+          version: latest
+      - node/test:
+          version: 6.15.1-browsers-legacy
