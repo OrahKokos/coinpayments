@@ -67,7 +67,7 @@ import {
   CoinpaymentsBuyTagResponse,
 } from './types/response'
 
-export default class Coinpayments {
+class Coinpayments {
   private credentials: CoinpaymentsCredentials
 
   constructor({ key = '', secret = '' }: CoinpaymentsCredentials) {
@@ -482,3 +482,5 @@ export default class Coinpayments {
     )
   }
 }
+module.exports = Coinpayments
+export { Coinpayments }
