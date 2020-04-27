@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 import { mapGetTxMultiPayload } from '../../src/mappers'
 
@@ -14,7 +14,7 @@ describe('Get transaction multi e2e test', () => {
     const VALID_PAYLOAD_MOCK = mapGetTxMultiPayload(VALID_API_PAYLOAD, {
       cmd: CMDS.GET_TX_MULTI,
     })
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.getTxMulti(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })

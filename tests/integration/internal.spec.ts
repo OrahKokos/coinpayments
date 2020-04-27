@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -15,7 +15,7 @@ describe('Internal integration tests', () => {
       cmd: CMDS.GET_TX,
       ...VALID_PAYLOAD,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     client.getTx(VALID_PAYLOAD, (err, response) => {
       expect(err).toBeNull()
       expect(response).toBeTruthy()
@@ -39,7 +39,11 @@ describe('Internal integration tests', () => {
       ...VALID_PAYLOAD,
     }
     const API_ERROR = { error: 'not-ok' }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK, API_ERROR)
+    const scope = prepareHTTPInterceptor(
+      mockCredentials,
+      VALID_PAYLOAD_MOCK,
+      API_ERROR
+    )
     client.getTx(VALID_PAYLOAD, err => {
       expect(err).toBeInstanceOf(Error)
       expect(scope.isDone()).toBeTruthy()
@@ -51,7 +55,11 @@ describe('Internal integration tests', () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.RATES,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK, INVALID_JSON)
+    const scope = prepareHTTPInterceptor(
+      mockCredentials,
+      VALID_PAYLOAD_MOCK,
+      INVALID_JSON
+    )
     await expect(client.rates()).rejects.toThrow('Invalid response')
     expect(scope.isDone()).toBeTruthy()
   })
@@ -60,7 +68,11 @@ describe('Internal integration tests', () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.RATES,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK, API_ERROR)
+    const scope = prepareHTTPInterceptor(
+      mockCredentials,
+      VALID_PAYLOAD_MOCK,
+      API_ERROR
+    )
     await expect(client.rates()).rejects.toThrow('not-ok')
     expect(scope.isDone()).toBeTruthy()
   })

@@ -5,16 +5,15 @@ import { CMDS } from '../constants'
 
 import { CoinpaymentsRequest } from '../types/base'
 
-export const validatePayload = (options: CoinpaymentsRequest): void => {
-  if (options.cmd === CMDS.CREATE_MASS_WITHDRAWAL) {
-    if (!validateMassWithDrawal(options)) {
-      throw new CoinpaymentsError('Invalid mass withdrawal payload', options)
-    }
+export const getVariations = (validationSchema: any): Array<Array<string>> => {
+  const variations = validationSchema.find(key => Array.isArray(key))
+  const staticKeys = validationSchema.filter(key => !Array.isArray(key))
+  if (!variations || !variations.length) {
+    return [validationSchema]
   }
-  const validationSchema = getValidationSchema(options.cmd)
-  if (!validate(validationSchema, options)) {
-    throw new CoinpaymentsError('Missing parameters', options)
-  }
+  return variations.map(variation => {
+    return [].concat(staticKeys).concat([variation])
+  })
 }
 
 export const getValidationSchema = (
@@ -28,17 +27,6 @@ export const getValidationSchema = (
     throw new CoinpaymentsError(`No such method ${cmd}`)
   }
   return validationSchema
-}
-
-export const getVariations = (validationSchema: any): Array<Array<string>> => {
-  const variations = validationSchema.find(key => Array.isArray(key))
-  const staticKeys = validationSchema.filter(key => !Array.isArray(key))
-  if (!variations || !variations.length) {
-    return [validationSchema]
-  }
-  return variations.map(variation => {
-    return [].concat(staticKeys).concat([variation])
-  })
 }
 
 export const validate = (
@@ -55,4 +43,16 @@ export const validateMassWithDrawal = (
 ): boolean => {
   const regex = /(wd\[wd[0-9]*\]\[(amount|address|currency|dest_tag)\]|cmd)/
   return Object.keys(options).every(key => regex.test(key))
+}
+
+export const validatePayload = (options: CoinpaymentsRequest): void => {
+  if (options.cmd === CMDS.CREATE_MASS_WITHDRAWAL) {
+    if (!validateMassWithDrawal(options)) {
+      throw new CoinpaymentsError('Invalid mass withdrawal payload', options)
+    }
+  }
+  const validationSchema = getValidationSchema(options.cmd)
+  if (!validate(validationSchema, options)) {
+    throw new CoinpaymentsError('Missing parameters', options)
+  }
 }

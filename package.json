@@ -7,18 +7,16 @@
     "url": "https://github.com/OrahKokos/coinpayments/issues",
     "email": "marko.paroski.ns@gmail.com"
   },
-  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "main": "dist/index.js",
     "start": "ts-node-dev --inspect=4321 --respawn --transpileOnly src/test.ts",
     "build": "rm -rf dist/ && tsc -p tsconfig.build.json",
     "build:prod": "rm -rf dist/ && tsc -p tsconfig.prod.build.json",
-    "lint": "tslint -p tsconfig.json -c tslint.json",
-    "pretty": "prettier --write \"src/**/*.ts\"",
+    "lint": "./node_modules/eslint/bin/eslint.js . --ext .ts --fix",
     "test": "jest --config ./jest.config.js --coverage --runInBand",
     "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
-    "prepublish": "yarn build:prod"
+    "prepublishOnly": "yarn build:prod"
   },
   "repository": {
     "type": "git",
@@ -1975,14 +1973,18 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.4",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
     "jest": "^25.4.0",
     "nock": "^12.0.3",
     "prettier": "^2.0.5",
     "ts-jest": "^25.4.0",
     "ts-node-dev": "^1.0.0-pre.44",
-    "tslint": "^6.1.2",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "eslint": "^6.8.0"
+  }
 }

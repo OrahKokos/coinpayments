@@ -38,26 +38,6 @@ export const getPrivateHeaders = (
   }
 }
 
-export const resolveRequest = async <ExpectedResponse>(
-  reqOps: CoinpaymentsInternalRequestOps,
-  options: CoinpaymentsRequest,
-  callback?: CoinpaymentsReturnCallback<ExpectedResponse>
-): Promise<ExpectedResponse> => {
-  let response
-  try {
-    response = await makeRequest<ExpectedResponse>(reqOps, options)
-  } catch (e) {
-    if (callback) {
-      return callback(e)
-    }
-    return Promise.reject(e)
-  }
-  if (callback) {
-    return callback(null, response)
-  }
-  return Promise.resolve(response)
-}
-
 export const makeRequest = <ExpectedResponse>(
   reqOps: CoinpaymentsInternalRequestOps,
   options: CoinpaymentsRequest
@@ -92,6 +72,26 @@ export const makeRequest = <ExpectedResponse>(
     req.write(stringify(options))
     return req.end()
   })
+}
+
+export const resolveRequest = async <ExpectedResponse>(
+  reqOps: CoinpaymentsInternalRequestOps,
+  options: CoinpaymentsRequest,
+  callback?: CoinpaymentsReturnCallback<ExpectedResponse>
+): Promise<ExpectedResponse> => {
+  let response
+  try {
+    response = await makeRequest<ExpectedResponse>(reqOps, options)
+  } catch (e) {
+    if (callback) {
+      return callback(e)
+    }
+    return Promise.reject(e)
+  }
+  if (callback) {
+    return callback(null, response)
+  }
+  return Promise.resolve(response)
 }
 
 export const getRequestOptions = (

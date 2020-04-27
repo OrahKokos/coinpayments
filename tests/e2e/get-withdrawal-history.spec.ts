@@ -1,4 +1,8 @@
-import { prepareNock, mockCredentials, mockResolveCallback } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  assertDefaultResponseCallback,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -13,15 +17,17 @@ describe('Get withdrawal history e2e test', () => {
       cmd: CMDS.GET_WITHDRAWAL_HISTORY,
     }
 
-    const scope1 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope1 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.getWithdrawalHistory()
     expect(scope1.isDone()).toBeTruthy()
 
-    const scope2 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope2 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.getWithdrawalHistory({})
     expect(scope2.isDone()).toBeTruthy()
 
-    const scope3 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
-    await client.getWithdrawalHistory(mockResolveCallback(scope3, done))
+    const scope3 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
+    await client.getWithdrawalHistory(
+      assertDefaultResponseCallback(scope3, done)
+    )
   })
 })

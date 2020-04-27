@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -16,7 +16,7 @@ describe('Update tag profile e2e test', () => {
       cmd: CMDS.UPDATE_TAG,
       ...VALID_API_PAYLOAD,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.updateTagProfile(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })

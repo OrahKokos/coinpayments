@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -16,7 +16,7 @@ describe('Get deposit address integration test', () => {
       cmd: CMDS.GET_DEPOSIT_ADDRESS,
       ...VALID_API_PAYLOAD,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.getDepositAddress(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })

@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -16,7 +16,7 @@ describe('Get withdrawal info e2e test', () => {
       cmd: CMDS.GET_WITHDRAWAL_INFO,
       ...VALID_API_PAYLOAD,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.getWithdrawalInfo(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })

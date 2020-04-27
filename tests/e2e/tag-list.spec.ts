@@ -1,10 +1,14 @@
-import { prepareNock, mockCredentials, mockResolveCallback } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  assertDefaultResponseCallback,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
 
 describe('Get tag list e2e test', () => {
-  let client
+  let client: CoinpaymentsClient
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
@@ -12,11 +16,11 @@ describe('Get tag list e2e test', () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.GET_TAG_LIST,
     }
-    const scope1 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope1 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.tagList()
     expect(scope1.isDone()).toBeTruthy()
 
-    const scope2 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
-    await client.tagList(mockResolveCallback(scope2, done))
+    const scope2 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
+    await client.tagList(assertDefaultResponseCallback(scope2, done))
   })
 })

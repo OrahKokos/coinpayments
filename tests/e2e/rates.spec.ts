@@ -1,4 +1,8 @@
-import { prepareNock, mockCredentials, mockResolveCallback } from '../helpers'
+import {
+  prepareHTTPInterceptor,
+  mockCredentials,
+  assertDefaultResponseCallback,
+} from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -12,7 +16,7 @@ describe('Rates e2e test', () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.RATES,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { rates } = client
     await rates()
     expect(scope.isDone()).toBeTruthy()
@@ -21,9 +25,9 @@ describe('Rates e2e test', () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.RATES,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { rates } = client
-    const mockCallback = mockResolveCallback(scope, done)
+    const mockCallback = assertDefaultResponseCallback(scope, done)
     return rates(mockCallback)
   })
   it('Should catch valid payload - args & callback', done => {
@@ -36,9 +40,9 @@ describe('Rates e2e test', () => {
       ...VALID_API_PAYLOAD,
     }
 
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { rates } = client
-    const mockCallback = mockResolveCallback(scope, done)
+    const mockCallback = assertDefaultResponseCallback(scope, done)
     return rates(VALID_API_PAYLOAD, mockCallback)
   })
 })

@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -25,7 +25,7 @@ describe('Create transfer integration test', () => {
       auto_confirm: true,
       ...VALID_API_PAYLOAD_1,
     }
-    const scope1 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK_1)
+    const scope1 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK_1)
     await client.createTransfer(VALID_API_PAYLOAD_1)
     expect(scope1.isDone()).toBeTruthy()
 
@@ -33,7 +33,7 @@ describe('Create transfer integration test', () => {
       cmd: CMDS.CREATE_TRANSFER,
       ...VALID_API_PAYLOAD_2,
     }
-    const scope2 = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK_2)
+    const scope2 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK_2)
     await client.createTransfer(VALID_API_PAYLOAD_2)
     expect(scope2.isDone()).toBeTruthy()
   })

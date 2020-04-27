@@ -27,7 +27,7 @@ export const mockCredentials = {
   secret: 'mockSecret',
 }
 
-export const mockResolveCallback = (scope, done) =>
+export const assertDefaultResponseCallback = (scope, done) =>
   jest.fn((error, data) => {
     expect(error).toBe(null)
     expect(data).toBe(true)
@@ -35,7 +35,7 @@ export const mockResolveCallback = (scope, done) =>
     return done()
   })
 
-export const prepareNock = (
+export const prepareHTTPInterceptor = (
   credentials,
   payload,
   responseMock: any = defaultResponseMock

@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 import { mapMassWithdrawalPayload } from '../../src/mappers'
 
@@ -93,7 +93,7 @@ describe('Create transaction e2e test', () => {
       cmd: CMDS.CREATE_MASS_WITHDRAWAL,
     })
 
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.createMassWithdrawal(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })

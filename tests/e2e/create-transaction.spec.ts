@@ -1,4 +1,4 @@
-import { prepareNock, mockCredentials } from '../helpers'
+import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
 
 import { CMDS } from '../../src/constants'
@@ -19,7 +19,7 @@ describe('Create transaction e2e test', () => {
       cmd: CMDS.CREATE_TRANSACTION,
       ...VALID_API_PAYLOAD,
     }
-    const scope = prepareNock(mockCredentials, VALID_PAYLOAD_MOCK)
+    const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     await client.createTransaction(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })
