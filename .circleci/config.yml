@@ -23,3 +23,7 @@ jobs:
           command: yarn test
       - codecov/upload:
           file: coverage/*.json
+workflows:
+  workflow:
+    jobs:
+      - run-tests
