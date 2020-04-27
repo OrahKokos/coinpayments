@@ -9,6 +9,7 @@ jobs:
   run-tests-latest:
     <<: *default
     steps:
+      - checkout
       - node/install:
           install-yarn: true
           node-version: latest
@@ -27,6 +28,7 @@ jobs:
   run-tests-legacy:
     <<: *default
     steps:
+      - checkout
       - node/install:
           node-version: 6.15.1-browsers-legacy
       - run: node --version
