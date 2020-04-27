@@ -207,8 +207,6 @@ await client.getProfile(options: CoinpaymentsGetProfileOpts)
 
 ## Rates
 
----
-
 Get Exchange Rates / Supported Coins
 
 Official doc: https://www.coinpayments.net/apidoc-rates
@@ -283,8 +281,6 @@ await client.rates(options?: CoinpaymentsRatesOpts)
 <a name="balances" />
 
 ## Balances
-
----
 
 Coin Balances
 
@@ -391,8 +387,6 @@ Example response from server
 
 ## Create Transaction
 
----
-
 Create Transaction
 
 Official doc: https://www.coinpayments.net/apidoc-create-transaction
@@ -466,8 +460,6 @@ WH&key=4d7321119c0a533250de336138d4bb14",
 
 ## Get Transaction Info
 
----
-
 Query the server for transaction and returns the status of the payment.
 
 Official doc: https://www.coinpayments.net/apidoc-get-tx-info
@@ -520,8 +512,6 @@ Example Response from server:
 
 ## Get Transaction Multi
 
----
-
 Get multiple transaction status.
 
 Official doc: https://www.coinpayments.net/apidoc-get-tx-info
@@ -563,8 +553,6 @@ WH&key=4d7321119c0a533250de336138d4bb14",
 
 ## Get Transaction List
 
----
-
 Get a list of transaction ids.
 
 Official doc: https://www.coinpayments.net/apidoc-get-tx-ids
@@ -603,8 +591,6 @@ Each element in the array represents a `txn_id`
 <a name="get-conversion-limits" />
 
 ## Get Conversion Limits
-
----
 
 Get conversion limits.
 
@@ -645,8 +631,6 @@ _Note2_: Due to provider fluctuation limits do vary often.
 
 ## Convert Coins
 
----
-
 Convert coins. Coinpayments utilizes [Shapeshift.io](https://shapeshift.io) services.
 
 Official doc: https://www.coinpayments.net/apidoc-convert-limits
@@ -676,8 +660,6 @@ Example response from server
 <a name="createtransfer" />
 
 ## Create Transfer
-
----
 
 Transfers are performed as internal coin transfers/accounting entries when possible. For coins not supporting that ability a withdrawal is created instead.
 
@@ -732,8 +714,6 @@ Example response from server
 <a name="createwithdrawal" />
 
 ## Create Withdrawal
-
----
 
 Makes a withdrawal of funds from server to a determined wallet address.
 
@@ -797,8 +777,6 @@ Example Response from server:
 
 ## Create Mass Withdrawal
 
----
-
 Create a mass withdrawal
 
 Official doc: https://www.coinpayments.net/apidoc-create-withdrawal
@@ -844,8 +822,6 @@ Example response from server
 
 ## Get Withdrawal Info
 
----
-
 Query the server for Withdraw ID status.
 
 Official doc: https://www.coinpayments.net/apidoc-get-withdrawal-info
@@ -888,8 +864,6 @@ await client.getWithdrawalInfo(options: CoinpaymentsGetWithdrawalInfoOpts)
 <a name="getwithdrawalhistory" />
 
 ## Get Withdrawal History
-
----
 
 Get withdrawal histroy
 
@@ -1029,8 +1003,6 @@ await client.updateTagProfile(options: CoinpaymentsUpdateTagProfileOpts)
 
 ## Renew Tag
 
----
-
 Renew Tag
 
 Official doc: https://www.coinpayments.net/apidoc-renew-pbn-tag
@@ -1054,8 +1026,6 @@ await client.renewTag(options: CoinpaymentsRenewTagOpts)
 
 ## Delete Tag
 
----
-
 Delete Tag
 
 Official doc: https://www.coinpayments.net/apidoc-delete-pbn-tag
@@ -1074,8 +1044,6 @@ await client.deleteTag(options: CoinpaymentsDeleteTagOpts)
 <a name="buytag" />
 
 ## Buy Tag
-
----
 
 Buy Tag
 
@@ -1097,8 +1065,6 @@ await client.buyTag(options: CoinpaymentsBuyTagOpts)
 <a name="claimcoupon" />
 
 ## Claim coupon
-
----
 
 Claim coupon
 
