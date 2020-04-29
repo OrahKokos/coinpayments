@@ -7,6 +7,7 @@
     "url": "https://github.com/OrahKokos/coinpayments/issues",
     "email": "marko.paroski.ns@gmail.com"
   },
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "ts-node-dev --inspect=4321 --respawn --transpileOnly src/test.ts",

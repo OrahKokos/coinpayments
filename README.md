@@ -18,7 +18,7 @@
 CoinPayments is a cloud wallet solution that offers an easy way to integrate a checkout system for numerous cryptocurrencies. Coinpayments now also offers coin conversion via Shapeshift.io.
 For more information visit their website [here](https://www.coinpayments.net/index.php?ref=831b8d495071e5b0e1015486f5001150).
 
-**Important note: This is a community module. Contributors are in no way connected in any way with the company Coinpayments.**
+**Important note: This is a community module. Contributors are in no way connected with the company Coinpayments.**
 
 <a name="table" />
 

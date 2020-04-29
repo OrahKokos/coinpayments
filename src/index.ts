@@ -482,4 +482,6 @@ class Coinpayments {
     )
   }
 }
+
+module.exports = Coinpayments
 export default Coinpayments
