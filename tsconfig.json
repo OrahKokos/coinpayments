@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "allowSyntheticDefaultImports": true,
+    "target": "ES5",
+    "baseUrl": "./src",
+    "lib": ["ES2017", "ES7", "ES6"],
+    "allowJs": false,
+    "checkJs": false,
+    "outDir": "./dist",
+    "rootDirs": ["./src", "./tests"],
+    "esModuleInterop": true,
+    "declaration": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false
+  },
+  "include": ["./src/**/*.ts", "./tests/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
