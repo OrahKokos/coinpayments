@@ -69,6 +69,8 @@ import {
 
 class Coinpayments {
   private credentials: CoinpaymentsCredentials
+  static default: typeof Coinpayments
+  static Coinpayments: typeof Coinpayments
 
   constructor({ key = '', secret = '' }: CoinpaymentsCredentials) {
     if (!key) {
