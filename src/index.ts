@@ -483,6 +483,9 @@ class Coinpayments {
   }
 }
 
-export { Coinpayments }
 module.exports = Coinpayments
+module.exports.default = Coinpayments
+module.exports.Coinpayments = Coinpayments
+
+export { Coinpayments }
 export default Coinpayments
