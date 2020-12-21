@@ -1,4 +1,4 @@
-import CoinpaymentsClient from '../../src'
+import { Coinpayments as CoinpaymentsClient } from '../../src'
 
 describe('Init Coinpayments client unit tests', () => {
   it('Should not initilize with missing key', () => {
