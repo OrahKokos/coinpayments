@@ -1,5 +1,4 @@
-import { Coinpayments } from "./index";
+import Coinpayments from './index'
 
-Coinpayments.default = Coinpayments
-Coinpayments.Coinpayments = Coinpayments
 export { Coinpayments }
+module.exports = Coinpayments
