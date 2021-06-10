@@ -220,7 +220,7 @@ await client.rates(options?: CoinpaymentsRatesOpts)
 ```
 
 - `short` - If set to `1`, the response won't include the full coin names and number of confirms needed to save bandwidth. (default `0`)
-- `accepted` - If set to `1`, the response will include only those coins which are enabled for acceptance on your Coin Acceptance Page. (default `0`)
+- `accepted` - If set to `2`, the response will include only those coins which are enabled for acceptance on your Coin Acceptance Page, plus all fiat coins (default `0`). Check the [official documentation](https://www.coinpayments.net/apidoc-rates) for other values.
 
 **Example Response from server**
 
