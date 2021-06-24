@@ -29,12 +29,12 @@ export const mockCredentials = {
   secret: 'mockSecret',
 }
 
-export const assertDefaultResponseCallback = (scope, done) =>
+export const assertDefaultResponseCallback = (scope, done?) =>
   jest.fn((error, data) => {
     expect(error).toBe(null)
     expect(data).toBe(true)
     expect(scope.isDone()).toBeTruthy()
-    return done()
+    if (done) return done()
   })
 
 export const generateInvalidPayloadTests = (fnName, VALID_API_PAYLOAD) => {

@@ -18,12 +18,11 @@ describe('Get transaction multi e2e test', () => {
     await client.getTxMulti(VALID_API_PAYLOAD)
     expect(scope.isDone()).toBeTruthy()
   })
-  it('Should throw error on invalid payload', async done => {
+  it('Should throw error on invalid payload', async () => {
     await expect(client.getTxMulti.call(client, 42)).rejects.toThrow()
     const rejectCallback = jest.fn(err => {
       expect(err).toBeInstanceOf(Error)
-      return done()
     })
-    client.getTxMulti.call(client, 42, rejectCallback)
+    return client.getTxMulti.call(client, 42, rejectCallback)
   })
 })

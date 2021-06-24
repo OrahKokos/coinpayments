@@ -28,7 +28,7 @@ describe('Rates e2e test', () => {
     const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { rates } = client
     const mockCallback = assertDefaultResponseCallback(scope, done)
-    return rates(mockCallback)
+    rates(mockCallback)
   })
   it('Should not throw error on valid payload - args & callback', done => {
     const VALID_API_PAYLOAD = {
@@ -43,6 +43,6 @@ describe('Rates e2e test', () => {
     const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { rates } = client
     const mockCallback = assertDefaultResponseCallback(scope, done)
-    return rates(VALID_API_PAYLOAD, mockCallback)
+    rates(VALID_API_PAYLOAD, mockCallback)
   })
 })

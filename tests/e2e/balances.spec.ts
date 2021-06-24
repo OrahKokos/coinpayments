@@ -28,7 +28,7 @@ describe('Balances e2e test', () => {
     const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { balances } = client
     const mockCallback = assertDefaultResponseCallback(scope, done)
-    return balances(mockCallback)
+    balances(mockCallback)
   })
   it('Should not throw error on valid payload - args & callback', done => {
     const VALID_API_PAYLOAD = {
@@ -42,6 +42,6 @@ describe('Balances e2e test', () => {
     const scope = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
     const { balances } = client
     const mockCallback = assertDefaultResponseCallback(scope, done)
-    return balances(VALID_API_PAYLOAD, mockCallback)
+    balances(VALID_API_PAYLOAD, mockCallback)
   })
 })

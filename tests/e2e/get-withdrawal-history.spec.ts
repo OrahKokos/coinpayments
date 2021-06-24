@@ -12,7 +12,7 @@ describe('Get withdrawal history e2e test', () => {
   beforeAll(() => {
     client = new CoinpaymentsClient(mockCredentials)
   })
-  it('Should not throw error on valid payload', async done => {
+  it('Should not throw error on valid payload', async () => {
     const VALID_PAYLOAD_MOCK = {
       cmd: CMDS.GET_WITHDRAWAL_HISTORY,
     }
@@ -26,8 +26,8 @@ describe('Get withdrawal history e2e test', () => {
     expect(scope2.isDone()).toBeTruthy()
 
     const scope3 = prepareHTTPInterceptor(mockCredentials, VALID_PAYLOAD_MOCK)
-    await client.getWithdrawalHistory(
-      assertDefaultResponseCallback(scope3, done)
+    return client.getWithdrawalHistory(
+      assertDefaultResponseCallback(scope3)
     )
   })
 })
