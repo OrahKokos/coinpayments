@@ -1,9 +1,9 @@
-export const API_VERSION = 1
-export const API_PROTOCOL = 'https:'
-export const API_HOST = 'www.coinpayments.net'
-export const API_PATH = '/api.php'
-export const API_FORMAT = 'json'
-export const API_VALID_RESPONSE = 'ok'
+export const API_VERSION = 1;
+export const API_PROTOCOL = 'https:';
+export const API_HOST = 'www.coinpayments.net';
+export const API_PATH = '/api.php';
+export const API_FORMAT = 'json';
+export const API_VALID_RESPONSE = 'ok';
 
 export const CMDS = Object.freeze({
   RATES: 'rates',
@@ -31,4 +31,4 @@ export const CMDS = Object.freeze({
   RENEW_TAG: 'renew_pbn_tag',
   DELETE_TAG: 'delete_pbn_tag',
   CLAIM_COUPON: 'claim_pbn_coupon',
-})
+});

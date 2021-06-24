@@ -1,6 +1,7 @@
-import { validatePayload } from '../../src/validation'
+import { validatePayload } from '../../src/validation';
 
-import { CMDS } from '../../src/constants'
+import { CMDS } from '../../src/constants';
+import CoinpaymentsError from '../../src/error';
 
 describe('Validation integration tests', () => {
   describe('validatePayload tests', () => {
@@ -19,12 +20,12 @@ describe('Validation integration tests', () => {
         'wd[wd4][amount]': 0.01,
         'wd[wd4][address]': '1BitcoinAddress',
         'wd[wd4][currency]': 'BTC',
-      }
+      };
       try {
-        validatePayload(INVALID_PAYLOAD)
+        validatePayload(INVALID_PAYLOAD);
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(CoinpaymentsError);
       }
-    })
-  })
-})
+    });
+  });
+});
