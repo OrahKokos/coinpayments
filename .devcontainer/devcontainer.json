@@ -11,7 +11,9 @@
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
-    "eslint.codeActionsOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+    }
   },
   "extensions": [
     "ms-azuretools.vscode-docker",

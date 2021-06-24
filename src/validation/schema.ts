@@ -1,4 +1,4 @@
-import { CMDS } from '../constants'
+import { CMDS } from '../constants';
 
 const Schema = {
   [CMDS.GET_BASIC_INFO]: [],
@@ -31,6 +31,6 @@ const Schema = {
   [CMDS.DELETE_TAG]: ['tagid'],
   [CMDS.CLAIM_COUPON]: ['coupon'],
   [CMDS.BUY_TAG]: ['coin'],
-}
+};
 
-export default Schema
+export default Schema;

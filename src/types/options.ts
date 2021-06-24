@@ -1,168 +1,169 @@
 export interface CoinpaymentsGetBasicInfoOpts {}
 
 export interface CoinpaymentsRatesOpts {
-  short?: number
-  accepted?: number
+  short?: number;
+  accepted?: number;
 }
 
 export interface CoinpaymentsCreateTransactionOpts {
-  currency1: string
-  currency2: string
-  amount: number
-  buyer_email: string
-  address?: string
-  buyer_name?: string
-  item_name?: string
-  item_number?: string
-  invoice?: string
-  custom?: string
-  ipn_url?: string
-  success_url?: string
-  cancel_url?: string
+  currency1: string;
+  currency2: string;
+  amount: number;
+  buyer_email: string;
+  address?: string;
+  buyer_name?: string;
+  item_name?: string;
+  item_number?: string;
+  invoice?: string;
+  custom?: string;
+  ipn_url?: string;
+  success_url?: string;
+  cancel_url?: string;
 }
 
 export interface CoinpaymentsGetCallbackAddressOpts {
-  currency: string
-  ipn_url?: string
-  label?: string
+  currency: string;
+  ipn_url?: string;
+  label?: string;
 }
 
 export interface CoinpaymentsGetTxOpts {
-  txid: string
-  full?: number
+  txid: string;
+  full?: number;
 }
 
-export type CoinpaymentsGetTxMultiOpts = string[]
+export type CoinpaymentsGetTxMultiOpts = string[];
 
 export interface CoinpaymentsGetTxListOpts {
-  limit?: string
-  start?: string
-  newer?: string
-  all?: string
+  limit?: string;
+  start?: string;
+  newer?: string;
+  all?: string;
 }
 
 export interface CoinpaymentsBalancesOpts {
-  all?: number
+  all?: number;
 }
 
 export interface CoinpaymentsGetDepositAddressOpts {
-  currency: string
+  currency: string;
 }
 
 export interface CoinpaymentsCreateTransferBaseOpts {
-  amount: number | string
-  currency: string
-  auto_confirm?: boolean
-  note?: string
+  amount: number | string;
+  currency: string;
+  auto_confirm?: boolean;
+  note?: string;
 }
 
 export interface CoinpaymentsCreateTransferMerchantOpts
   extends CoinpaymentsCreateTransferBaseOpts {
-  merchant: string
+  merchant: string;
 }
 
 export interface CoinpaymentsCreateTransferTagOpts
   extends CoinpaymentsCreateTransferBaseOpts {
-  pbntag: string
+  pbntag: string;
 }
 
 export type CoinpaymentsCreateTransferOpts =
   | CoinpaymentsCreateTransferMerchantOpts
-  | CoinpaymentsCreateTransferTagOpts
+  | CoinpaymentsCreateTransferTagOpts;
 
 export interface CoinpaymentsCreateWithdrawalBaseOpts {
-  amount: number
-  add_tx_fee?: boolean
-  currency: string
-  currency2?: string
-  dest_tag?: string
-  ipn_url?: string
-  auto_confirm?: number
-  note?: string
+  amount: number;
+  add_tx_fee?: boolean;
+  currency: string;
+  currency2?: string;
+  dest_tag?: string;
+  ipn_url?: string;
+  auto_confirm?: number;
+  note?: string;
 }
 
 export interface CoinpaymentsCreateWithdrawalMerchantOpts
   extends CoinpaymentsCreateWithdrawalBaseOpts {
-  address: string
+  address: string;
 }
 
 export interface CoinpaymentsCreateWithdrawalTagOpts
   extends CoinpaymentsCreateWithdrawalBaseOpts {
-  pbntag: string
+  pbntag: string;
 }
 
 export type CoinpaymentsCreateWithdrawalOpts =
   | CoinpaymentsCreateWithdrawalMerchantOpts
-  | CoinpaymentsCreateWithdrawalTagOpts
+  | CoinpaymentsCreateWithdrawalTagOpts;
 
 export interface CoinpaymentsCreateMassWithdrawalElement {
-  amount: number | string
-  currency: string
-  address: string
-  dest_tag?: string
+  amount: number | string;
+  currency: string;
+  address: string;
+  dest_tag?: string;
 }
-export type CoinpaymentsCreateMassWithdrawalOpts = CoinpaymentsCreateMassWithdrawalElement[]
+export type CoinpaymentsCreateMassWithdrawalOpts =
+  CoinpaymentsCreateMassWithdrawalElement[];
 
 export interface CoinpaymentsConvertCoinsOpts {
-  amount: number
-  from: string
-  to: string
-  address?: string
-  dest_tag?: string
+  amount: number;
+  from: string;
+  to: string;
+  address?: string;
+  dest_tag?: string;
 }
 
 export interface CoinpaymentsConvertLimitsOpts {
-  from: string
-  to: string
+  from: string;
+  to: string;
 }
 
 export interface CoinpaymentsGetWithdrawalHistoryOpts {
-  limit?: number
-  start?: number
-  newer?: Date
+  limit?: number;
+  start?: number;
+  newer?: Date;
 }
 
 export interface CoinpaymentsGetWithdrawalInfoOpts {
-  id: string
+  id: string;
 }
 
 export interface CoinpaymentsGetConversionInfoOpts {
-  id: string
+  id: string;
 }
 
 export interface CoinpaymentsGetProfileOpts {
-  pbntag: string
+  pbntag: string;
 }
 
 export interface CoinpaymentsTagListOpts {}
 
 export interface CoinpaymentsBuyTagOpts {
-  coin: string
-  num?: number
+  coin: string;
+  num?: number;
 }
 
 export interface CoinpaymentsClaimTagOpts {
-  tagid: string
-  name: string
+  tagid: string;
+  name: string;
 }
 
 export interface CoinpaymentsUpdateTagProfileOpts {
-  tagid: string
-  name?: string
-  email?: string
-  url?: string
+  tagid: string;
+  name?: string;
+  email?: string;
+  url?: string;
 }
 
 export interface CoinpaymentsRenewTagOpts {
-  tagid: string
-  coin: string
-  years?: number
+  tagid: string;
+  coin: string;
+  years?: number;
 }
 
 export interface CoinpaymentsDeleteTagOpts {
-  tagid: string
+  tagid: string;
 }
 
 export interface CoinpaymentsClaimCouponOpts {
-  coupon: string
+  coupon: string;
 }

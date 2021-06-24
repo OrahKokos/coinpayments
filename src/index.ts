@@ -1,16 +1,16 @@
-import { CMDS } from './constants'
-import CoinpaymentsError from './error'
+import { CMDS } from './constants';
+import CoinpaymentsError from './error';
 import {
   mapPayload,
   mapMassWithdrawalPayload,
   mapGetTxMultiPayload,
-} from './mappers'
-import { request } from './internal'
+} from './mappers';
+import { request } from './internal';
 
 import {
   CoinpaymentsCredentials,
   CoinpaymentsReturnCallback,
-} from './types/base'
+} from './types/base';
 import {
   CoinpaymentsRatesOpts,
   CoinpaymentsGetBasicInfoOpts,
@@ -37,7 +37,7 @@ import {
   CoinpaymentsBuyTagOpts,
   CoinpaymentsCreateTransferOpts,
   CoinpaymentsCreateWithdrawalOpts,
-} from './types/options'
+} from './types/options';
 
 import {
   CoinpaymentsRatesResponse,
@@ -65,202 +65,200 @@ import {
   CoinpaymentsDeleteTagResponse,
   CoinpaymentsClaimCouponResponse,
   CoinpaymentsBuyTagResponse,
-} from './types/response'
+} from './types/response';
 
 class Coinpayments {
-  private credentials: CoinpaymentsCredentials
+  private credentials: CoinpaymentsCredentials;
 
   constructor({ key = '', secret = '' }: CoinpaymentsCredentials) {
     if (!key) {
-      throw new CoinpaymentsError('Missing public key')
+      throw new CoinpaymentsError('Missing public key');
     }
     if (!secret) {
-      throw new CoinpaymentsError('Missing private key')
+      throw new CoinpaymentsError('Missing private key');
     }
 
-    this.credentials = { key, secret }
+    this.credentials = { key, secret };
 
-    this.getBasicInfo = this.getBasicInfo.bind(this)
-    this.rates = this.rates.bind(this)
-    this.balances = this.balances.bind(this)
-    this.getDepositAddress = this.getDepositAddress.bind(this)
-    this.createTransaction = this.createTransaction.bind(this)
-    this.getCallbackAddress = this.getCallbackAddress.bind(this)
-    this.getTx = this.getTx.bind(this)
-    this.getTxList = this.getTxList.bind(this)
-    this.getTxMulti = this.getTxMulti.bind(this)
-    this.createTransfer = this.createTransfer.bind(this)
-    this.convertCoins = this.convertCoins.bind(this)
-    this.convertLimits = this.convertLimits.bind(this)
-    this.getWithdrawalHistory = this.getWithdrawalHistory.bind(this)
-    this.getWithdrawalInfo = this.getWithdrawalInfo.bind(this)
-    this.getConversionInfo = this.getConversionInfo.bind(this)
-    this.getProfile = this.getProfile.bind(this)
-    this.tagList = this.tagList.bind(this)
-    this.updateTagProfile = this.updateTagProfile.bind(this)
-    this.claimTag = this.claimTag.bind(this)
+    this.getBasicInfo = this.getBasicInfo.bind(this);
+    this.rates = this.rates.bind(this);
+    this.balances = this.balances.bind(this);
+    this.getDepositAddress = this.getDepositAddress.bind(this);
+    this.createTransaction = this.createTransaction.bind(this);
+    this.getCallbackAddress = this.getCallbackAddress.bind(this);
+    this.getTx = this.getTx.bind(this);
+    this.getTxList = this.getTxList.bind(this);
+    this.getTxMulti = this.getTxMulti.bind(this);
+    this.createTransfer = this.createTransfer.bind(this);
+    this.convertCoins = this.convertCoins.bind(this);
+    this.convertLimits = this.convertLimits.bind(this);
+    this.getWithdrawalHistory = this.getWithdrawalHistory.bind(this);
+    this.getWithdrawalInfo = this.getWithdrawalInfo.bind(this);
+    this.getConversionInfo = this.getConversionInfo.bind(this);
+    this.getProfile = this.getProfile.bind(this);
+    this.tagList = this.tagList.bind(this);
+    this.updateTagProfile = this.updateTagProfile.bind(this);
+    this.claimTag = this.claimTag.bind(this);
   }
 
   public rates(
     options?:
       | CoinpaymentsRatesOpts
       | CoinpaymentsReturnCallback<CoinpaymentsRatesResponse>,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsRatesResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsRatesResponse>,
   ): Promise<CoinpaymentsRatesResponse> {
     if (!options && !callback) {
-      options = {}
+      options = {};
     }
     if (typeof options === 'function') {
-      callback = options
-      options = {}
+      callback = options;
+      options = {};
     }
     const requestPayload = mapPayload<CoinpaymentsRatesOpts>(options, {
       cmd: CMDS.RATES,
-    })
+    });
 
     return request<CoinpaymentsRatesResponse>(
       this.credentials,
       requestPayload,
-      callback
-    )
+      callback,
+    );
   }
 
   public createTransaction(
     options: CoinpaymentsCreateTransactionOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateTransactionResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateTransactionResponse>,
   ) {
     return request<CoinpaymentsCreateTransactionResponse>(
       this.credentials,
       mapPayload<CoinpaymentsCreateTransactionOpts>(options, {
         cmd: CMDS.CREATE_TRANSACTION,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public balances(
     options?:
       | CoinpaymentsBalancesOpts
       | CoinpaymentsReturnCallback<CoinpaymentsBalancesResponse>,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsBalancesResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsBalancesResponse>,
   ) {
     if (typeof options === 'function') {
-      callback = options
-      options = {}
+      callback = options;
+      options = {};
     }
     return request<CoinpaymentsBalancesResponse>(
       this.credentials,
       mapPayload<CoinpaymentsBalancesOpts>(options, {
         cmd: CMDS.BALANCES,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public createWithdrawal(
     options: CoinpaymentsCreateWithdrawalOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateWithdrawalResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateWithdrawalResponse>,
   ) {
-    options = { auto_confirm: 1, ...options }
+    options = { auto_confirm: 1, ...options };
     return request<CoinpaymentsCreateWithdrawalResponse>(
       this.credentials,
       mapPayload<CoinpaymentsCreateWithdrawalOpts>(options, {
         cmd: CMDS.CREATE_WITHDRAWAL,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public createMassWithdrawal(
     withdrawalArray: CoinpaymentsCreateMassWithdrawalOpts,
-    callback?: CoinpaymentsReturnCallback<
-      CoinpaymentsCreateMassWithdrawalResponse
-    >
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateMassWithdrawalResponse>,
   ) {
     // Should throw validation error => 3.0.0
     withdrawalArray = withdrawalArray.filter(
-      w => w.currency && w.amount && w.address
-    )
+      w => w.currency && w.amount && w.address,
+    );
 
     return request<CoinpaymentsCreateMassWithdrawalResponse>(
       this.credentials,
       mapMassWithdrawalPayload(withdrawalArray, {
         cmd: CMDS.CREATE_MASS_WITHDRAWAL,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getTx(
     options: CoinpaymentsGetTxOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetTxResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetTxResponse>,
   ) {
     return request<CoinpaymentsGetTxResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetTxOpts>(options, {
         cmd: CMDS.GET_TX,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getWithdrawalInfo(
     options: CoinpaymentsGetWithdrawalInfoOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetWithdrawalInfoResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetWithdrawalInfoResponse>,
   ) {
     return request<CoinpaymentsGetWithdrawalInfoResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetWithdrawalInfoOpts>(options, {
         cmd: CMDS.GET_WITHDRAWAL_INFO,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getTxMulti(
     txIdArray: CoinpaymentsGetTxMultiOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetTxMultiResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetTxMultiResponse>,
   ) {
     if (!(txIdArray instanceof Array) || !txIdArray.length) {
-      const error = new CoinpaymentsError('Invalid argument', txIdArray)
+      const error = new CoinpaymentsError('Invalid argument', { txIdArray });
       if (callback) {
-        return callback(error)
+        return callback(error);
       }
-      return Promise.reject(error)
+      return Promise.reject(error);
     }
     return request<CoinpaymentsGetTxMultiResponse>(
       this.credentials,
       mapGetTxMultiPayload(txIdArray, {
         cmd: CMDS.GET_TX_MULTI,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getTxList(
     options?:
       | CoinpaymentsGetTxListOpts
       | CoinpaymentsReturnCallback<CoinpaymentsGetTxListResponse>,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetTxListResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetTxListResponse>,
   ) {
     if (!options && !callback) {
-      options = {}
+      options = {};
     }
     if (typeof options === 'function') {
-      callback = options
-      options = {}
+      callback = options;
+      options = {};
     }
     return request<CoinpaymentsGetTxListResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetTxListOpts>(options, {
         cmd: CMDS.GET_TX_LIST,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getBasicInfo(
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetBasicInfoResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetBasicInfoResponse>,
   ) {
     return request<CoinpaymentsGetBasicInfoResponse>(
       this.credentials,
@@ -268,43 +266,41 @@ class Coinpayments {
         {},
         {
           cmd: CMDS.GET_BASIC_INFO,
-        }
+        },
       ),
-      callback
-    )
+      callback,
+    );
   }
 
   public getDepositAddress(
     options: CoinpaymentsGetDepositAddressOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetDepositAddressResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetDepositAddressResponse>,
   ) {
     return request<CoinpaymentsGetDepositAddressResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetDepositAddressOpts>(options, {
         cmd: CMDS.GET_DEPOSIT_ADDRESS,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getCallbackAddress(
     options: CoinpaymentsGetCallbackAddressOpts,
-    callback?: CoinpaymentsReturnCallback<
-      CoinpaymentsGetCallbackAddressResponse
-    >
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetCallbackAddressResponse>,
   ) {
     return request<CoinpaymentsGetCallbackAddressResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetCallbackAddressOpts>(options, {
         cmd: CMDS.GET_CALLBACK_ADDRESS,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public createTransfer(
     options: CoinpaymentsCreateTransferOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateTransferResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateTransferResponse>,
   ) {
     return request<CoinpaymentsCreateTransferResponse>(
       this.credentials,
@@ -312,85 +308,83 @@ class Coinpayments {
         cmd: CMDS.CREATE_TRANSFER,
         auto_confirm: true,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public convertCoins(
     options: CoinpaymentsConvertCoinsOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsConvertCoinsResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsConvertCoinsResponse>,
   ) {
     return request<CoinpaymentsConvertCoinsResponse>(
       this.credentials,
       mapPayload<CoinpaymentsConvertCoinsOpts>(options, {
         cmd: CMDS.CONVERT,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public convertLimits(
     options: CoinpaymentsConvertLimitsOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsConvertLimitsResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsConvertLimitsResponse>,
   ) {
     return request<CoinpaymentsConvertLimitsResponse>(
       this.credentials,
       mapPayload<CoinpaymentsConvertLimitsOpts>(options, {
         cmd: CMDS.CONVERT_LIMITS,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getWithdrawalHistory(
     options?:
       | CoinpaymentsGetWithdrawalHistoryOpts
       | CoinpaymentsReturnCallback<CoinpaymentsGetWithdrawalHistoryResponse>,
-    callback?: CoinpaymentsReturnCallback<
-      CoinpaymentsGetWithdrawalHistoryResponse
-    >
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetWithdrawalHistoryResponse>,
   ) {
     if (typeof options === 'function') {
-      callback = options
-      options = {}
+      callback = options;
+      options = {};
     }
     return request<CoinpaymentsGetWithdrawalHistoryResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetWithdrawalHistoryOpts>(options, {
         cmd: CMDS.GET_WITHDRAWAL_HISTORY,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getConversionInfo(
     options: CoinpaymentsGetConversionInfoOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsConversionInfoResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsConversionInfoResponse>,
   ) {
     return request<CoinpaymentsConversionInfoResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetConversionInfoOpts>(options, {
         cmd: CMDS.GET_CONVERSATION_INFO,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public getProfile(
     options: CoinpaymentsGetProfileOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetProfileResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsGetProfileResponse>,
   ) {
     return request<CoinpaymentsGetProfileResponse>(
       this.credentials,
       mapPayload<CoinpaymentsGetProfileOpts>(options, {
         cmd: CMDS.GET_TAG_INFO,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public tagList(
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsTagListResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsTagListResponse>,
   ) {
     return request<CoinpaymentsTagListResponse>(
       this.credentials,
@@ -398,94 +392,94 @@ class Coinpayments {
         {},
         {
           cmd: CMDS.GET_TAG_LIST,
-        }
+        },
       ),
-      callback
-    )
+      callback,
+    );
   }
 
   public updateTagProfile(
     options: CoinpaymentsUpdateTagProfileOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsUpdateTagProfileResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsUpdateTagProfileResponse>,
   ) {
     return request<CoinpaymentsUpdateTagProfileResponse>(
       this.credentials,
       mapPayload<CoinpaymentsUpdateTagProfileOpts>(options, {
         cmd: CMDS.UPDATE_TAG,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public claimTag(
     options: CoinpaymentsClaimTagOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsClaimTagResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsClaimTagResponse>,
   ) {
     return request<CoinpaymentsClaimTagResponse>(
       this.credentials,
       mapPayload<CoinpaymentsClaimTagOpts>(options, {
         cmd: CMDS.CLAIM_TAG,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public renewTag(
     options: CoinpaymentsRenewTagOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsRenameTagResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsRenameTagResponse>,
   ) {
     return request<CoinpaymentsRenameTagResponse>(
       this.credentials,
       mapPayload<CoinpaymentsRenewTagOpts>(options, {
         cmd: CMDS.RENEW_TAG,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public deleteTag(
     options: CoinpaymentsDeleteTagOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsDeleteTagResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsDeleteTagResponse>,
   ) {
     return request<CoinpaymentsDeleteTagResponse>(
       this.credentials,
       mapPayload<CoinpaymentsDeleteTagOpts>(options, {
         cmd: CMDS.DELETE_TAG,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public claimCoupon(
     options: CoinpaymentsClaimCouponOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsClaimCouponResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsClaimCouponResponse>,
   ) {
     return request<CoinpaymentsClaimCouponResponse>(
       this.credentials,
       mapPayload<CoinpaymentsClaimCouponOpts>(options, {
         cmd: CMDS.CLAIM_COUPON,
       }),
-      callback
-    )
+      callback,
+    );
   }
 
   public buyTag(
     options: CoinpaymentsBuyTagOpts,
-    callback?: CoinpaymentsReturnCallback<CoinpaymentsBuyTagResponse>
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsBuyTagResponse>,
   ) {
     return request<CoinpaymentsBuyTagResponse>(
       this.credentials,
       mapPayload<CoinpaymentsBuyTagOpts>(options, {
         cmd: CMDS.BUY_TAG,
       }),
-      callback
-    )
+      callback,
+    );
   }
 }
 
-module.exports = Coinpayments
-module.exports.default = Coinpayments
-module.exports.Coinpayments = Coinpayments
+module.exports = Coinpayments;
+module.exports.default = Coinpayments;
+module.exports.Coinpayments = Coinpayments;
 
-export { Coinpayments }
-export default Coinpayments
+export { Coinpayments };
+export default Coinpayments;
