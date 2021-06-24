@@ -1,6 +1,7 @@
 import { validatePayload } from '../../src/validation'
 
 import { CMDS } from '../../src/constants'
+import CoinpaymentsError from '../../src/error'
 
 describe('Validation integration tests', () => {
   describe('validatePayload tests', () => {
@@ -23,7 +24,7 @@ describe('Validation integration tests', () => {
       try {
         validatePayload(INVALID_PAYLOAD)
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(CoinpaymentsError)
       }
     })
   })

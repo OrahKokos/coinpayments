@@ -3,6 +3,7 @@ import CoinpaymentsClient from '../../src'
 import { mapGetTxMultiPayload } from '../../src/mappers'
 
 import { CMDS } from '../../src/constants'
+import CoinpaymentsError from '../../src/error'
 
 describe('Get transaction multi e2e test', () => {
   let client: CoinpaymentsClient
@@ -21,7 +22,7 @@ describe('Get transaction multi e2e test', () => {
   it('Should throw error on invalid payload', async () => {
     await expect(client.getTxMulti.call(client, 42)).rejects.toThrow()
     const rejectCallback = jest.fn(err => {
-      expect(err).toBeInstanceOf(Error)
+      expect(err).toBeInstanceOf(CoinpaymentsError)
     })
     return client.getTxMulti.call(client, 42, rejectCallback)
   })

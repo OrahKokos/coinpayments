@@ -5,7 +5,7 @@ describe('Coinpayments Error unit tests', () => {
     const extra = { prop: 1 }
     const message = 'My custom message'
     const err = new CoinpaymentsError(message, extra)
-    expect(err).toBeInstanceOf(Error)
+    expect(err).toBeInstanceOf(CoinpaymentsError)
     expect(require('util').isError(err)).toBeTruthy()
     expect(!!err.stack).toBeTruthy()
     expect(err.toString()).toBe(`${err.name}: ${message}`)

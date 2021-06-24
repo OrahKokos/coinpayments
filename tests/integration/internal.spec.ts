@@ -1,5 +1,6 @@
 import { prepareHTTPInterceptor, mockCredentials } from '../helpers'
 import CoinpaymentsClient from '../../src'
+import CoinpaymentsError from "../../src/error";
 
 import { CMDS } from '../../src/constants'
 
@@ -24,11 +25,10 @@ describe('Internal integration tests', () => {
     })
   })
   // Invalidation - callback
-  it('Should trigger callback on valid validation', done => {
+  it('Should trigger callback on valid validation', () => {
     const INVALID_PAYLOAD = {}
-    client.getTx(INVALID_PAYLOAD, err => {
-      expect(err).toBeInstanceOf(Error)
-      return done()
+    return client.getTx(INVALID_PAYLOAD, err => {
+      expect(err).toBeInstanceOf(CoinpaymentsError)
     })
   })
   // resolveRequest Callback
@@ -45,7 +45,7 @@ describe('Internal integration tests', () => {
       API_ERROR
     )
     client.getTx(VALID_PAYLOAD, err => {
-      expect(err).toBeInstanceOf(Error)
+      expect(err).toBeInstanceOf(CoinpaymentsError)
       expect(scope.isDone()).toBeTruthy()
       return done()
     })
