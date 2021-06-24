@@ -1,0 +1,21 @@
+{
+  "name": "NodeJs",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "/bin/zsh",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "eslint.codeActionsOnSave": true,
+  },
+  "extensions": [
+    "ms-azuretools.vscode-docker",
+    "dbaeumer.vscode-eslint",
+  ],
+  "remoteUser": "node"
+}
