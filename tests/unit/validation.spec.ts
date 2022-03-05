@@ -2,6 +2,9 @@ import {
   getValidationSchema,
   getVariations,
   validateMassWithDrawal,
+  hasOneOfFields,
+  validateMassWithdrawalOpts,
+  filterMassWithdrawalOpts,
 } from '../../src/validation';
 
 import { CMDS } from '../../src/constants';
@@ -95,6 +98,122 @@ describe('Validation unit tests', () => {
         const schema = getValidationSchema(CMDS[cmd]);
         expect(schema).toMatchSnapshot();
       });
+    });
+  });
+  describe('hasOneOfFields', () => {
+    it('Should return true on mutually exclusive', () => {
+      const object = {
+        x: 'x',
+        y: 'y',
+        z: 'z',
+      };
+      const keys1 = ['x', 's', 'q'];
+      const keys2 = ['s', 'q', 'x'];
+      expect(hasOneOfFields(object, keys1)).toBe(true);
+      expect(hasOneOfFields(object, keys2)).toBe(true);
+    });
+    it('Should return false on mutually non-exclusive', () => {
+      const object = {
+        x: 'x',
+        y: 'y',
+        z: 'z',
+      };
+      const keys1 = ['x', 'y', 'q'];
+      const keys2 = ['s', 'y', 'z'];
+      const keys3 = ['x', 'y', 'z'];
+      expect(hasOneOfFields(object, keys1)).toBe(false);
+      expect(hasOneOfFields(object, keys2)).toBe(false);
+      expect(hasOneOfFields(object, keys3)).toBe(false);
+    });
+  });
+  describe('validateMassWithdrawalOpts', () => {
+    it('Should be true on valid payload', () => {
+      const validPayload1 = {
+        currency: 'BTC',
+        amount: 1,
+        address: 'x',
+      };
+      const validPayload2 = {
+        currency: 'BTC',
+        amount: 1,
+        domain: 'x',
+      };
+      const validPayload3 = {
+        currency: 'BTC',
+        amount: 1,
+        pbntag: 'x',
+      };
+      expect(validateMassWithdrawalOpts(validPayload1)).toBe(true);
+      expect(validateMassWithdrawalOpts(validPayload2)).toBe(true);
+      expect(validateMassWithdrawalOpts(validPayload3)).toBe(true);
+    });
+    it('Should be false on invalid payload', () => {
+      const invalidPayload1 = {
+        currency: 'BTC',
+        amount: 1,
+        address: 'x',
+        domain: 'x',
+      };
+      const invalidPayload2 = {
+        currency: 'BTC',
+        domain: 'x',
+        pbntag: 'x',
+        amount: 1,
+      };
+      const invalidPayload3 = {
+        currency: 'BTC',
+        amount: 1,
+        pbntag: 'x',
+        address: 'x',
+        domain: 'x',
+      };
+      expect(validateMassWithdrawalOpts(invalidPayload1)).toBe(false);
+      expect(validateMassWithdrawalOpts(invalidPayload2)).toBe(false);
+      expect(validateMassWithdrawalOpts(invalidPayload3)).toBe(false);
+    });
+  });
+  describe('filterMassWithdrawalOpts', () => {
+    it('Should return same array if all payload is valid', () => {
+      const validPayload1 = {
+        currency: 'BTC',
+        amount: 1,
+        address: 'x',
+      };
+      const validPayload2 = {
+        currency: 'BTC',
+        amount: 1,
+        domain: 'x',
+      };
+      const validPayload3 = {
+        currency: 'BTC',
+        amount: 1,
+        pbntag: 'x',
+      };
+      const validPayload = [validPayload1, validPayload2, validPayload3];
+      const filteredArray = filterMassWithdrawalOpts(validPayload);
+      expect(filteredArray.sort()).toEqual(validPayload.sort());
+    });
+    it('Should filter out invalid payloads', () => {
+      const validPayload1 = {
+        currency: 'BTC',
+        amount: 1,
+        address: 'x',
+      };
+      const validPayload2 = {
+        currency: 'BTC',
+        amount: 1,
+        domain: 'x',
+      };
+      const validPayload3 = {
+        currency: 'BTC',
+        amount: 1,
+        pbntag: 'x',
+        domain: 'x',
+      };
+      const invalidPayload = [validPayload1, validPayload2, validPayload3];
+      const validPayload = [validPayload1, validPayload2];
+      const filteredArray = filterMassWithdrawalOpts(invalidPayload);
+      expect(filteredArray.sort()).toEqual(validPayload.sort());
     });
   });
 });
