@@ -46,7 +46,7 @@ export const validateMassWithDrawal = (
   options: CoinpaymentsRequest,
 ): boolean => {
   const regex =
-    /(wd\[wd[0-9]*\]\[(amount|address|currency|dest_tag|domain|pbntag)\]|cmd)/;
+    /(wd\[wd[0-9]*\]\[(amount|address|currency|dest_tag|domain|pbntag|add_tx_fee|currency2|ipn_url|auto_confirm|note)\]|cmd)/;
   return Object.keys(options).every(key => regex.test(key));
 };
 

@@ -11,13 +11,23 @@ describe('Create mass withdrawal e2e test', () => {
   let client: CoinpaymentsClient;
   const VALID_API_PAYLOAD_1 = {
     currency: 'x',
+    add_tx_fee: true,
     amount: 1,
     address: 'address',
+    ipn_url: 'url',
   };
   const VALID_API_PAYLOAD_2 = {
     currency: 'x',
     amount: 1,
+    currency2: 'y',
     pbntag: 'pbntag',
+    auto_confirm: 0,
+    note: 'note',
+  };
+  const VALID_API_PAYLOAD_3 = {
+    currency: 'x',
+    amount: 1,
+    pbntag: 'domain',
     auto_confirm: 0,
   };
   beforeAll(() => {
@@ -53,6 +63,18 @@ describe('Create mass withdrawal e2e test', () => {
       client.createWithdrawal({
         ...VALID_API_PAYLOAD_1,
         ...VALID_API_PAYLOAD_2,
+      }),
+    ).rejects.toThrow();
+    await expect(
+      client.createWithdrawal({
+        ...VALID_API_PAYLOAD_2,
+        ...VALID_API_PAYLOAD_3,
+      }),
+    ).rejects.toThrow();
+    await expect(
+      client.createWithdrawal({
+        ...VALID_API_PAYLOAD_1,
+        ...VALID_API_PAYLOAD_3,
       }),
     ).rejects.toThrow();
   });

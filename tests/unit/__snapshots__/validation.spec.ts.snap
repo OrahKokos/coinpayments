@@ -59,6 +59,7 @@ Array [
   Array [
     "address",
     "pbntag",
+    "domain",
   ],
 ]
 `;
