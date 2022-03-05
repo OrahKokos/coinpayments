@@ -18,6 +18,7 @@ export const CMDS = Object.freeze({
   CREATE_TRANSFER: 'create_transfer',
   CREATE_WITHDRAWAL: 'create_withdrawal',
   CREATE_MASS_WITHDRAWAL: 'create_mass_withdrawal',
+  CANCEL_WITHDRAWAL: 'cancel_withdrawal',
   CONVERT: 'convert',
   CONVERT_LIMITS: 'convert_limits',
   GET_WITHDRAWAL_HISTORY: 'get_withdrawal_history',

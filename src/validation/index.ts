@@ -4,6 +4,10 @@ import Schema from './schema';
 import { CMDS } from '../constants';
 
 import { CoinpaymentsRequest } from '../types/base';
+import {
+  CoinpaymentsCreateMassWithdrawalOpts,
+  CoinpaymentsCreateWithdrawalOpts,
+} from 'types/options';
 
 export const getVariations = (validationSchema: any): Array<Array<string>> => {
   const variations = validationSchema.find(key => Array.isArray(key));
@@ -41,7 +45,8 @@ export const validate = (
 export const validateMassWithDrawal = (
   options: CoinpaymentsRequest,
 ): boolean => {
-  const regex = /(wd\[wd[0-9]*\]\[(amount|address|currency|dest_tag)\]|cmd)/;
+  const regex =
+    /(wd\[wd[0-9]*\]\[(amount|address|currency|dest_tag|domain|pbntag)\]|cmd)/;
   return Object.keys(options).every(key => regex.test(key));
 };
 
@@ -56,3 +61,20 @@ export const validatePayload = (options: CoinpaymentsRequest): void => {
     throw new CoinpaymentsError('Missing parameters', options);
   }
 };
+
+export const hasOneOfFields = <T extends Record<PropertyKey, unknown>>(
+  obj: T,
+  keys: Array<string>,
+): boolean => keys.filter(key => obj.hasOwnProperty(key)).length === 1;
+
+export const validateMassWithdrawalOpts = (
+  withdrawalOpts: CoinpaymentsCreateWithdrawalOpts,
+) =>
+  withdrawalOpts.currency &&
+  withdrawalOpts.amount &&
+  hasOneOfFields(withdrawalOpts, ['address', 'domain', 'pbntag']);
+
+export const filterMassWithdrawalOpts = (
+  massWithdrawalOpts: CoinpaymentsCreateMassWithdrawalOpts,
+): CoinpaymentsCreateMassWithdrawalOpts =>
+  massWithdrawalOpts.filter(validateMassWithdrawalOpts);

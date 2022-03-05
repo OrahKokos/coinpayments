@@ -25,6 +25,7 @@ export interface CoinpaymentsGetCallbackAddressOpts {
   currency: string;
   ipn_url?: string;
   label?: string;
+  eip55?: number;
 }
 
 export interface CoinpaymentsGetTxOpts {
@@ -70,7 +71,7 @@ export type CoinpaymentsCreateTransferOpts =
   | CoinpaymentsCreateTransferMerchantOpts
   | CoinpaymentsCreateTransferTagOpts;
 
-export interface CoinpaymentsCreateWithdrawalBaseOpts {
+export type CoinpaymentsCreateWithdrawalBaseOpts = {
   amount: number;
   add_tx_fee?: boolean;
   currency: string;
@@ -79,30 +80,34 @@ export interface CoinpaymentsCreateWithdrawalBaseOpts {
   ipn_url?: string;
   auto_confirm?: number;
   note?: string;
-}
+};
 
-export interface CoinpaymentsCreateWithdrawalMerchantOpts
-  extends CoinpaymentsCreateWithdrawalBaseOpts {
-  address: string;
-}
+export type CoinpaymentsCreateWithdrawalMerchantOpts =
+  CoinpaymentsCreateWithdrawalBaseOpts & {
+    address: string;
+  };
 
-export interface CoinpaymentsCreateWithdrawalTagOpts
-  extends CoinpaymentsCreateWithdrawalBaseOpts {
-  pbntag: string;
-}
+export type CoinpaymentsCreateWithdrawalTagOpts =
+  CoinpaymentsCreateWithdrawalBaseOpts & {
+    pbntag: string;
+  };
+
+export type CoinpaymentsCreateWithdrawalDomainOpts =
+  CoinpaymentsCreateWithdrawalBaseOpts & {
+    domain: string;
+  };
 
 export type CoinpaymentsCreateWithdrawalOpts =
   | CoinpaymentsCreateWithdrawalMerchantOpts
-  | CoinpaymentsCreateWithdrawalTagOpts;
+  | CoinpaymentsCreateWithdrawalTagOpts
+  | CoinpaymentsCreateWithdrawalDomainOpts;
 
-export interface CoinpaymentsCreateMassWithdrawalElement {
-  amount: number | string;
-  currency: string;
-  address: string;
-  dest_tag?: string;
-}
 export type CoinpaymentsCreateMassWithdrawalOpts =
-  CoinpaymentsCreateMassWithdrawalElement[];
+  Array<CoinpaymentsCreateWithdrawalOpts>;
+
+export type CoinpaymentsCancelWithdrawalOpts = {
+  id: number | string;
+};
 
 export interface CoinpaymentsConvertCoinsOpts {
   amount: number;
