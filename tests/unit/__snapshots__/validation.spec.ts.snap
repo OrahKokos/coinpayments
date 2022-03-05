@@ -59,6 +59,7 @@ Array [
   Array [
     "address",
     "pbntag",
+    "domain",
   ],
 ]
 `;
@@ -67,26 +68,26 @@ exports[`Validation unit tests getValidationSchema tests Should return validatio
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 13`] = `
 Array [
+  "id",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 14`] = `
+Array [
   "amount",
   "from",
   "to",
 ]
 `;
 
-exports[`Validation unit tests getValidationSchema tests Should return validation schema 14`] = `
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 15`] = `
 Array [
   "from",
   "to",
 ]
 `;
 
-exports[`Validation unit tests getValidationSchema tests Should return validation schema 15`] = `Array []`;
-
-exports[`Validation unit tests getValidationSchema tests Should return validation schema 16`] = `
-Array [
-  "id",
-]
-`;
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 16`] = `Array []`;
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 17`] = `
 Array [
@@ -96,45 +97,51 @@ Array [
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 18`] = `
 Array [
+  "id",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 19`] = `
+Array [
   "pbntag",
 ]
 `;
 
-exports[`Validation unit tests getValidationSchema tests Should return validation schema 19`] = `Array []`;
-
-exports[`Validation unit tests getValidationSchema tests Should return validation schema 20`] = `
-Array [
-  "coin",
-]
-`;
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 20`] = `Array []`;
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 21`] = `
 Array [
-  "tagid",
-  "name",
+  "coin",
 ]
 `;
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 22`] = `
 Array [
   "tagid",
+  "name",
 ]
 `;
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 23`] = `
 Array [
   "tagid",
-  "coin",
 ]
 `;
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 24`] = `
 Array [
   "tagid",
+  "coin",
 ]
 `;
 
 exports[`Validation unit tests getValidationSchema tests Should return validation schema 25`] = `
+Array [
+  "tagid",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 26`] = `
 Array [
   "coupon",
 ]

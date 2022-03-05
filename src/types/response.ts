@@ -151,6 +151,8 @@ export interface CoinpaymentsCreateWithdrawalResponse {
   status: number;
 }
 
+export interface CoinpaymentsCreateWithdrawalResponse {}
+
 export interface CoinpaymentsCreateMassWithdrawalResponse {
   [wd: string]: {
     error: isCoinpaymentsError;

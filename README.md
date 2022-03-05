@@ -220,7 +220,9 @@ await client.rates(options?: CoinpaymentsRatesOpts)
 ```
 
 - `short` - If set to `1`, the response won't include the full coin names and number of confirms needed to save bandwidth. (default `0`)
-- `accepted` - If set to `2`, the response will include only those coins which are enabled for acceptance on your Coin Acceptance Page, plus all fiat coins (default `0`). Check the [official documentation](https://www.coinpayments.net/apidoc-rates) for other values.
+- `accepted` 
+  If set to `1`, the response will include if you have the coin enabled for acceptance on your `Coin Acceptance Settings page`.
+  If set to `2`, the response will include all fiat coins but only cryptocurrencies enabled for acceptance on your `Coin Acceptance Settings page`.
 
 **Example Response from server**
 
@@ -363,6 +365,7 @@ interface CoinpaymentsGetCallbackAddressOpts {
   currency: string
   ipn_url?: string
   label?: string
+  eip55?: number
 }
 await client.getCallbackAddress(options: CoinpaymentsGetCallbackAddressOpts)
 ```
@@ -370,6 +373,7 @@ await client.getCallbackAddress(options: CoinpaymentsGetCallbackAddressOpts)
 - `currency` - Any enabled currency. e.g 'BTC'
 - `ipn_url` - Explicit URL for the IPN to send POST requests to.
 - `label` - Optionally sets the address label.
+- `eip55` - If set to 1 encodes the address in EIP-55 mixed case format for ETH/ERC20 + clones. This is safely ignored for other coin types.
 
 Example response from server
 

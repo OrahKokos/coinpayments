@@ -17,8 +17,13 @@ const Schema = {
   [CMDS.GET_WITHDRAWAL_INFO]: ['id'],
   [CMDS.GET_TX]: ['txid'],
   [CMDS.GET_TX_MULTI]: ['txid'],
-  [CMDS.CREATE_WITHDRAWAL]: ['amount', 'currency', ['address', 'pbntag']],
+  [CMDS.CREATE_WITHDRAWAL]: [
+    'amount',
+    'currency',
+    ['address', 'pbntag', 'domain'],
+  ],
   [CMDS.CREATE_MASS_WITHDRAWAL]: [],
+  [CMDS.CANCEL_WITHDRAWAL]: ['id'],
   [CMDS.CREATE_TRANSACTION]: [
     'amount',
     'currency1',

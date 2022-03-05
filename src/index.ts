@@ -26,6 +26,7 @@ import {
   CoinpaymentsConvertLimitsOpts,
   CoinpaymentsGetWithdrawalHistoryOpts,
   CoinpaymentsGetWithdrawalInfoOpts,
+  CoinpaymentsCancelWithdrawalOpts,
   CoinpaymentsGetConversionInfoOpts,
   CoinpaymentsGetProfileOpts,
   CoinpaymentsTagListOpts,
@@ -66,6 +67,7 @@ import {
   CoinpaymentsClaimCouponResponse,
   CoinpaymentsBuyTagResponse,
 } from './types/response';
+import { filterMassWithdrawalOpts } from './validation';
 
 class Coinpayments {
   private credentials: CoinpaymentsCredentials;
@@ -99,6 +101,9 @@ class Coinpayments {
     this.tagList = this.tagList.bind(this);
     this.updateTagProfile = this.updateTagProfile.bind(this);
     this.claimTag = this.claimTag.bind(this);
+    this.cancelWithdrawal = this.cancelWithdrawal.bind(this);
+    this.createWithdrawal = this.createWithdrawal.bind(this);
+    this.createMassWithdrawal = this.createMassWithdrawal.bind(this);
   }
 
   public rates(
@@ -175,15 +180,23 @@ class Coinpayments {
     withdrawalArray: CoinpaymentsCreateMassWithdrawalOpts,
     callback?: CoinpaymentsReturnCallback<CoinpaymentsCreateMassWithdrawalResponse>,
   ) {
-    // Should throw validation error => 3.0.0
-    withdrawalArray = withdrawalArray.filter(
-      w => w.currency && w.amount && w.address,
-    );
-
     return request<CoinpaymentsCreateMassWithdrawalResponse>(
       this.credentials,
-      mapMassWithdrawalPayload(withdrawalArray, {
+      mapMassWithdrawalPayload(filterMassWithdrawalOpts(withdrawalArray), {
         cmd: CMDS.CREATE_MASS_WITHDRAWAL,
+      }),
+      callback,
+    );
+  }
+
+  public cancelWithdrawal(
+    options: CoinpaymentsCancelWithdrawalOpts,
+    callback?: CoinpaymentsReturnCallback<CoinpaymentsCancelWithdrawalOpts>,
+  ) {
+    return request<CoinpaymentsCancelWithdrawalOpts>(
+      this.credentials,
+      mapPayload<CoinpaymentsCancelWithdrawalOpts>(options, {
+        cmd: CMDS.CANCEL_WITHDRAWAL,
       }),
       callback,
     );
