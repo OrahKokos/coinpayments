@@ -1,23 +1,42 @@
 {
-  "name": "NodeJs",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspace",
-  "remoteEnv": {
-    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
-  },
-  "settings": {
-    "terminal.integrated.defaultProfile.linux": "/bin/zsh",
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-    }
-  },
-  "extensions": [
-    "ms-azuretools.vscode-docker",
-    "dbaeumer.vscode-eslint",
-  ],
-  "remoteUser": "node"
+	"name": "Coinpayments Devcontainer",
+	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "zsh",
+				"terminal.integrated.profiles.linux": {
+					"zsh": {
+						"path": "/bin/zsh"
+					}
+				},
+				"editor.quickSuggestions": {
+					"strings": "on"
+				},
+				"typescript.preferences.autoImportSpecifierExcludeRegexes": [
+					"^(node:)?os$"
+				],
+				"editor.tabSize": 2,
+				"editor.insertSpaces": true,
+				"editor.detectIndentation": false,
+				"editor.formatOnSave": true,
+				"editor.defaultFormatter": "biomejs.biome",
+				"editor.codeActionsOnSave": {
+					"source.fixAll.biome": "explicit",
+					"source.organizeImports.biome": "explicit",
+					"quickfix.biome": "explicit"
+				}
+			},
+			"extensions": [
+				"biomejs.biome",
+				"streetsidesoftware.code-spell-checker",
+				"yzhang.markdown-all-in-one",
+				"yoavbls.pretty-ts-errors"
+			]
+		}
+	}
 }
