@@ -1,22 +1,40 @@
 {
   "compilerOptions": {
-    "module": "preserve",
-    "noEmit": true,
-    "strict": true,
+    /* Language and Environment */
+    "target": "ES2024",
+    "lib": ["ESNext"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* Emit */
     "declaration": true,
-    "lib": ["es2022"],
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
+    "outDir": "dist",
+
+    /* Interop Constraints */
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "es2022",
-    "allowJs": false,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
+    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "verbatimModuleSyntax": true
+
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+
+    /* Completeness */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Advanced Options */
+    "skipLibCheck": true
   },
   "include": [
-    "src/",
+    "src/"
   ],  
 }
