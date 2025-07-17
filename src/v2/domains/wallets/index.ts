@@ -1,0 +1,15 @@
+export { createMerchantWallet } from './createMerchantWallet'
+export { createWalletAddress } from './createWalletAddress'
+export { getMerchantAddressById } from './getMerchantAddressById'
+export { getMerchantWalletById } from './getMerchantWalletById'
+export { getMerchantWallets } from './getMerchantWallets'
+// TODO: The following exports are commented out because they return number responses
+// which are not currently supported by the internalCoinpaymentsFlow
+// export { getMerchantWalletsAddressesCount } from './getMerchantWalletsAddressesCount'
+// export { getMerchantWalletsCount } from './getMerchantWalletsCount'
+// export { getMerchantWalletsTransactionsCount } from './getMerchantWalletsTransactionsCount'
+export { getTransactionByWalletId } from './getTransactionByWalletId'
+export { getTransactionsByWalletId } from './getTransactionsByWalletId'
+export { getWalletAddresses } from './getWalletAddresses'
+export { sendSpendRequest } from './sendSpendRequest'
+export { spendRequestConfirmation } from './spendRequestConfirmation'

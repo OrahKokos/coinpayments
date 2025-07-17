@@ -1,127 +1,73 @@
-import { createHmac } from 'crypto';
-import { request as httpsRequest } from 'https';
-import { stringify } from 'querystring';
+import { Credentials, generateHeaders } from '@src/v2/auth'
+import { RequestInput, SomeOperationData } from '@src/v2/types/operations'
+import { ResolveAttributes } from '@src/v2/types/types'
+import { ConstructCoinpaymentsRequest } from './types'
+import { isEmptyObject, stringifyObjectValues, withTarget } from './utils/data'
 
-import {
-  API_HOST,
-  API_PATH,
-  API_PROTOCOL,
-  API_VERSION,
-  API_FORMAT,
-  API_VALID_RESPONSE,
-} from './constants';
-import CoinpaymentsError from './error';
-import { validatePayload } from './validation';
+export const withParams = withTarget('params')
+export const withQueryParams = withTarget('queryParams')
+export const withBody = withTarget('body')
 
-import {
-  CoinpaymentsCredentials,
-  CoinpaymentsRequest,
-  CoinpaymentsInternalRequestOps,
-  CoinpaymentsInternalResponse,
-  CoinpaymentsReturnCallback,
-} from './types/base';
+export const createUrlTarget =
+  <T extends string>(urlTemplate: T) =>
+  <T extends Record<string, unknown>>(params: T) =>
+  <T extends Record<string, unknown>>(queryParams: T): string =>
+    `${Object.entries(params).reduce<string>(
+      (acc, [key, value]) => acc.replace(`{${key}}`, String(value)),
+      urlTemplate
+    )}` +
+    (isEmptyObject(queryParams) ? '' : `?${stringifyObjectValues(queryParams)}`)
 
-export const getPrivateHeaders = (
-  credentials: CoinpaymentsCredentials,
-  options: CoinpaymentsRequest,
-) => {
-  const { secret } = credentials;
-
-  const paramString = stringify(options);
-  const signature = createHmac('sha512', secret)
-    .update(paramString)
-    .digest('hex');
-
-  return {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    HMAC: signature,
-  };
-};
-
-export const makeRequest = <ExpectedResponse>(
-  reqOps: CoinpaymentsInternalRequestOps,
-  options: CoinpaymentsRequest,
-): Promise<ExpectedResponse> => {
-  return new Promise((resolve, reject) => {
-    const req = httpsRequest(reqOps, res => {
-      let chunks = '';
-
-      res.setEncoding('utf8');
-
-      res.on('data', chunk => {
-        chunks += chunk;
-      });
-
-      res.on('end', () => {
-        let data: CoinpaymentsInternalResponse<ExpectedResponse> = {
-          error: API_VALID_RESPONSE,
-        };
-        try {
-          data = JSON.parse(chunks);
-        } catch (e) {
-          return reject(
-            new CoinpaymentsError('Invalid response', { data: chunks }),
-          );
-        }
-
-        if (data.error !== API_VALID_RESPONSE) {
-          return reject(new CoinpaymentsError(data.error, { data }));
-        }
-        return resolve(data.result);
-      });
-    });
-    req.on('error', reject);
-    req.write(stringify(options));
-    return req.end();
-  });
-};
-
-export const getRequestOptions = (
-  credentials: CoinpaymentsCredentials,
-  options: CoinpaymentsRequest,
-): CoinpaymentsInternalRequestOps => {
-  return {
-    protocol: API_PROTOCOL,
-    method: 'post',
-    host: API_HOST,
-    path: API_PATH,
-    headers: getPrivateHeaders(credentials, options),
-  };
-};
-
-export const applyDefaultOptionValues = (
-  credentials: CoinpaymentsCredentials,
-  options: CoinpaymentsRequest,
-): CoinpaymentsRequest => {
-  return {
-    ...options,
-    version: API_VERSION,
-    format: API_FORMAT,
-    key: credentials.key,
-  };
-};
-
-export const request = async <ExpectedResponse>(
-  credentials: CoinpaymentsCredentials,
-  options: CoinpaymentsRequest,
-  callback?: CoinpaymentsReturnCallback<ExpectedResponse>,
-): Promise<ExpectedResponse> => {
-  try {
-    validatePayload(options);
-    options = applyDefaultOptionValues(credentials, options);
-    const reqOps = getRequestOptions(credentials, options);
-    const response: ExpectedResponse = await makeRequest<ExpectedResponse>(
-      reqOps,
-      options,
-    );
-    if (callback) {
-      return callback(null, response);
+export const internalCoinpaymentsFlow =
+  <OD extends SomeOperationData>(
+    operationData: Pick<OD, 'operationId' | 'url' | 'method'>
+  ) =>
+  (validationFunction: (input: unknown) => input is RequestInput<OD>) =>
+  (
+    withParamsFunction: (input: RequestInput<OD>) => {
+      params: ResolveAttributes<OD['params']>
     }
-    return response;
-  } catch (e) {
-    if (callback) {
-      return callback(e);
+  ) =>
+  (
+    withQueryParamsFunction: (input: RequestInput<OD>) => {
+      queryParams: ResolveAttributes<OD['queryParams']>
     }
-    return Promise.reject(e);
+  ) =>
+  (
+    withBodyFunction: (input: RequestInput<OD>) => {
+      body: ResolveAttributes<OD['body']>
+    }
+  ) =>
+  (credentials: Credentials) =>
+  <T, Handler extends (options: ConstructCoinpaymentsRequest<OD>) => T>(
+    handlerFunction: Handler
+  ) =>
+  (data: RequestInput<OD>): ReturnType<Handler> => {
+    const isValid = validationFunction(data)
+    // process request fail
+    if (!isValid) {
+      throw new Error('Invalid data provided for the operation')
+    }
+    const params = withParamsFunction(data)
+    const queryParams = withQueryParamsFunction(data)
+    const body = withBodyFunction(data)
+
+    const { operationId, method, url } = operationData
+    const { clientId } = credentials
+
+    return handlerFunction({
+      metadata: {
+        clientId,
+        operationId
+      },
+      httpOptions: {
+        url: createUrlTarget(url)(params)(queryParams),
+        method,
+        headers: generateHeaders(credentials)(operationData)(
+          body.body ? JSON.stringify(body.body) : ''
+        ),
+        body: body.body ?? undefined
+      }
+      // solve this later
+    } as ConstructCoinpaymentsRequest<OD>) as ReturnType<Handler>
   }
-};

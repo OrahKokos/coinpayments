@@ -1,0 +1,6 @@
+export { getCurrencyById } from './getCurrencyById'
+export { getCurrencyConversions } from './getCurrencyConversions'
+export { getCurrencyConversionsLimits } from './getCurrencyConversionsLimits'
+export { getLatestBlockNumberByCurrencyId } from './getLatestBlockNumberByCurrencyId'
+export { getRequiredConfirmationsForEachCurrency } from './getRequiredConfirmationsForEachCurrency'
+export { listPlatformSupportedCurrencies } from './listPlatformSupportedCurrencies'

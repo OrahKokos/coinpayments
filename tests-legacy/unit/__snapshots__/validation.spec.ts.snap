@@ -1,0 +1,175 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 1`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 2`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 3`] = `
+[
+  "amount",
+  "currency1",
+  "currency2",
+  "buyer_email",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 4`] = `
+[
+  "currency",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 5`] = `
+[
+  "txid",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 6`] = `
+[
+  "txid",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 7`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 8`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 9`] = `
+[
+  "currency",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 10`] = `
+[
+  "amount",
+  "currency",
+  [
+    "merchant",
+    "pbntag",
+  ],
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 11`] = `
+[
+  "amount",
+  "currency",
+  [
+    "address",
+    "pbntag",
+    "domain",
+  ],
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 12`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 13`] = `
+[
+  "id",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 14`] = `
+[
+  "amount",
+  "from",
+  "to",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 15`] = `
+[
+  "from",
+  "to",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 16`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 17`] = `
+[
+  "id",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 18`] = `
+[
+  "id",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 19`] = `
+[
+  "pbntag",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 20`] = `[]`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 21`] = `
+[
+  "coin",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 22`] = `
+[
+  "tagid",
+  "name",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 23`] = `
+[
+  "tagid",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 24`] = `
+[
+  "tagid",
+  "coin",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 25`] = `
+[
+  "tagid",
+]
+`;
+
+exports[`Validation unit tests getValidationSchema tests Should return validation schema 26`] = `
+[
+  "coupon",
+]
+`;
+
+exports[`Validation unit tests getVariations tests Should return array on no variation 1`] = `
+[
+  [
+    "prop1",
+    "prop2",
+    "prop3",
+  ],
+]
+`;
+
+exports[`Validation unit tests getVariations tests Should return array on variation 1`] = `
+[
+  [
+    "prop1",
+    "prop2",
+    "prop3",
+    "prop4a",
+  ],
+  [
+    "prop1",
+    "prop2",
+    "prop3",
+    "prop4b",
+  ],
+]
+`;

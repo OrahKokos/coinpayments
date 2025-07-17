@@ -3,8 +3,9 @@
     /* Language and Environment */
     "target": "ES2024",
     "lib": ["ESNext"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
 
     /* Emit */
     "declaration": true,
@@ -32,9 +33,15 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Advanced Options */
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@tests/*": ["tests/*"]
+    },
   },
   "include": [
-    "src/"
+    "src/",
+    "tests/",
   ],  
 }

@@ -34,3 +34,23 @@ jobs:
 
       - name: Run build
         run: pnpm build
+      
+      - name: Run tests
+        run: pnpm test
+
+      - name: Check 100% Coverage
+        run: |
+          COVERAGE_FILE="coverage.info"
+          if [ ! -f "$COVERAGE_FILE" ]; then
+            echo "Error: Lcov coverage file not found at $COVERAGE_FILE"
+            exit 1
+          fi
+
+          TOTAL_LINE_COVERAGE=$(cat "$COVERAGE_FILE" | awk '/^SF:/ {files++} /^LH:/ {lines_hit += $2} /^LF:/ {lines_total += $2} END {if (lines_total > 0) printf "%.2f", (lines_hit / lines_total) * 100; else printf "100.00"}' | cut -d'.' -f1)
+
+          if [ "$TOTAL_LINE_COVERAGE" -ne "100" ]; then
+            echo "Error: Code coverage is not 100%. Current line coverage: $TOTAL_LINE_COVERAGE%"
+            exit 1
+          else
+            echo "Code coverage is 100%."
+          fi

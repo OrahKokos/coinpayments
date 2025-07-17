@@ -15,6 +15,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
     "build": "rm -rf dist/ && pnpm tsc",
+    "test": "node --import tsx --experimental-strip-types --test tests/**/*.ts",
     "prepublishOnly": "pnpm build"
   },
   "exports": {
@@ -29,6 +30,178 @@
     "./v2": {
       "require": "./dist/v2/index.js",
       "types": "./dist/v2/index.d.ts"
+    },
+    "./v2/currencies": {
+      "require": "./dist/v2/domains/currencies/index.js",
+      "types": "./dist/v2/domains/currencies/index.d.ts"
+    },
+    "./v2/currencies/getCurrencyById": {
+      "require": "./dist/v2/domains/currencies/getCurrencyById.js",
+      "types": "./dist/v2/domains/currencies/getCurrencyById.d.ts"
+    },
+    "./v2/currencies/getCurrencyConversions": {
+      "require": "./dist/v2/domains/currencies/getCurrencyConversions.js",
+      "types": "./dist/v2/domains/currencies/getCurrencyConversions.d.ts"
+    },
+    "./v2/currencies/getCurrencyConversionsLimits": {
+      "require": "./dist/v2/domains/currencies/getCurrencyConversionsLimits.js",
+      "types": "./dist/v2/domains/currencies/getCurrencyConversionsLimits.d.ts"
+    },
+    "./v2/currencies/getLatestBlockNumberByCurrencyId": {
+      "require": "./dist/v2/domains/currencies/getLatestBlockNumberByCurrencyId.js",
+      "types": "./dist/v2/domains/currencies/getLatestBlockNumberByCurrencyId.d.ts"
+    },
+    "./v2/currencies/getRequiredConfirmationsForEachCurrency": {
+      "require": "./dist/v2/domains/currencies/getRequiredConfirmationsForEachCurrency.js",
+      "types": "./dist/v2/domains/currencies/getRequiredConfirmationsForEachCurrency.d.ts"
+    },
+    "./v2/currencies/listPlatformSupportedCurrencies": {
+      "require": "./dist/v2/domains/currencies/listPlatformSupportedCurrencies.js",
+      "types": "./dist/v2/domains/currencies/listPlatformSupportedCurrencies.d.ts"
+    },
+    "./v2/fees": {
+      "require": "./dist/v2/domains/fees/index.js",
+      "types": "./dist/v2/domains/fees/index.d.ts"
+    },
+    "./v2/fees/currencyBlockchainFee": {
+      "require": "./dist/v2/domains/fees/currencyBlockchainFee.js",
+      "types": "./dist/v2/domains/fees/currencyBlockchainFee.d.ts"
+    },
+    "./v2/invoices": {
+      "require": "./dist/v2/domains/invoices/index.js",
+      "types": "./dist/v2/domains/invoices/index.d.ts"
+    },
+    "./v2/invoices/createBuyNowButton": {
+      "require": "./dist/v2/domains/invoices/createBuyNowButton.js",
+      "types": "./dist/v2/domains/invoices/createBuyNowButton.d.ts"
+    },
+    "./v2/invoices/createInvoice": {
+      "require": "./dist/v2/domains/invoices/createInvoice.js",
+      "types": "./dist/v2/domains/invoices/createInvoice.d.ts"
+    },
+    "./v2/invoices/getInvoiceById": {
+      "require": "./dist/v2/domains/invoices/getInvoiceById.js",
+      "types": "./dist/v2/domains/invoices/getInvoiceById.d.ts"
+    },
+    "./v2/invoices/getInvoiceHistory": {
+      "require": "./dist/v2/domains/invoices/getInvoiceHistory.js",
+      "types": "./dist/v2/domains/invoices/getInvoiceHistory.d.ts"
+    },
+    "./v2/invoices/getInvoicePayouts": {
+      "require": "./dist/v2/domains/invoices/getInvoicePayouts.js",
+      "types": "./dist/v2/domains/invoices/getInvoicePayouts.d.ts"
+    },
+    "./v2/invoices/getListOfInvoices": {
+      "require": "./dist/v2/domains/invoices/getListOfInvoices.js",
+      "types": "./dist/v2/domains/invoices/getListOfInvoices.d.ts"
+    },
+    "./v2/rates": {
+      "require": "./dist/v2/domains/rates/index.js",
+      "types": "./dist/v2/domains/rates/index.d.ts"
+    },
+    "./v2/rates/getConversionsBetweenTwoCurrencies": {
+      "require": "./dist/v2/domains/rates/getConversionsBetweenTwoCurrencies.js",
+      "types": "./dist/v2/domains/rates/getConversionsBetweenTwoCurrencies.d.ts"
+    },
+    "./v2/wallet-consolidation": {
+      "require": "./dist/v2/domains/wallet-consolidation/index.js",
+      "types": "./dist/v2/domains/wallet-consolidation/index.d.ts"
+    },
+    "./v2/wallet-consolidation/getWalletAutoConsolidation": {
+      "require": "./dist/v2/domains/wallet-consolidation/getWalletAutoConsolidation.js",
+      "types": "./dist/v2/domains/wallet-consolidation/getWalletAutoConsolidation.d.ts"
+    },
+    "./v2/wallets": {
+      "require": "./dist/v2/domains/wallets/index.js",
+      "types": "./dist/v2/domains/wallets/index.d.ts"
+    },
+    "./v2/wallets/createMerchantWallet": {
+      "require": "./dist/v2/domains/wallets/createMerchantWallet.js",
+      "types": "./dist/v2/domains/wallets/createMerchantWallet.d.ts"
+    },
+    "./v2/wallets/createWalletAddress": {
+      "require": "./dist/v2/domains/wallets/createWalletAddress.js",
+      "types": "./dist/v2/domains/wallets/createWalletAddress.d.ts"
+    },
+    "./v2/wallets/getMerchantAddressById": {
+      "require": "./dist/v2/domains/wallets/getMerchantAddressById.js",
+      "types": "./dist/v2/domains/wallets/getMerchantAddressById.d.ts"
+    },
+    "./v2/wallets/getMerchantWalletById": {
+      "require": "./dist/v2/domains/wallets/getMerchantWalletById.js",
+      "types": "./dist/v2/domains/wallets/getMerchantWalletById.d.ts"
+    },
+    "./v2/wallets/getMerchantWallets": {
+      "require": "./dist/v2/domains/wallets/getMerchantWallets.js",
+      "types": "./dist/v2/domains/wallets/getMerchantWallets.d.ts"
+    },
+    "./v2/wallets/getMerchantWalletsAddressesCount": {
+      "require": "./dist/v2/domains/wallets/getMerchantWalletsAddressesCount.js",
+      "types": "./dist/v2/domains/wallets/getMerchantWalletsAddressesCount.d.ts"
+    },
+    "./v2/wallets/getMerchantWalletsCount": {
+      "require": "./dist/v2/domains/wallets/getMerchantWalletsCount.js",
+      "types": "./dist/v2/domains/wallets/getMerchantWalletsCount.d.ts"
+    },
+    "./v2/wallets/getMerchantWalletsTransactionsCount": {
+      "require": "./dist/v2/domains/wallets/getMerchantWalletsTransactionsCount.js",
+      "types": "./dist/v2/domains/wallets/getMerchantWalletsTransactionsCount.d.ts"
+    },
+    "./v2/wallets/getTransactionByWalletId": {
+      "require": "./dist/v2/domains/wallets/getTransactionByWalletId.js",
+      "types": "./dist/v2/domains/wallets/getTransactionByWalletId.d.ts"
+    },
+    "./v2/wallets/getTransactionsByWalletId": {
+      "require": "./dist/v2/domains/wallets/getTransactionsByWalletId.js",
+      "types": "./dist/v2/domains/wallets/getTransactionsByWalletId.d.ts"
+    },
+    "./v2/wallets/getWalletAddresses": {
+      "require": "./dist/v2/domains/wallets/getWalletAddresses.js",
+      "types": "./dist/v2/domains/wallets/getWalletAddresses.d.ts"
+    },
+    "./v2/wallets/sendSpendRequest": {
+      "require": "./dist/v2/domains/wallets/sendSpendRequest.js",
+      "types": "./dist/v2/domains/wallets/sendSpendRequest.d.ts"
+    },
+    "./v2/wallets/spendRequestConfirmation": {
+      "require": "./dist/v2/domains/wallets/spendRequestConfirmation.js",
+      "types": "./dist/v2/domains/wallets/spendRequestConfirmation.d.ts"
+    },
+    "./v2/webhook": {
+      "require": "./dist/v2/domains/webhook/index.js",
+      "types": "./dist/v2/domains/webhook/index.d.ts"
+    },
+    "./v2/webhook/createWebhook": {
+      "require": "./dist/v2/domains/webhook/createWebhook.js",
+      "types": "./dist/v2/domains/webhook/createWebhook.d.ts"
+    },
+    "./v2/webhook/deleteWebhook": {
+      "require": "./dist/v2/domains/webhook/deleteWebhook.js",
+      "types": "./dist/v2/domains/webhook/deleteWebhook.d.ts"
+    },
+    "./v2/webhook/getMerchantWebhooks": {
+      "require": "./dist/v2/domains/webhook/getMerchantWebhooks.js",
+      "types": "./dist/v2/domains/webhook/getMerchantWebhooks.d.ts"
+    },
+    "./v2/webhook/updateWalletAddressWebhook": {
+      "require": "./dist/v2/domains/webhook/updateWalletAddressWebhook.js",
+      "types": "./dist/v2/domains/webhook/updateWalletAddressWebhook.d.ts"
+    },
+    "./v2/webhook/updateWalletWebhook": {
+      "require": "./dist/v2/domains/webhook/updateWalletWebhook.js",
+      "types": "./dist/v2/domains/webhook/updateWalletWebhook.d.ts"
+    },
+    "./v2/webhook/updateWebhook": {
+      "require": "./dist/v2/domains/webhook/updateWebhook.js",
+      "types": "./dist/v2/domains/webhook/updateWebhook.d.ts"
+    },
+    "./v2/webhook/walletNotificationPayload": {
+      "require": "./dist/v2/domains/webhook/walletNotificationPayload.js",
+      "types": "./dist/v2/domains/webhook/walletNotificationPayload.d.ts"
+    },
+    "./v2/webhook/webhookPayload": {
+      "require": "./dist/v2/domains/webhook/webhookPayload.js",
+      "types": "./dist/v2/domains/webhook/webhookPayload.d.ts"
     }
   },
   "repository": {
@@ -46,6 +219,7 @@
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^22.15.18",
     "npm-check-updates": "^18.0.1",
+    "openapi-typescript": "^7.8.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
