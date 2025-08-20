@@ -1,0 +1,93 @@
+export type Transaction = {
+  id: string
+  dateCreated: string
+  dateCompleted: string
+  fromOwnerId: string
+  fromWalletId: string
+  toWalletId: string
+  spendRequestId: string
+  fromCurrencyId: string
+  fromCurrencySymbol: string
+  toCurrencyId: string
+  toCurrencySymbol: string
+  fromAmount: string
+  toAmount: string
+  coinpaymentsFee: string
+  coinPaymentsFeeCurrency: string
+  coinPaymentsFeeCurrencySymbol: string
+  blockchainFee: string
+  blockchainFeeCurrency: string
+  blockchainFeeCurrencySymbol: string
+  transactionStatus:
+    | 'unknown'
+    | 'created'
+    | 'pending'
+    | 'processing'
+    | 'completed'
+    | 'expired'
+    | 'failed'
+    | 'confirmedOnBlockchain'
+    | 'pendingReceive'
+    | 'failedOnBlockchain'
+    | 'cancelled'
+    | 'rejected'
+  transactionType:
+    | 'unknown'
+    | 'internalReceive'
+    | 'utxoExternalReceive'
+    | 'accountBasedExternalReceive'
+    | 'externalSpend'
+    | 'internalSpend'
+    | 'sameUserSpend'
+    | 'sameUserReceive'
+    | 'accountBasedExternalTokenReceive'
+    | 'accountBasedTokenSpend'
+    | 'conversion'
+    | 'compensation'
+    | 'sweeping'
+    | 'sweepingFunding'
+    | 'migratedAddressUtxoExternalReceive'
+    | 'migratedAddressAccountBasedExternalReceive'
+    | 'migratedAddressAccountBasedExternalTokenReceive'
+    | 'autoSweeping'
+    | 'receiveTestFundsFromPool'
+    | 'returnTestFundsToPool'
+  memo: string
+  fromAddress: string
+  toAddress: string
+  txHash: string
+  outputIndex: number
+  blockNumberTxAppearedAt: number
+  supportTransactionId: string
+  confirmations: number
+  requiredConfirmations: number
+  fromAmountNative: string
+  toAmountNative: string
+  coinpaymentsFeeNative: string
+  blockchainFeeNative: string
+  nativeCurrency: string
+  nativeCurrencySymbol: string
+  isInvoicePaymentSend: boolean
+  paymentType: string
+  convertedTxHash: string
+}
+
+export type WalletConsolidation = {
+  newReceivedInternal: string
+  newReceivedExternal: string
+  activationFee: string
+  transferFee: string
+  totalFee: string
+  available: string
+  addresses: Array<{
+    newReceivedInternal: string
+    newReceivedExternal: string
+    activationFee: string
+    transferFee: string
+    totalFee: string
+    available: string
+    address: string
+    addressId: string
+    walletId: string
+  }>
+}

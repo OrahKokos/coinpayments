@@ -1,12 +1,11 @@
 import { createHmac } from 'crypto'
+import { getIsoDate, isEmptyObject } from '@src/utils/data'
 import { CoinpaymentsRequestHeaders } from '../types/request'
 
 export type Credentials = {
   clientId: string
   clientSecret: string
 }
-
-export const getIsoDate = (): string => new Date().toISOString().split('.')[0]
 
 export const createHeaders =
   (clientId: string) =>
@@ -27,18 +26,27 @@ export const createMessageForSignature =
     `\ufeff${requestOptions.method}${requestOptions.url}${clientId}${isoDate}${jsonData}`
 
 export const calculateSignature = (clientSecret: string) => (message: string) =>
-  createHmac('sha512', clientSecret).update(message).digest('base64')
+  createHmac('sha256', clientSecret).update(message).digest('base64')
+
+export const resolveJsonData = (someData?: Record<string, unknown>) =>
+  isEmptyObject(someData) || someData === undefined
+    ? ''
+    : JSON.stringify(someData)
 
 export const generateHeaders =
   (credentials: Credentials) =>
   (requestOptions: { method: string; url: string }) =>
-  (jsonData: string): CoinpaymentsRequestHeaders => {
+  (
+    requestData: Record<string, unknown> | undefined
+  ): CoinpaymentsRequestHeaders => {
     const isoDate = getIsoDate()
     const { clientId, clientSecret } = credentials
-    const headers = createHeaders(clientId)(isoDate)(
+
+    return createHeaders(clientId)(isoDate)(
       calculateSignature(clientSecret)(
-        createMessageForSignature(clientId)(isoDate)(requestOptions)(jsonData)
+        createMessageForSignature(clientId)(isoDate)(requestOptions)(
+          resolveJsonData(requestData)
+        )
       )
     )
-    return headers
   }

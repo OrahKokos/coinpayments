@@ -1,4 +1,5 @@
 import { SomeOperationData } from './v2/types/operations'
+import { ProcessResult } from './v2/types/process'
 
 export type CoinpaymentsRequestWithoutBody = {
   metadata: {
@@ -51,10 +52,12 @@ export type ConstructCoinpaymentsRequestHttpOptions<
       'X-CoinPayments-Timestamp': string
       'X-CoinPayments-Signature': string
     }
-    body: OD['body'] extends never ? never : OD['body']
+    data: OD['body'] extends never ? never : OD['body']
   }
 }
 
-export type ConstructCoinpaymentsRequest<OD extends SomeOperationData> =
-  ConstructCoinpaymentsRequestMetadata<OD> &
-    ConstructCoinpaymentsRequestHttpOptions<OD>
+export type ConstructCoinpaymentsRequest<OD extends SomeOperationData> = {
+  clientId: string
+  operationId: OD['operationId']
+  isValidResponse: (input: unknown) => input is OD['response']
+} & ConstructCoinpaymentsRequestHttpOptions<OD>

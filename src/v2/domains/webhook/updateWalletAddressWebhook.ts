@@ -4,10 +4,14 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  alwaysTrueGuard,
+  isNonEmptyString,
+  isObject,
+  requiredPropIs
+} from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '@src/v2/constants'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
-import { paths } from '../../resources/swagger'
 
 export const options = {
   operationId: 'updateWalletAddressWebhook',
@@ -17,38 +21,45 @@ export const options = {
 
 export type UpdateWalletAddressWebhookOptions = typeof options
 
+export type UpdateWalletAddressWebhookParams = {
+  /** @description string: wallet id */
+  walletIdStr: string
+  /** @description string: address id */
+  addressIdStr: string
+}
+
+export type UpdateWalletAddressWebhookQueryParams = never
+
+export type UpdateWalletAddressWebhookBody = {
+  notificationUrl: string
+}
+
+export type UpdateWalletAddressWebhookResponse = {} // No content response
+
 export type UpdateWalletAddressWebhookHttpOptions = {
-  params: paths['/v2/merchant/wallets/{walletIdStr}/addresses/{addressIdStr}/webhook']['put']['parameters']['path']
-  queryParams: never
-  body: NonNullable<
-    paths['/v2/merchant/wallets/{walletIdStr}/addresses/{addressIdStr}/webhook']['put']['requestBody']
-  >['content']['application/json']
-  response: {} // No content response
+  params: UpdateWalletAddressWebhookParams
+  queryParams: UpdateWalletAddressWebhookQueryParams
+  body: UpdateWalletAddressWebhookBody
+  response: UpdateWalletAddressWebhookResponse
 }
 
 export type UpdateWalletAddressWebhookOperation =
   UpdateWalletAddressWebhookOptions & UpdateWalletAddressWebhookHttpOptions
 
 export const isValidRequestData = (
-  data: unknown
-): data is RequestInput<UpdateWalletAddressWebhookOperation> => {
-  if (!isObject(data)) return false
-  if (!hasOwn(data, 'walletIdStr') || !isNonEmptyString(data.walletIdStr))
-    return false
-  if (!hasOwn(data, 'addressIdStr') || !isNonEmptyString(data.addressIdStr))
-    return false
-  if (
-    !hasOwn(data, 'notificationUrl') ||
-    !isNonEmptyString(data.notificationUrl)
-  )
-    return false
+  input: unknown
+): input is RequestInput<UpdateWalletAddressWebhookOperation> =>
+  isObject(input) &&
+  requiredPropIs(input, 'walletIdStr', isNonEmptyString) &&
+  requiredPropIs(input, 'addressIdStr', isNonEmptyString) &&
+  requiredPropIs(input, 'notificationUrl', isNonEmptyString)
 
-  return true
-}
+export const isValidResponseData =
+  alwaysTrueGuard<UpdateWalletAddressWebhookHttpOptions['response']>()
 
 export const updateWalletAddressWebhook =
   internalCoinpaymentsFlow<UpdateWalletAddressWebhookOperation>(options)(
     isValidRequestData
-  )(withParams('walletIdStr', 'addressIdStr'))(withQueryParams())(
-    withBody('notificationUrl')
-  )
+  )(isValidResponseData)(withParams('walletIdStr', 'addressIdStr'))(
+    withQueryParams()
+  )(withBody('notificationUrl'))

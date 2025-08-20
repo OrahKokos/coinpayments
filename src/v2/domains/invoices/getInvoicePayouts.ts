@@ -4,10 +4,14 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  isNonEmptyString,
+  isObject,
+  optionalPropIs,
+  requiredPropIs
+} from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '@src/v2/constants'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
-import { paths } from '../../resources/swagger'
 
 export const options = {
   operationId: 'getInvoicePayouts',
@@ -17,25 +21,55 @@ export const options = {
 
 export type GetInvoicePayoutsOptions = typeof options
 
+export type GetInvoicePayoutsParams = {
+  /** @description string: invoice id */
+  id: string
+}
+
+export type GetInvoicePayoutsQueryParams = never
+
+export type GetInvoicePayoutsBody = never
+
+export type GetInvoicePayoutsResponse = Array<{
+  id?: string
+  dateCreated?: string
+  amount?: string
+  currency?: string
+  status?: string
+  type?: string
+}>
+
 export type GetInvoicePayoutsHttpOptions = {
-  params: paths['/v2/merchant/invoices/{id}/payouts']['get']['parameters']['path']
-  queryParams: never
-  body: never
-  response: paths['/v2/merchant/invoices/{id}/payouts']['get']['responses']['200']['content']['application/json']
+  params: GetInvoicePayoutsParams
+  queryParams: GetInvoicePayoutsQueryParams
+  body: GetInvoicePayoutsBody
+  response: GetInvoicePayoutsResponse
 }
 
 export type GetInvoicePayoutsOperation = GetInvoicePayoutsOptions &
   GetInvoicePayoutsHttpOptions
 
 export const isValidRequestData = (
-  data: unknown
-): data is RequestInput<GetInvoicePayoutsOperation> => {
-  if (!isObject(data)) return false
-  if (!hasOwn(data, 'id') || !isNonEmptyString(data.id)) return false
-  return true
-}
+  input: unknown
+): input is RequestInput<GetInvoicePayoutsOperation> =>
+  isObject(input) && requiredPropIs(input, 'id', isNonEmptyString)
+
+export const isValidResponseData = (
+  response: unknown
+): response is GetInvoicePayoutsHttpOptions['response'] =>
+  Array.isArray(response) &&
+  response.every(
+    (item) =>
+      isObject(item) &&
+      optionalPropIs(item, 'id', isNonEmptyString) &&
+      optionalPropIs(item, 'dateCreated', isNonEmptyString) &&
+      optionalPropIs(item, 'amount', isNonEmptyString) &&
+      optionalPropIs(item, 'currency', isNonEmptyString) &&
+      optionalPropIs(item, 'status', isNonEmptyString) &&
+      optionalPropIs(item, 'type', isNonEmptyString)
+  )
 
 export const getInvoicePayouts =
   internalCoinpaymentsFlow<GetInvoicePayoutsOperation>(options)(
     isValidRequestData
-  )(withParams('id'))(withQueryParams())(withBody())
+  )(isValidResponseData)(withParams('id'))(withQueryParams())(withBody())

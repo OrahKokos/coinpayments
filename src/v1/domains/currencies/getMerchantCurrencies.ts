@@ -6,9 +6,9 @@ import {
 } from '@src/internal'
 import { ConstructCoinpaymentsRequest } from '@src/types'
 import { isObject, isOptionalNumber } from '@src/utils/data'
-import { Credentials } from '../../v2/auth'
-import { COINPAYMENTS_API_URL_V1 } from '../../v2/constants'
-import { OperationOptions, RequestInput } from '../../v2/types/operations'
+import { Credentials } from '../../../v2/auth'
+import { COINPAYMENTS_API_URL_V1 } from '../../../v2/constants'
+import { OperationOptions, RequestInput } from '../../../v2/types/operations'
 
 export const options = {
   operationId: 'getMerchantCurrencies',

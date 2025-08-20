@@ -4,39 +4,45 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  isBoolean,
+  isNonEmptyString,
+  isObject,
+  requiredPropIs
+} from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '@src/v2/constants'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
-import { paths } from '../../resources/swagger'
+import { MerchantWallet } from './types'
+import { isValidMerchantWallet } from './util'
 
 export const options = {
   operationId: 'getMerchantWalletById',
   method: 'GET',
-  url: `${COINPAYMENTS_API_URL}/v2/merchant/wallets/{walletIdStr}`
+  url: `${COINPAYMENTS_API_URL}/v2/merchant/wallets/{id}`
 } as const satisfies OperationOptions
 
 export type GetMerchantWalletByIdOptions = typeof options
 
 export type GetMerchantWalletByIdHttpOptions = {
-  params: paths['/v2/merchant/wallets/{walletIdStr}']['get']['parameters']['path']
+  params: {
+    id: string
+  }
   queryParams: never
   body: never
-  response: paths['/v2/merchant/wallets/{walletIdStr}']['get']['responses']['200']['content']['application/json']
+  response: MerchantWallet
 }
 
 export type GetMerchantWalletByIdOperation = GetMerchantWalletByIdOptions &
   GetMerchantWalletByIdHttpOptions
 
 export const isValidRequestData = (
-  data: unknown
-): data is RequestInput<GetMerchantWalletByIdOperation> => {
-  if (!isObject(data)) return false
-  if (!hasOwn(data, 'walletIdStr') || !isNonEmptyString(data.walletIdStr))
-    return false
-  return true
-}
+  input: unknown
+): input is RequestInput<GetMerchantWalletByIdOperation> =>
+  isObject(input) && requiredPropIs(input, 'id', isNonEmptyString)
+
+export const isValidResponseData = isValidMerchantWallet
 
 export const getMerchantWalletById =
   internalCoinpaymentsFlow<GetMerchantWalletByIdOperation>(options)(
     isValidRequestData
-  )(withParams('walletIdStr'))(withQueryParams())(withBody())
+  )(isValidResponseData)(withParams('id'))(withQueryParams())(withBody())

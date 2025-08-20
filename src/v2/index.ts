@@ -1,3 +1,8 @@
+import { ConstructCoinpaymentsRequest } from '@src/types'
+import {
+  ListPlatformSupportedCurrenciesOperation,
+  ListPlatformSupportedCurrenciesOptions
+} from '../deprecated/listPlatformSupportedCurrencies'
 import { Credentials } from './auth'
 import {
   getCurrencyById,
@@ -35,36 +40,7 @@ import {
   updateWalletWebhook,
   walletNotificationPayload
 } from './domains/webhook'
-
-export type CoinpaymentsV2Functions =
-  | typeof getCurrencyById
-  | typeof getCurrencyConversions
-  | typeof getCurrencyConversionsLimits
-  | typeof getLatestBlockNumberByCurrencyId
-  | typeof getRequiredConfirmationsForEachCurrency
-  | typeof listPlatformSupportedCurrencies
-  | typeof currencyBlockchainFee
-  | typeof createBuyNowButton
-  | typeof createInvoice
-  | typeof getInvoiceById
-  | typeof getInvoiceHistory
-  | typeof getInvoicePayouts
-  | typeof getListOfInvoices
-  | typeof getConversionsBetweenTwoCurrencies
-  | typeof getWalletAutoConsolidation
-  | typeof createMerchantWallet
-  | typeof createWalletAddress
-  | typeof getMerchantAddressById
-  | typeof getMerchantWalletById
-  | typeof getMerchantWallets
-  | typeof getTransactionByWalletId
-  | typeof getTransactionsByWalletId
-  | typeof getWalletAddresses
-  | typeof sendSpendRequest
-  | typeof spendRequestConfirmation
-  | typeof updateWalletAddressWebhook
-  | typeof updateWalletWebhook
-  | typeof walletNotificationPayload
+import { SomeCoinpaymentsRequestOptions } from './types/types'
 
 // Available functions for easy reference
 const v2Functions = {
@@ -111,30 +87,45 @@ const v2Functions = {
   walletNotificationPayload
 } as const
 
-type AppliedFunction<T> = T extends (
-  credentials: any
-) => (handler: any) => infer R
-  ? R
-  : never
+export type V2Functions = typeof v2Functions
+export type V2FunctionKeys = keyof V2Functions
 
-export const initClientWith =
-  <const FunctionMap extends Record<string, CoinpaymentsV2Functions>>(
-    functionsMap: FunctionMap
-  ) =>
-  (credentials: Credentials) =>
-  <T, Handler extends (options: any) => T>(handler: Handler) => {
-    return Object.entries(functionsMap).reduce(
+export const initWithCredentials =
+  <const T extends Partial<V2Functions>>(functions: T) =>
+  (credentials: Credentials) => {
+    type InitWithCredentialsResult = {
+      [K in keyof T]: T[K] extends (credentials: Credentials) => infer R
+        ? R
+        : never
+    }
+    return Object.entries(functions).reduce<InitWithCredentialsResult>(
       (acc, [key, func]) => {
-        return {
-          ...acc,
-          // @ts-ignore
-          [key]: func(credentials)(handler)
-        }
+        // @ts-ignore
+        acc[key as keyof T] = func(credentials)
+        return acc
       },
-      {} as {
-        [K in keyof FunctionMap]: AppliedFunction<FunctionMap[K]>
-      }
+      {} as InitWithCredentialsResult
     )
   }
 
-export const initClient = initClientWith(v2Functions)
+// export const initClientWith =
+//   <const T extends Partial<V2Functions>>(functions: T) =>
+//   (credentials: Credentials) =>
+//   (handlers: OnOperationHandlers) => {
+//     type AllCurriedFunctions = {
+//       [K in keyof T]: (
+//         options: ExtractOptionsType<X2ReturnType<T[K]>>
+//       ) => ReturnType<Handler>
+//     }
+//     // TS limitation
+//     return Object.entries(functions).reduce<AllCurriedFunctions>(
+//       (acc, [key, func]) => {
+//         // @ts-ignore
+//         acc[key as keyof T] = func(credentials)(handler)
+//         return acc
+//       },
+//       {} as AllCurriedFunctions
+//     )
+//   }
+
+// export const initClient = initClientWith(v2Functions)

@@ -218,6 +218,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^22.15.18",
+    "axios": "^1.11.0",
     "npm-check-updates": "^18.0.1",
     "openapi-typescript": "^7.8.0",
     "tsx": "^4.19.4",

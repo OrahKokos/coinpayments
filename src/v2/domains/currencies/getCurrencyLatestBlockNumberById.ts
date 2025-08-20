@@ -4,14 +4,17 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  isNonEmptyString,
+  isNumber,
+  isObject,
+  requiredPropIs
+} from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '../../constants'
 import { OperationOptions, RequestInput } from '../../types/operations'
 
-import { paths } from '../../resources/swagger'
-
 export const options = {
-  operationId: 'getLatestBlockNumberByCurrencyId',
+  operationId: 'getCurrencyLatestBlockNumberById',
   method: 'GET',
   url: `${COINPAYMENTS_API_URL}/v2/currencies/blockchain-nodes/{id}/latest-block-number`
 } as const satisfies OperationOptions
@@ -19,10 +22,15 @@ export const options = {
 export type GetLatestBlockNumberByCurrencyIdOptions = typeof options
 
 export type GetLatestBlockNumberByCurrencyIdHttpOptions = {
-  params: paths['/v2/currencies/blockchain-nodes/{id}/latest-block-number']['get']['parameters']['path']
+  params: {
+    id: string
+  }
   queryParams: never
   body: never
-  response: paths['/v2/currencies/blockchain-nodes/{id}/latest-block-number']['get']['responses']['200']['content']['application/json']
+  response: {
+    currencyId: string
+    latestBlockNumber: number
+  }
 }
 
 export type GetLatestBlockNumberByCurrencyIdOperation =
@@ -31,13 +39,17 @@ export type GetLatestBlockNumberByCurrencyIdOperation =
 
 export const isValidRequestData = (
   data: unknown
-): data is RequestInput<GetLatestBlockNumberByCurrencyIdOperation> => {
-  if (!isObject(data)) return false
-  if (!hasOwn(data, 'id') || !isNonEmptyString(data.id)) return false
-  return true
-}
+): data is RequestInput<GetLatestBlockNumberByCurrencyIdOperation> =>
+  isObject(data) && requiredPropIs(data, 'id', isNonEmptyString)
+
+export const isValidResponseData = (
+  response: unknown
+): response is GetLatestBlockNumberByCurrencyIdHttpOptions['response'] =>
+  isObject(response) &&
+  requiredPropIs(response, 'currencyId', isNonEmptyString) &&
+  requiredPropIs(response, 'latestBlockNumber', isNumber)
 
 export const getLatestBlockNumberByCurrencyId =
   internalCoinpaymentsFlow<GetLatestBlockNumberByCurrencyIdOperation>(options)(
     isValidRequestData
-  )(withParams('id'))(withQueryParams())(withBody())
+  )(isValidResponseData)(withParams('id'))(withQueryParams())(withBody())

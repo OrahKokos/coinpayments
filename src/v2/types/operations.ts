@@ -1,6 +1,5 @@
+import { COINPAYMENTS_API_URL } from '../constants'
 import { ResolveAttributes } from './types'
-
-export const COINPAYMENTS_API_URL = 'https://api.coinpayments.com/api' as const
 
 export type OperationOptions = {
   operationId: string
@@ -11,7 +10,7 @@ export type OperationOptions = {
 export type OperationDataCommon = OperationOptions & {
   params?: Record<string, unknown>
   queryParams?: Record<string, unknown>
-  response?: Record<string, unknown> | Array<unknown>
+  response?: Record<string, unknown> | Array<unknown> | unknown
 }
 
 export type OperationDataWithoutBody = OperationDataCommon & {

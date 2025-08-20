@@ -4,10 +4,11 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { alwaysTrueGuard } from '@src/utils/data'
+import { isObject, isPositiveNumber, optionalPropIs } from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '@src/v2/constants'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
-import { paths } from '../../resources/swagger'
+import { MerchantWallet } from './types'
+import { isValidMerchantWallet } from './util'
 
 export const options = {
   operationId: 'getMerchantWallets',
@@ -19,18 +20,33 @@ export type GetMerchantWalletsOptions = typeof options
 
 export type GetMerchantWalletsHttpOptions = {
   params: never
-  queryParams: paths['/v2/merchant/wallets']['get']['parameters']['query']
+  queryParams: {
+    take?: number
+    skip?: number
+  }
   body: never
-  response: paths['/v2/merchant/wallets']['get']['responses']['200']['content']['application/json']
+  response: Array<MerchantWallet>
 }
 
 export type GetMerchantWalletsOperation = GetMerchantWalletsOptions &
   GetMerchantWalletsHttpOptions
 
-export const isValidRequestData =
-  alwaysTrueGuard<RequestInput<GetMerchantWalletsOperation>>()
+// What happens if take > 100 ???
+export const isValidRequestData = (
+  input: unknown
+): input is RequestInput<GetMerchantWalletsOperation> =>
+  isObject(input) &&
+  optionalPropIs(input, 'take', isPositiveNumber) &&
+  optionalPropIs(input, 'skip', isPositiveNumber)
+
+export const isValidResponseData = (
+  response: unknown
+): response is GetMerchantWalletsHttpOptions['response'] =>
+  Array.isArray(response) && response.every(isValidMerchantWallet)
 
 export const getMerchantWallets =
   internalCoinpaymentsFlow<GetMerchantWalletsOperation>(options)(
     isValidRequestData
-  )(withParams())(withQueryParams('take', 'skip'))(withBody())
+  )(isValidResponseData)(withParams())(withQueryParams('take', 'skip'))(
+    withBody()
+  )

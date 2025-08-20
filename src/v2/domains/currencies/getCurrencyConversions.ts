@@ -4,11 +4,14 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { alwaysTrueGuard } from '@src/utils/data'
+import {
+  alwaysTrueGuard,
+  isNonEmptyString,
+  isObject,
+  requiredPropIs
+} from '@src/utils/data'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
 import { COINPAYMENTS_API_URL } from '../../constants'
-
-import { paths } from '../../resources/swagger'
 
 export const options = {
   operationId: 'getCurrencyConversions',
@@ -22,7 +25,12 @@ export type GetCurrencyConversionsHttpOptions = {
   params: never
   queryParams: never
   body: never
-  response: paths['/v2/currencies/conversions']['get']['responses']['200']['content']['application/json']
+  response: Array<{
+    from: string
+    fromSymbol: string
+    to: string
+    toSymbol: string
+  }>
 }
 export type GetCurrencyConversionsOperation = GetCurrencyConversionsOptions &
   GetCurrencyConversionsHttpOptions
@@ -30,7 +38,20 @@ export type GetCurrencyConversionsOperation = GetCurrencyConversionsOptions &
 const isValidRequestData =
   alwaysTrueGuard<RequestInput<GetCurrencyConversionsOperation>>()
 
+export const isValidResponseData = (
+  response: unknown
+): response is GetCurrencyConversionsHttpOptions['response'] =>
+  Array.isArray(response) &&
+  response.every(
+    (item) =>
+      isObject(item) &&
+      requiredPropIs(item, 'from', isNonEmptyString) &&
+      requiredPropIs(item, 'fromSymbol', isNonEmptyString) &&
+      requiredPropIs(item, 'to', isNonEmptyString) &&
+      requiredPropIs(item, 'toSymbol', isNonEmptyString)
+  )
+
 export const getCurrencyConversions =
   internalCoinpaymentsFlow<GetCurrencyConversionsOperation>(options)(
     isValidRequestData
-  )(withParams())(withQueryParams())(withBody())
+  )(isValidResponseData)(withParams())(withQueryParams())(withBody())

@@ -1,1 +1,0 @@
-export { getWalletAutoConsolidation } from './getWalletAutoConsolidation'

@@ -64,6 +64,12 @@ export const pick = <T extends Record<string, unknown>, K extends keyof T>(
 export const isString = (value: unknown): value is string =>
   typeof value === 'string' || value instanceof String
 
+export const isNumber = (value: unknown): value is number =>
+  typeof value === 'number' || value instanceof Number
+
+export const isPositiveNumber = (value: unknown): value is number =>
+  isNumber(value) && value > 0
+
 export const isNonEmptyString = (value: unknown): value is string =>
   isString(value) && value.trim() !== ''
 
@@ -78,6 +84,11 @@ export const isArrayOfExactStrings = (
   return value.every((item) => isString(item))
 }
 
+export const inArray =
+  <T>(array: T[]) =>
+  (value: unknown): value is T =>
+    array.includes(value as T)
+
 export const withTarget =
   <const Target extends string>(target: Target) =>
   <Source extends Record<string, unknown>>(...keys: Array<keyof Source>) =>
@@ -90,3 +101,22 @@ export const alwaysTrueGuard =
   <T>() =>
   (_: unknown): _ is T =>
     true
+
+export const propIs =
+  (onPropNotFound: () => boolean) =>
+  <T extends Record<string, unknown>, K extends string, V = unknown>(
+    obj: T,
+    key: K,
+    predicate: (value: unknown) => value is V
+  ): obj is T & { [P in K]: V } => {
+    if (!hasOwn(obj, key)) return onPropNotFound()
+    return predicate(obj[key])
+  }
+
+export const requiredPropIs = propIs(() => false)
+export const optionalPropIs = propIs(() => true)
+
+export const getIsoDate = (): string => new Date().toISOString().split('.')[0]
+
+export const isBoolean = (value: unknown): value is boolean =>
+  typeof value === 'boolean'

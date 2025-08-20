@@ -1,1 +1,1 @@
-export { currencyBlockchainFee } from './currencyBlockchainFee'
+export { currencyBlockchainFee } from './getCurrencyBlockchainFee'

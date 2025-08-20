@@ -1,8 +1,15 @@
+import { encode } from 'querystring'
 import { Credentials, generateHeaders } from '@src/v2/auth'
 import { RequestInput, SomeOperationData } from '@src/v2/types/operations'
 import { ResolveAttributes } from '@src/v2/types/types'
 import { ConstructCoinpaymentsRequest } from './types'
 import { isEmptyObject, stringifyObjectValues, withTarget } from './utils/data'
+import { createBadInputError } from './v2/error'
+import {
+  ProcessResult,
+  processFailure,
+  processSuccess
+} from './v2/types/process'
 
 export const withParams = withTarget('params')
 export const withQueryParams = withTarget('queryParams')
@@ -16,13 +23,16 @@ export const createUrlTarget =
       (acc, [key, value]) => acc.replace(`{${key}}`, String(value)),
       urlTemplate
     )}` +
-    (isEmptyObject(queryParams) ? '' : `?${stringifyObjectValues(queryParams)}`)
+    (isEmptyObject(queryParams)
+      ? ''
+      : `?${encode(stringifyObjectValues(queryParams))}`)
 
 export const internalCoinpaymentsFlow =
   <OD extends SomeOperationData>(
     operationData: Pick<OD, 'operationId' | 'url' | 'method'>
   ) =>
-  (validationFunction: (input: unknown) => input is RequestInput<OD>) =>
+  (isValidInput: (input: unknown) => input is RequestInput<OD>) =>
+  (isValidResponse: (input: unknown) => input is OD['response']) =>
   (
     withParamsFunction: (input: RequestInput<OD>) => {
       params: ResolveAttributes<OD['params']>
@@ -39,35 +49,43 @@ export const internalCoinpaymentsFlow =
     }
   ) =>
   (credentials: Credentials) =>
-  <T, Handler extends (options: ConstructCoinpaymentsRequest<OD>) => T>(
+  <
+    T,
+    Handler extends (
+      options: ProcessResult<ConstructCoinpaymentsRequest<OD>>
+    ) => T
+  >(
     handlerFunction: Handler
   ) =>
-  (data: RequestInput<OD>): ReturnType<Handler> => {
-    const isValid = validationFunction(data)
-    // process request fail
-    if (!isValid) {
-      throw new Error('Invalid data provided for the operation')
+  (data: RequestInput<OD> = {}): ReturnType<Handler> => {
+    if (!isValidInput(data)) {
+      const operationInputError = createBadInputError(operationData.operationId)
+
+      return handlerFunction(
+        processFailure(
+          operationInputError('Invalid data provided for the operation', data)
+        )
+      ) as ReturnType<Handler>
     }
-    const params = withParamsFunction(data)
-    const queryParams = withQueryParamsFunction(data)
-    const body = withBodyFunction(data)
+
+    const { params } = withParamsFunction(data)
+    const { queryParams } = withQueryParamsFunction(data)
+    const { body } = withBodyFunction(data)
 
     const { operationId, method, url } = operationData
     const { clientId } = credentials
 
-    return handlerFunction({
-      metadata: {
-        clientId,
-        operationId
-      },
+    const operationSuccess = processSuccess({
+      clientId,
+      operationId,
+      isValidResponse,
       httpOptions: {
-        url: createUrlTarget(url)(params)(queryParams),
+        url: createUrlTarget(url)(params ?? {})(queryParams ?? {}),
         method,
-        headers: generateHeaders(credentials)(operationData)(
-          body.body ? JSON.stringify(body.body) : ''
-        ),
-        body: body.body ?? undefined
+        headers: generateHeaders(credentials)(operationData)(body),
+        data: method === 'GET' || method === 'DELETE' ? undefined : (body ?? {})
       }
-      // solve this later
-    } as ConstructCoinpaymentsRequest<OD>) as ReturnType<Handler>
+    }) as ProcessResult<ConstructCoinpaymentsRequest<OD>>
+
+    return handlerFunction(operationSuccess) as ReturnType<Handler>
   }

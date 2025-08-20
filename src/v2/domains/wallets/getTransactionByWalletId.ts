@@ -4,10 +4,14 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  isNonEmptyString,
+  isObject,
+  optionalPropIs,
+  requiredPropIs
+} from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '@src/v2/constants'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
-import { paths } from '../../resources/swagger'
 
 export const options = {
   operationId: 'getTransactionByWalletId',
@@ -17,39 +21,75 @@ export const options = {
 
 export type GetTransactionByWalletIdOptions = typeof options
 
+export type GetTransactionByWalletIdParams = {
+  /** @description string: wallet id */
+  walletIdStr: string
+}
+
+export type GetTransactionByWalletIdQueryParams = {
+  /** @description string?: transaction id */
+  transactionId?: string
+  /** @description string?: spend request id */
+  spendRequestId?: string
+}
+
+export type GetTransactionByWalletIdBody = never
+
+export type GetTransactionByWalletIdResponse = {
+  id?: string
+  type?: string
+  status?: string
+  amount?: string
+  currency?: string
+  fee?: string
+  txid?: string
+  confirmations?: string
+  address?: string
+  fromAddress?: string
+  toAddress?: string
+  createdDate?: string
+  lastUpdatedDate?: string
+}
+
 export type GetTransactionByWalletIdHttpOptions = {
-  params: paths['/v2/merchant/wallets/{walletIdStr}/transaction']['get']['parameters']['path']
-  queryParams: paths['/v2/merchant/wallets/{walletIdStr}/transaction']['get']['parameters']['query']
-  body: never
-  response: paths['/v2/merchant/wallets/{walletIdStr}/transaction']['get']['responses']['200']['content']['application/json']
+  params: GetTransactionByWalletIdParams
+  queryParams: GetTransactionByWalletIdQueryParams
+  body: GetTransactionByWalletIdBody
+  response: GetTransactionByWalletIdResponse
 }
 
 export type GetTransactionByWalletIdOperation =
   GetTransactionByWalletIdOptions & GetTransactionByWalletIdHttpOptions
 
 export const isValidRequestData = (
-  data: unknown
-): data is RequestInput<GetTransactionByWalletIdOperation> => {
-  if (!isObject(data)) return false
-  if (!hasOwn(data, 'walletIdStr') || !isNonEmptyString(data.walletIdStr))
-    return false
+  input: unknown
+): input is RequestInput<GetTransactionByWalletIdOperation> =>
+  isObject(input) &&
+  requiredPropIs(input, 'walletIdStr', isNonEmptyString) &&
+  optionalPropIs(input, 'transactionId', isNonEmptyString) &&
+  optionalPropIs(input, 'spendRequestId', isNonEmptyString)
 
-  // At least one of transactionId or spendRequestId must be provided
-  const hasTransactionId =
-    hasOwn(data, 'transactionId') && isNonEmptyString(data.transactionId)
-  const hasSpendRequestId =
-    hasOwn(data, 'spendRequestId') && isNonEmptyString(data.spendRequestId)
-
-  if (!hasTransactionId && !hasSpendRequestId) {
-    return false
-  }
-
-  return true
-}
+export const isValidResponseData = (
+  response: unknown
+): response is GetTransactionByWalletIdHttpOptions['response'] =>
+  isObject(response) &&
+  optionalPropIs(response, 'id', isNonEmptyString) &&
+  optionalPropIs(response, 'type', isNonEmptyString) &&
+  optionalPropIs(response, 'status', isNonEmptyString) &&
+  optionalPropIs(response, 'amount', isNonEmptyString) &&
+  optionalPropIs(response, 'currency', isNonEmptyString) &&
+  optionalPropIs(response, 'fee', isNonEmptyString) &&
+  optionalPropIs(response, 'txid', isNonEmptyString) &&
+  optionalPropIs(response, 'confirmations', isNonEmptyString) &&
+  optionalPropIs(response, 'address', isNonEmptyString) &&
+  optionalPropIs(response, 'fromAddress', isNonEmptyString) &&
+  optionalPropIs(response, 'toAddress', isNonEmptyString) &&
+  optionalPropIs(response, 'createdDate', isNonEmptyString) &&
+  optionalPropIs(response, 'lastUpdatedDate', isNonEmptyString)
 
 export const getTransactionByWalletId =
   internalCoinpaymentsFlow<GetTransactionByWalletIdOperation>(options)(
     isValidRequestData
-  )(withParams('walletIdStr'))(
+  )(isValidResponseData)(withParams('walletIdStr'))(
     withQueryParams('transactionId', 'spendRequestId')
   )(withBody())

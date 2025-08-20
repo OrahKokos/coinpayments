@@ -4,26 +4,30 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  isNonEmptyString,
+  isNumber,
+  isObject,
+  requiredPropIs
+} from '@src/utils/data'
 import { COINPAYMENTS_API_URL } from '@src/v2/constants'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
 
-import { paths } from '../../resources/swagger'
-
 export const options = {
-  operationId: 'currencyBlockchainFee',
+  operationId: 'getCurrencyBlockchainFee',
   method: 'GET',
-  url: `${COINPAYMENTS_API_URL}/v2/fees/blockchain/{currency}`
+  url: `${COINPAYMENTS_API_URL}/v2/fees/blockchain/{id}`
 } as const satisfies OperationOptions
 
 export type CurrencyBlockchainFeeOptions = typeof options
 
 export type CurrencyBlockchainFeeHttpOptions = {
-  params: paths['/v2/fees/blockchain/{currency}']['get']['parameters']['path']
+  params: {
+    id: string
+  }
   queryParams: never
   body: never
-  // not defined
-  response: {}
+  response: number
 }
 
 export type CurrencyBlockchainFeeOperation = CurrencyBlockchainFeeOptions &
@@ -31,14 +35,12 @@ export type CurrencyBlockchainFeeOperation = CurrencyBlockchainFeeOptions &
 
 export const isValidRequestData = (
   data: unknown
-): data is RequestInput<CurrencyBlockchainFeeOperation> => {
-  if (!isObject(data)) return false
-  if (!hasOwn(data, 'currency') || !isNonEmptyString(data.currency))
-    return false
-  return true
-}
+): data is RequestInput<CurrencyBlockchainFeeOperation> =>
+  isObject(data) && requiredPropIs(data, 'id', isNonEmptyString)
+
+export const isValidResponseData = isNumber
 
 export const currencyBlockchainFee =
   internalCoinpaymentsFlow<CurrencyBlockchainFeeOperation>(options)(
     isValidRequestData
-  )(withParams('currency'))(withQueryParams())(withBody())
+  )(isValidResponseData)(withParams('id'))(withQueryParams())(withBody())

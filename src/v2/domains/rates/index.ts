@@ -1,1 +1,1 @@
-export { getConversionsBetweenTwoCurrencies } from './getConversionsBetweenTwoCurrencies'
+export { getConversionsBetweenTwoCurrencies } from './getRates'

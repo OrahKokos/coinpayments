@@ -4,11 +4,11 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { isNonEmptyString, isObject } from '@src/utils/data'
+import { isNonEmptyString, isObject, requiredPropIs } from '@src/utils/data'
 import { OperationOptions, RequestInput } from '@src/v2/types/operations'
 import { COINPAYMENTS_API_URL } from '../../constants'
-
-import { paths } from '../../resources/swagger'
+import { Currency } from './types'
+import { isValidCurrency } from './util'
 
 export const options = {
   operationId: 'getCurrencyById',
@@ -19,10 +19,12 @@ export const options = {
 export type GetCurrencyByIdOptions = typeof options
 
 export type GetCurrencyByIdHttpOptions = {
-  params: paths['/v2/currencies/{id}']['get']['parameters']['path']
+  params: {
+    id: string
+  }
   queryParams: never
   body: never
-  response: paths['/v2/currencies/{id}']['get']['responses']['200']['content']['application/json']
+  response: Currency
 }
 
 export type GetCurrencyByIdOperation = GetCurrencyByIdOptions &
@@ -30,14 +32,12 @@ export type GetCurrencyByIdOperation = GetCurrencyByIdOptions &
 
 export const isValidRequestData = (
   input: unknown
-): input is RequestInput<GetCurrencyByIdOperation> => {
-  if (!isObject(input)) return false
-  if (!('id' in input)) return false
-  if (!isNonEmptyString(input.id)) return false
-  return true
-}
+): input is RequestInput<GetCurrencyByIdOperation> =>
+  isObject(input) && requiredPropIs(input, 'id', isNonEmptyString)
+
+export const isValidResponseData = isValidCurrency
 
 export const getCurrencyById =
   internalCoinpaymentsFlow<GetCurrencyByIdOperation>(options)(
     isValidRequestData
-  )(withParams('id'))(withQueryParams())(withBody())
+  )(isValidResponseData)(withParams('id'))(withQueryParams())(withBody())

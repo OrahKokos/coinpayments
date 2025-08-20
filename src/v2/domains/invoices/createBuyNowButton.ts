@@ -4,14 +4,20 @@ import {
   withParams,
   withQueryParams
 } from '@src/internal'
-import { hasOwn, isNonEmptyString, isObject } from '@src/utils/data'
+import {
+  alwaysTrueGuard,
+  isNonEmptyString,
+  isObject,
+  isPositiveNumber,
+  isValidBoolean,
+  optionalPropIs,
+  requiredPropIs
+} from '@src/utils/data'
 import {
   COINPAYMENTS_API_URL,
   OperationOptions,
   RequestInput
 } from '@src/v2/types/operations'
-
-import { paths } from '../../resources/swagger'
 
 export const options = {
   operationId: 'createBuyNowButton',
@@ -21,173 +27,161 @@ export const options = {
 
 export type CreateBuyNowButtonOptions = typeof options
 
+export type CreateBuyNowButtonParams = never
+
+export type CreateBuyNowButtonQueryParams = never
+
+export type CreateBuyNowButtonBody = {
+  currency: string
+  amount: {
+    total: string
+    breakdown: {
+      subtotal: string
+      shipping?: string
+      handling?: string
+      taxTotal?: string
+      discount?: string
+    }
+  }
+  items: Array<{
+    name: string
+    quantity: {
+      value: number
+      type: string
+    }
+    amount: string
+    description?: string
+    customId?: string
+    sku?: string
+    originalAmount?: string
+    tax?: string
+  }>
+  hideShoppingCart?: boolean
+  successUrl?: string
+  cancelUrl?: string
+  ipnUrl?: string
+  notifications?: string
+  emailNotifications?: boolean
+  buttonWidth?: number
+  buttonStyle?: string
+  invoiceId?: string
+  type?: string
+  payoutOverrides?: Array<{
+    fromCurrency: string
+    toCurrency: string
+    address: string
+    frequency: string
+  }>
+}
+
+export type CreateBuyNowButtonResponse = {
+  buttonHtml?: string
+  buttonUrl?: string
+}
+
 export type CreateBuyNowButtonHttpOptions = {
-  params: never
-  queryParams: never
-  body: Exclude<
-    paths['/v2/merchant/invoices/buy-now-button']['post']['requestBody'],
-    undefined
-  >['content']['application/json']
-  // unknown / not specified
-  response: {}
+  params: CreateBuyNowButtonParams
+  queryParams: CreateBuyNowButtonQueryParams
+  body: CreateBuyNowButtonBody
+  response: CreateBuyNowButtonResponse
 }
 
 export type CreateBuyNowButtonOperation = CreateBuyNowButtonOptions &
   CreateBuyNowButtonHttpOptions
 
-export const isValidAmount = (input: Record<string, unknown>): boolean => {
-  if (!hasOwn(input, 'amount') || !isObject(input.amount)) return false
-  if (!hasOwn(input.amount, 'total') || !isNonEmptyString(input.amount.total))
-    return false
-  if (!hasOwn(input.amount, 'breakdown') || !isObject(input.amount.breakdown))
-    return false
-  if (
-    !hasOwn(input.amount.breakdown, 'subtotal') ||
-    !isNonEmptyString(input.amount.breakdown.subtotal)
+export const isValidAmount = (input: Record<string, unknown>): boolean =>
+  requiredPropIs(
+    input,
+    'amount',
+    (amount): amount is CreateBuyNowButtonOperation['body']['amount'] =>
+      isObject(amount) &&
+      requiredPropIs(amount, 'total', isNonEmptyString) &&
+      requiredPropIs(amount, 'breakdown', isObject) &&
+      requiredPropIs(amount.breakdown, 'subtotal', isNonEmptyString) &&
+      optionalPropIs(amount.breakdown, 'shipping', isNonEmptyString) &&
+      optionalPropIs(amount.breakdown, 'handling', isNonEmptyString) &&
+      optionalPropIs(amount.breakdown, 'taxTotal', isNonEmptyString) &&
+      optionalPropIs(amount.breakdown, 'discount', isNonEmptyString)
   )
-    return false
 
-  if (hasOwn(input.amount.breakdown, 'shipping')) {
-    if (!isNonEmptyString(input.amount.breakdown.shipping)) {
-      return false
-    }
-  }
-  if (hasOwn(input.amount.breakdown, 'handling')) {
-    if (!isNonEmptyString(input.amount.breakdown.handling)) {
-      return false
-    }
-  }
-  if (hasOwn(input.amount.breakdown, 'taxTotal')) {
-    if (!isNonEmptyString(input.amount.breakdown.taxTotal)) {
-      return false
-    }
-  }
-  if (hasOwn(input.amount.breakdown, 'discount')) {
-    if (!isNonEmptyString(input.amount.breakdown.discount)) {
-      return false
-    }
-  }
+export const areValidItems = (input: Record<string, unknown>): boolean =>
+  requiredPropIs(
+    input,
+    'items',
+    (items): items is CreateBuyNowButtonOperation['body']['items'] =>
+      Array.isArray(items) &&
+      items.every(
+        (item) =>
+          isObject(item) &&
+          requiredPropIs(item, 'name', isNonEmptyString) &&
+          requiredPropIs(item, 'quantity', isObject) &&
+          requiredPropIs(
+            item.quantity,
+            'value',
+            (value): value is number => typeof value === 'number' && value > 0
+          ) &&
+          requiredPropIs(item.quantity, 'type', isNonEmptyString) &&
+          requiredPropIs(item, 'amount', isNonEmptyString) &&
+          optionalPropIs(item, 'description', isNonEmptyString) &&
+          optionalPropIs(item, 'customId', isNonEmptyString) &&
+          optionalPropIs(item, 'sku', isNonEmptyString) &&
+          optionalPropIs(item, 'originalAmount', isNonEmptyString) &&
+          optionalPropIs(item, 'tax', isNonEmptyString)
+      )
+  )
 
-  return true
-}
+export const isValidFrequency = (value: unknown): value is string =>
+  typeof value === 'string' &&
+  ['normal', 'asSoonAsPossible', 'hourly', 'nightly', 'weekly'].includes(value)
 
-export const areValidItems = (input: Record<string, unknown>) => {
-  if (!hasOwn(input, 'items') || !Array.isArray(input.items)) return false
+export const isValidPayoutOverride = (
+  override: unknown
+): override is Record<string, unknown> =>
+  isObject(override) &&
+  requiredPropIs(override, 'fromCurrency', isNonEmptyString) &&
+  requiredPropIs(override, 'toCurrency', isNonEmptyString) &&
+  requiredPropIs(override, 'address', isNonEmptyString) &&
+  requiredPropIs(override, 'frequency', isValidFrequency)
 
-  return input.items.every((item) => {
-    if (!isObject(item)) return false
-    if (!hasOwn(item, 'name') || !isNonEmptyString(item.name)) return false
-    if (!hasOwn(item, 'quantity') || !isObject(item.quantity)) return false
-    if (
-      !hasOwn(item.quantity, 'value') ||
-      typeof item.quantity.value !== 'number' ||
-      item.quantity.value <= 0
-    )
-      return false
-    if (!hasOwn(item.quantity, 'type') || !isNonEmptyString(item.quantity.type))
-      return false
-    if (!hasOwn(item, 'amount') || !isNonEmptyString(item.amount)) return false
-
-    if (hasOwn(item, 'description') && !isNonEmptyString(item.description))
-      return false
-    if (hasOwn(item, 'customId') && !isNonEmptyString(item.customId))
-      return false
-    if (hasOwn(item, 'sku') && !isNonEmptyString(item.sku)) return false
-    if (
-      hasOwn(item, 'originalAmount') &&
-      !isNonEmptyString(item.originalAmount)
-    )
-      return false
-    if (hasOwn(item, 'tax') && !isNonEmptyString(item.tax)) return false
-
-    return true
-  })
-}
+export const isValidPayoutOverrides = (
+  overrides: unknown
+): overrides is CreateBuyNowButtonOperation['body']['payoutOverrides'] =>
+  Array.isArray(overrides) && overrides.every(isValidPayoutOverride)
 
 export const isValidRequestData = (
   input: unknown
-): input is RequestInput<CreateBuyNowButtonOperation> => {
-  if (!isObject(input)) return false
-  if (!hasOwn(input, 'currency') || !isNonEmptyString(input.currency))
-    return false
-  if (!isValidAmount(input)) return false
-  if (!areValidItems(input)) return false
-  if (
-    hasOwn(input, 'hideShoppingCart') &&
-    typeof input.hideShoppingCart !== 'boolean'
-  )
-    return false
-  if (hasOwn(input, 'successUrl') && !isNonEmptyString(input.successUrl))
-    return false
-  if (hasOwn(input, 'cancelUrl') && !isNonEmptyString(input.cancelUrl))
-    return false
-  if (hasOwn(input, 'ipnUrl') && !isNonEmptyString(input.ipnUrl)) return false
-  if (hasOwn(input, 'notifications') && !isNonEmptyString(input.notifications))
-    return false
-  if (
-    hasOwn(input, 'emailNotifications') &&
-    typeof input.emailNotifications !== 'boolean'
-  )
-    return false
-  if (
-    hasOwn(input, 'buttonWidth') &&
-    (typeof input.buttonWidth !== 'number' || input.buttonWidth <= 0)
-  )
-    return false
-  if (hasOwn(input, 'buttonStyle') && !isNonEmptyString(input.buttonStyle))
-    return false
-  if (hasOwn(input, 'invoiceId') && !isNonEmptyString(input.invoiceId))
-    return false
-  if (hasOwn(input, 'type') && !isNonEmptyString(input.type)) return false
-  if (
-    hasOwn(input, 'payoutOverrides') &&
-    (!Array.isArray(input.payoutOverrides) ||
-      !input.payoutOverrides.every((override) => {
-        if (!isObject(override)) return false
-        if (
-          !hasOwn(override, 'fromCurrency') ||
-          !isNonEmptyString(override.fromCurrency)
-        )
-          return false
-        if (
-          !hasOwn(override, 'toCurrency') ||
-          !isNonEmptyString(override.toCurrency)
-        )
-          return false
-        if (!hasOwn(override, 'address') || !isNonEmptyString(override.address))
-          return false
-        if (
-          !hasOwn(override, 'frequency') ||
-          typeof override.frequency !== 'string' ||
-          ![
-            'normal',
-            'asSoonAsPossible',
-            'hourly',
-            'nightly',
-            'weekly'
-          ].includes(override.frequency)
-        )
-          return false
-        return true
-      }))
-  )
-    return false
+): input is RequestInput<CreateBuyNowButtonOperation> =>
+  isObject(input) &&
+  requiredPropIs(input, 'currency', isNonEmptyString) &&
+  isValidAmount(input) &&
+  areValidItems(input) &&
+  optionalPropIs(input, 'hideShoppingCart', isValidBoolean) &&
+  optionalPropIs(input, 'successUrl', isNonEmptyString) &&
+  optionalPropIs(input, 'cancelUrl', isNonEmptyString) &&
+  optionalPropIs(input, 'ipnUrl', isNonEmptyString) &&
+  optionalPropIs(input, 'notifications', isNonEmptyString) &&
+  optionalPropIs(input, 'emailNotifications', isValidBoolean) &&
+  optionalPropIs(input, 'buttonWidth', isPositiveNumber) &&
+  optionalPropIs(input, 'buttonStyle', isNonEmptyString) &&
+  optionalPropIs(input, 'invoiceId', isNonEmptyString) &&
+  optionalPropIs(input, 'type', isNonEmptyString) &&
+  optionalPropIs(input, 'payoutOverrides', isValidPayoutOverrides)
 
-  return true
-}
+export const isValidResponseData =
+  alwaysTrueGuard<CreateBuyNowButtonHttpOptions['response']>()
 
 export const createBuyNowButton =
   internalCoinpaymentsFlow<CreateBuyNowButtonOperation>(options)(
     isValidRequestData
-  )(withParams())(withQueryParams())(
+  )(isValidResponseData)(withParams())(withQueryParams())(
     withBody(
       'amount',
+      'items',
       'buttonWidth',
       'buttonWidth',
       'buttonStyle',
       'type',
       'payoutOverrides',
-      'items',
       'currency',
       'successUrl',
       'cancelUrl',
